@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import DatePicker from "../DatePicker/DatePicker";
-import headerBg from "../../assets/headerBg.png";
-import logo from "../../assets/logo.png";
-import currency from "../../assets/currency.svg";
-import pakistan from "../../assets/pakistan.svg";
-import plane from "../../assets/plane.svg";
-import search from "../../assets/search.svg";
-import user from "../../assets/user.svg";
-import bed from "../../assets/Bed.svg";
-import schedule from "../../assets/Schedule.svg";
+import headerBg from "../../assets/png/headerBg.png";
+import logo from "../../assets/png/logo.png";
+import currency from "../../assets//svg/currency.svg";
+import pakistan from "../../assets/svg/pakistan.svg";
+import plane from "../../assets/svg/plane.svg";
+import search from "../../assets/svg/search.svg";
+import user from "../../assets/svg/user.svg";
+import bed from "../../assets/svg/Bed.svg";
+import schedule from "../../assets/svg/Schedule.svg";
 
 const Navbar = () => {
   const [activeLink, setActiveLink] = useState("home");
@@ -33,7 +33,7 @@ const Navbar = () => {
   return (
     <div
       style={{ backgroundImage: `url(${headerBg})` }}
-      className="w-full h-[306px] bg-cover bg-center bg-no-repeat relative"
+      className="w-full h-[180px] md:h-[306px] bg-cover bg-center bg-no-repeat relative"
     >
       {/* Logo + Home buttons section */}
       <div className="hidden md:flex w-full flex-row justify-center py-[25px] items-center">
