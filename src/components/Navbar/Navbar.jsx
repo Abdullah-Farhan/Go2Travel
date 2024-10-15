@@ -116,7 +116,7 @@ const Navbar = () => {
       </div>
 
       {/* Sub links */}
-      <ul className="hidden md:flex w-full bg-orange-200 h-20 justify-center flex-row">
+      <ul className="hidden md:flex w-full h-20 justify-center flex-row">
         <li className="text-white group">
           <a href="" onClick={() => handleSubLinkClick("flight")}>
             <img src={plane} className="" />

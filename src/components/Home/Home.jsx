@@ -1,23 +1,22 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import home from "../../assets/svg/home.svg";
 import "./Home.css";
 import offersImg from "../../assets/svg/offersImg.svg";
-import fr from "../../assets/svg/fr.svg"
-import it from "../../assets/svg/it.svg"
+import fr from "../../assets/svg/fr.svg";
+import it from "../../assets/svg/it.svg";
 import uae from "../../assets/svg/uae.svg";
 import sa from "../../assets/svg/sa.svg";
 import mal from "../../assets/svg/mal.svg";
+import TopAccomodation from "../../Cards/TopAccomodation.jsx";
+import TopActivities from "../../Cards/TopActivities.jsx";
+import Bar from "../../Cards/Bar.jsx";
+import Shopping from "../../Cards/Shopping.jsx";
+import Trending from "../../Cards/Trending.jsx";
 
 const Home = () => {
-  const scrollRef = useRef(null);
-  const [showImages, setShowImages] = useState(true); // State to manage image visibility
-
-  const scrollLeft = () => {
-    scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
-  };
-
-  const scrollRight = () => {
-    scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+  const [activeLink, setActiveLink] = useState("destination");
+  const handleLinkClick = (link) => {
+    setActiveLink(link);
   };
 
   return (
@@ -72,87 +71,65 @@ const Home = () => {
 
         {/* Accommodation Section */}
         <section>
-          <p className="text-2xl font-extrabold mt-16 mb-8">Top Accommodation Places</p>
-          <div className="relative flex items-center justify-between">
-            <button
-              className="absolute left-0 z-10 p-2 bg-white rounded-full"
-              onClick={scrollLeft}
-            >
-              &lt;
-            </button>
-
-            <div
-              ref={scrollRef}
-              className={`flex overflow-x-auto scroll-smooth w-full snap-x snap-mandatory hide-scrollbar bg-black relative ${
-                showImages ? "" : "hidden"
-              }`}
-            >
-              <div className="flex-none w-56 h-56 bg-blue-400 m-2 snap-start flex items-center justify-center">
-                <p>Hotels</p>
-              </div>
-              <div className="flex-none w-56 h-56 bg-green-400 m-2 snap-start flex items-center justify-center">
-                <p>Resorts</p>
-              </div>
-              <div className="flex-none w-56 h-56 bg-red-400 m-2 snap-start flex items-center justify-center">
-                <p>Villas</p>
-              </div>
-              <div className="flex-none w-56 h-56 bg-yellow-400 m-2 snap-start flex items-center justify-center">
-                <p>Cabins</p>
-              </div>
-            </div>
-
-            <button
-              className="absolute right-0 z-10 p-2 bg-white rounded-full"
-              onClick={scrollRight}
-            >
-              &gt;
-            </button>
-          </div>
+          <p className="text-2xl font-extrabold mt-16 mb-4">
+            Top Accommodation Places
+          </p>
+          <TopAccomodation />
         </section>
 
         {/* Top activites */}
         <section>
-            
+          <p className="text-2xl font-extrabold mt-16">
+            Top Activities To Do By Category
+          </p>
+          <p className=" mb-4">Special offers for you</p>
+          <TopActivities />
         </section>
 
         {/* Top bars */}
         <section>
-            
+          <p className="text-2xl font-extrabold mt-16">Top Bar in Captown</p>
+          <p className=" mb-4">Big offer awaits</p>
+          <Bar />
         </section>
 
         {/* Shooping centers */}
         <section>
-            
+          <p className="text-2xl font-extrabold mt-16 mb-8">Shopping Centers</p>
+          <Shopping />
         </section>
 
         {/* Traveling destination section */}
         <section className="w-full mt-16">
-            <p className="font-extrabold text-2xl">Trending Destinations</p>
-            <p className="font-semibold">Most popular destinations for visitors from Pakistan</p>
-            <div className="flex flex-row w-full justify-between mt-16">
-                <div className="w-[467px] h-64 overflow-hidden">
-                    <img src={fr} className="h-full w-full object-cover"/>
-                </div>
-                <div className="w-[467px] h-64 overflow-hidden">
-                    <img src={it} className="h-full w-full object-cover"/>
-                </div>
+          <p className="font-extrabold text-2xl">Trending Destinations</p>
+          <p className="font-semibold">
+            Most popular destinations for visitors from Pakistan
+          </p>
+          <div className="flex flex-row w-full justify-between mt-16">
+            <div className="w-[467px] h-64 overflow-hidden">
+              <img src={fr} className="h-full w-full object-cover" />
             </div>
-            <div className="flex flex-row w-full justify-between mt-16">
-                <div className="w-72 h-[300px] overflow-hidden">
-                    <img src={uae} className="h-full w-full object-cover"/>
-                </div>
-                <div className="w-60 h-[300px] overflow-hidden">
-                    <img src={sa} className="h-full w-full object-cover"/>
-                </div>
-                <div className="w-[300px] h-[300px] overflow-hidden">
-                    <img src={mal} className="h-full w-full object-cover"/>
-                </div>
+            <div className="w-[467px] h-64 overflow-hidden">
+              <img src={it} className="h-full w-full object-cover" />
             </div>
+          </div>
+          <div className="flex flex-row w-full justify-between mt-16">
+            <div className="w-72 h-[300px] overflow-hidden">
+              <img src={uae} className="h-full w-full object-cover" />
+            </div>
+            <div className="w-60 h-[300px] overflow-hidden">
+              <img src={sa} className="h-full w-full object-cover" />
+            </div>
+            <div className="w-[300px] h-[300px] overflow-hidden">
+              <img src={mal} className="h-full w-full object-cover" />
+            </div>
+          </div>
         </section>
 
         {/* Trending in Travel */}
         <section>
-            
+          <p className="text-2xl font-bold mt-24">Trending in Travel</p>
+          <Trending />
         </section>
       </div>
     </section>
