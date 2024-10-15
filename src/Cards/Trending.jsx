@@ -22,7 +22,7 @@ const Trending = () => {
   };
   return (
     <div>
-      <div className="flex flex-row w-full bg-orange-300 mt-5 font-semibold">
+      <div className="flex flex-row w-full mt-5 font-semibold">
         <ul className="flex flex-row justify-between w-full">
           <li
             className={`group flex relative cursor-pointer transition-all duration-200 rounded-[5px]`}
