@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import sort from "../../assets/svg/sort.svg";
 import arrows from "../../assets/svg/Sortingarrowheads.svg";
-import Hotel from "../../Cards/Hotel";
+import Hotel from "../../Cards/Hotel.jsx";
 import hotels from "../../utils/Hotels/Hotels.jsx";
+import Filter from "./components/Filter.jsx";
 
 const Results = ({ searchedValue }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,6 +16,12 @@ const Results = ({ searchedValue }) => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sortByValue, setSortByValue] = useState("Our Top Picks");
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const togglePopup = () => {
+    setIsOpen(!isOpen);
+  };
 
   const searchedResults = hotels.length;
   const toggleDropdown = () => {
@@ -31,6 +38,12 @@ const Results = ({ searchedValue }) => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  const handleFilterApply = (event) => {
+    event.preventDefault();
+    setIsOpen(!isOpen)
+  }
+
   return (
     <section className="w-full flex flex-row justify-center">
       <div className="w-full max-w-[954px] mt-14 flex flex-row">
@@ -41,24 +54,41 @@ const Results = ({ searchedValue }) => {
         </p>
 
         {/* Filter Section */}
-        <div className="w-72 h-[2993px] bg-slate-400 border border-[#525B31] rounded-lg mt-8">
-          <div className="w-full h-12 flex justify-center items-center border-b border-[#525B31]">
-            <p className="text-lg font-bold text-[#525B31]">Filter by</p>
+        <div className="relative">
+          <div className="hidden md:block w-auto md:w-72 h-auto md:h-[2993px] border border-[#525B31] rounded-lg mt-8">
+            {/* Sidebar for medium screens and larger */}
+            <Filter />
           </div>
-          <div className="h-40 w-full border-b border-[#525B31]">
-            {/* Charts to be added here */}
+          {/* Button to show on small screens */}
+          <div className="md:hidden">
+            <button
+              onClick={togglePopup}
+              className="fixed bottom-4 right-4 bg-custom-gold text-white px-4 py-2 rounded-lg"
+            >
+              Open Filters
+            </button>
           </div>
-          <div className="h-80 w-full border-b border-[#525B31] p-2">
-            <p className="font-semibold text-[#525B31]">Popular Filters</p>
-          </div>
-          <div className="h-20 w-full border-b border-[#525B31]"></div>
-          <div className="h-64 w-full border-b border-[#525B31]"></div>
-          <div className="h-56 w-full border-b border-[#525B31]"></div>
-          <div className="h-40 w-full border-b border-[#525B31]"></div>
-          <div className="h-72 w-full border-b border-[#525B31]"></div>
-          <div className="h-64 w-full border-b border-[#525B31]"></div>
-          <div className="h-56 w-full border-b border-[#525B31]"></div>
         </div>
+        {/* Popup modal for small screens */}
+        {isOpen && (
+          <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="relative bg-white w-11/12 max-w-lg h-[90%] overflow-y-auto rounded-lg p-4">
+              <div className="w-full h-12 flex justify-between items-center border-b border-[#525B31]">
+                <p className="text-lg font-bold text-[#525B31]">Filter by</p>
+                <button onClick={togglePopup} className="text-lg font-bold">
+                  X
+                </button>
+              </div>
+
+              {/* Ensure props are passed to Filter if needed */}
+              <Filter />
+              <div className="flex flex-row justify-between">
+              <button className="border-[2px] border-black rounded-md p-5 mt-2" onClick={()=>setIsOpen(!isOpen)}>Cancel</button>
+              <button className="bg-custom-gold rounded-md p-5 text-white mt-2" onClick={(event)=>handleFilterApply(event)}>Apply Filter</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Card Components Section */}
         <div className="w-[680px] h-[2993px] mt-8 pl-5 flex flex-col">
@@ -108,7 +138,7 @@ const Results = ({ searchedValue }) => {
 
           {/* Pagination controls */}
           <div className="flex justify-between mt-4 mb-5 border border-[#B5B2B2]">
-            <div>
+            <div className="flex justify-between">
               <button
                 onClick={() =>
                   handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
@@ -220,7 +250,7 @@ const Results = ({ searchedValue }) => {
                 &gt;
               </button>
             </div>
-            <div className="text-custom-gold h-full flex justify-center items-center mr-5">
+            <div className="hidden md:flex text-custom-gold h-full justify-center items-center mr-5">
               <p>showing (1-{totalPages})</p>
             </div>
           </div>

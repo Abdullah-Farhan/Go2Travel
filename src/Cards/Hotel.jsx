@@ -18,7 +18,7 @@ const Hotel = ( { hotelData }) => {
     <>
     {hotelData.length === 0 ? <>No Hotels Found</>:<>
       {hotelData.map((hotel, index) => (
-        <div className="w-[633px] h-60 rounded-md shadow-result flex flex-row mb-6">
+        <div className="w-full md:w-[633px] h-60 rounded-md shadow-result flex flex-row mb-6">
           <img src={hotel.image} className="py-2 pl-2" />
           <div className="w-full h-full flex flex-row">
 
