@@ -6,7 +6,7 @@ const hotels = [
         location: "Deria, Dubai",
         image: jood,
         mapsLink:"https://maps.app.goo.gl/rcBWo3V5VqfETFEJ6",
-        level: 2,
+        level: 1    ,
         costPerNight: 23786,
         tax: Math.round(10000*0.025),
         prePayment: true,
@@ -23,7 +23,7 @@ const hotels = [
         mall: false,
         cinema: true,
         spa: true,
-        reviews: 6.9,
+        reviews: 7.9,
         type: "Delux Three Bedroom Apartment"
     },
     {

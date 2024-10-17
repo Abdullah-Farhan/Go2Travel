@@ -25,8 +25,6 @@ const Results = ({ searchedValue }) => {
 
   const searchedResults = hotels.length;
   const toggleDropdown = () => {
-    console.log(dropdownOpen);
-
     setDropdownOpen(!dropdownOpen);
   };
 
