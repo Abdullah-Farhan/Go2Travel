@@ -1,16 +1,30 @@
 import React, { useState } from "react";
 import guest from "../../assets/svg/guest.svg";
-import cancelation from '../../assets/svg/cancelation.svg';
+import cancelation from "../../assets/svg/cancelation.svg";
 import iota from "../../assets/svg/iota.svg";
+import { useLocation } from "react-router-dom";
+import star from "../../assets/svg/star.svg";
+import leafFilled from "../../assets/svg/leafFilled.svg";
+import leaf from "../../assets/svg/leaf.svg";
+import lens from "../../assets/svg/lens.svg";
+import schedule from "../../assets/svg/schedule.svg";
+import info from "../../assets/svg/info.svg"
 
 const Payment = () => {
+  const { state } = useLocation();
   const signedInUserDetails = {
     email: "babar_azam@gmail.com",
     pfp: "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
   };
   const [isOn, setIsOn] = useState(false);
   const [selected, setSelected] = useState("");
-  const [request, setRequest] = useState("")
+  const [request, setRequest] = useState("");
+  const searchFilter = {
+    adult: 1,
+    children: 0,
+    rooms: 1,
+  };
+  const night = 5;
 
   const toggleSwitch = () => {
     setIsOn(!isOn);
@@ -43,8 +57,188 @@ const Payment = () => {
 
         {/* Content Section */}
         <section className="w-full flex flex-col md:flex-row justify-between">
-          <section className="w-full md:w-72">Selected Hotel Data</section>
+          <section className="w-full md:w-[350px] mt-6">
+            <div className="w-full border border-[#4F5831] rounded-md pl-4 flex flex-col">
+              <div className="w-full flex mt-2">
+                <div className="w-20 flex border-r border-r-[#4F5831]">
+                  {Array(state.hotel.rating)
+                    .fill(0)
+                    .map((_, index) => (
+                      <img src={star} alt="rating" className="w-3 h-3 mr-0.5" />
+                    ))}
+                </div>
+                <div className="flex items-center ml-2.5">
+                  {Array(state.hotel.level)
+                    .fill(0)
+                    .map((_, index) => (
+                      <img
+                        src={leafFilled}
+                        alt="sustainability level"
+                        className="w-4 h-4"
+                      />
+                    ))}
+                  {Array(3 - state.hotel.level)
+                    .fill(0)
+                    .map((_, index) => (
+                      <img
+                        src={leaf}
+                        alt="sustainability level"
+                        className="w-4 h-4"
+                      />
+                    ))}
+                  <p className="text-[10px] text-custom-gold ml-2.5">
+                    Travel sustainable level {state.hotel.level}
+                  </p>
+                </div>
+              </div>
+              <div className="w-full flex justify-between">
+                <p className="font-bold text-custom-green mt-4">
+                  {state.hotel.name}
+                </p>
+                <div className="flex flex-row justify-end text-[7px] text-custom-green font-semibold mt-4 pr-3">
+                  <div>
+                    {state.hotel.reviews > 9 ? (
+                      <>
+                        <p>Wonderful</p>
+                      </>
+                    ) : (
+                      <>
+                        {state.hotel.reviews > 8 ? (
+                          <>
+                            <p>Excellent</p>
+                          </>
+                        ) : (
+                          <>Good</>
+                        )}
+                      </>
+                    )}
+                    <p className="text-[7px] text-custom-green font-medium mr-1">
+                      1432 reviews
+                    </p>
+                  </div>
+                  <div className="flex justify-center items-center w-7 h-6 text-white rounded-sm bg-custom-gold font-bold text-base">
+                    <p>{state.hotel.reviews}</p>
+                  </div>
+                </div>
+              </div>
+              <p className="mt-[-8px]">
+                <a
+                  href={state.hotel.mapsLink}
+                  target="_blank"
+                  className="text-[10px] text-custom-green underline"
+                >
+                  {state.hotel.location}
+                </a>
+              </p>
+              <div className="flex flex-col">
+                <div className="flex flex-row w-full justify-between pr-3">
+                  <p>Item 1</p>
+                  <p>Item 2</p>
+                </div>
+                <div className="flex flex-row w-full justify-between pr-3 py-1">
+                  <p>Item 3</p>
+                  <p>Item 4</p>
+                </div>
+                <div className="flex flex-row w-full justify-between pr-3">
+                  <p>Item 5</p>
+                  <p>Item 6</p>
+                </div>
+              </div>
+            </div>
 
+            <div className="w-full border border-[#4F5831] rounded-md pl-4 pt-2 flex flex-col my-6">
+              <p className="text-custom-green text-xl font-bold">
+                Your booking details
+              </p>
+              <div className="flex mt-1">
+                <div>
+                  <img src={lens} />
+                </div>
+                <div className="flex flex-col ml-3">
+                  <p className="text-custom-green text-[10px] font-semibold">
+                    Destination / propert name
+                  </p>
+                  <p className="text-custom-green text-[10px] font-medium my-4">
+                    {state.hotel.location}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex mt-1">
+                <div>
+                  <img src={schedule} />
+                </div>
+                <div className="flex flex-col ml-3">
+                  <p className="text-custom-green text-[10px] font-semibold">
+                    Check-in date
+                  </p>
+                  <p className="text-custom-green text-[10px] font-medium my-4">
+                    Monday, Oct 2, 2023
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex mt-1">
+                <div>
+                  <img src={schedule} />
+                </div>
+                <div className="flex flex-col ml-3">
+                  <p className="text-custom-green text-[10px] font-semibold">
+                    Check-out date
+                  </p>
+                  <p className="text-custom-green text-[10px] font-medium my-4">
+                    Saturday, Oct 6, 2023
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex mt-1">
+                <div>
+                  <img src={guest} width={20} height={20} />
+                </div>
+                <div className="flex flex-col ml-3">
+                  <p className="text-custom-green text-[10px] font-semibold">
+                    Total guests
+                  </p>
+                  <p className="text-custom-green text-[10px] font-medium my-4">
+                    {searchFilter.adult} adults | {searchFilter.children}{" "}
+                    children | {searchFilter.rooms} rooms
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full border border-[#4F5831] rounded-md pl-4 pt-4 flex">
+              <div className="w-[50%] text-[10px]">
+                {night} Nights, {searchFilter.adult} adult{" "}
+                {searchFilter.children > 0 ? (
+                  <>| {searchFilter.children} childern</>
+                ) : (
+                  <></>
+                )}{" "}
+                {searchFilter.rooms > 0 ? (
+                  <>| {searchFilter.rooms} rooms</>
+                ) : (
+                  <></>
+                )}
+              </div>
+              <div className="w-[50%] pr-4 mb-5">
+                <div className="w-full flex flex-row justify-end">
+                  <p className="font-bold mr-1 text-custom-green">
+                    Rs {state.hotel.costPerNight * night}
+                  </p>
+                  <img src={info} />
+                </div>
+                <div className="w-full flex flex-row justify-end">
+                  <p className="text-custom-green text-[7px]">
+                    +{state.hotel.tax * night} taxes & charges
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* User Details Section */}
           <section className="w-full md:w-[60%] mt-6">
             {signedInUserDetails &&
             Object.keys(signedInUserDetails).length > 0 ? (
@@ -153,7 +347,9 @@ const Payment = () => {
                   />
                 </fieldset>
               </div>
-              <p className="font-semibold text-custom-green mt-5">Who are you booking for?</p>
+              <p className="font-semibold text-custom-green mt-5">
+                Who are you booking for?
+              </p>
               <div className="flex flex-col py-4">
                 <label className="flex items-center mb-4 cursor-pointer">
                   <input
@@ -176,7 +372,9 @@ const Payment = () => {
                       <div className="w-4 h-4 bg-custom-gold rounded-full" />
                     )}
                   </div>
-                  <p className="font-light text-custom-green">I am the main guest</p>
+                  <p className="font-light text-custom-green">
+                    I am the main guest
+                  </p>
                 </label>
 
                 <label className="flex items-center cursor-pointer">
@@ -200,7 +398,9 @@ const Payment = () => {
                       <div className="w-4 h-4 bg-custom-gold rounded-full" />
                     )}
                   </div>
-                  <p className="font-light text-custom-green">I am booking for someone else</p>
+                  <p className="font-light text-custom-green">
+                    I am booking for someone else
+                  </p>
                 </label>
               </div>
             </section>
@@ -209,37 +409,53 @@ const Payment = () => {
               <p className="mt-3 font-bold text-custom-green">
                 Delux 3 bedroom apartment
               </p>
-                <div className="flex flex-row mt-6 mb-3">
-                    <img src={guest}  className="mr-2"/>
-                    <p className="font-light text-xl text-custom-green">Guests | 2 adults</p>
-                </div>
-                <div className="flex">
-                    <img src={cancelation} className="mr-2"/>
-                    <p className="font-light text-xl text-custom-green">Free cancelation</p>
-                </div>
-                <fieldset className="border border-custom-gold rounded-md w-64 h-12 mt-7 mb-6">
-                    <legend className="text-[8px] font-semibold text-custom-green ml-2 px-2 z-20">
-                      Full guest name
-                    </legend>
-                    <input
-                      type="text"
-                      className="bg-transparent outline-none rounded p-2 w-64 mt-[-6px] z-0 object-cover border-0"
-                      placeholder="Enter first name"
-                    />
-                  </fieldset>
+              <div className="flex flex-row mt-6 mb-3">
+                <img src={guest} className="mr-2" />
+                <p className="font-light text-xl text-custom-green">
+                  Guests | 2 adults
+                </p>
+              </div>
+              <div className="flex">
+                <img src={cancelation} className="mr-2" />
+                <p className="font-light text-xl text-custom-green">
+                  Free cancelation
+                </p>
+              </div>
+              <fieldset className="border border-custom-gold rounded-md w-64 h-12 mt-7 mb-6">
+                <legend className="text-[8px] font-semibold text-custom-green ml-2 px-2 z-20">
+                  Full guest name
+                </legend>
+                <input
+                  type="text"
+                  className="bg-transparent outline-none rounded p-2 w-64 mt-[-6px] z-0 object-cover border-0"
+                  placeholder="Enter first name"
+                />
+              </fieldset>
             </section>
 
             <section className="w-full mt-6 flex border border-[#4F5831] rounded-md pl-4 flx- flex-col">
               <p className="mt-3 font-bold text-custom-green">
                 Special request
               </p>
-              <p className="text-xl font-light text-custom-green mt-6">Type your request here</p>
-                <div className="flex flex-row mt-6 mb-3 items-center">
-                    <img src={iota}  className="mr-2"/>
-                    <p className="font-semibold text-[10px] text-custom-green">We do not guarantee to complete the special request!</p>
-                </div>
-                <textarea placeholder="Start typing here" className="px-4 py-2 mr-4 h-24 resize-none text-custom-green border border-[#798192]"  value={request} maxLength={500} onChange={(text)=>setRequest(text.target.value)}/>
-                <div className="mb-6 flex justify-end mr-4 mt-1 text-[#798192] font-semibold text-[10px]">{request.length}/500</div>
+              <p className="text-xl font-light text-custom-green mt-6">
+                Type your request here
+              </p>
+              <div className="flex flex-row mt-6 mb-3 items-center">
+                <img src={iota} className="mr-2" />
+                <p className="font-semibold text-[10px] text-custom-green">
+                  We do not guarantee to complete the special request!
+                </p>
+              </div>
+              <textarea
+                placeholder="Start typing here"
+                className="px-4 py-2 mr-4 h-24 resize-none text-custom-green border border-[#798192]"
+                value={request}
+                maxLength={500}
+                onChange={(text) => setRequest(text.target.value)}
+              />
+              <div className="mb-6 flex justify-end mr-4 mt-1 text-[#798192] font-semibold text-[10px]">
+                {request.length}/500
+              </div>
             </section>
           </section>
         </section>

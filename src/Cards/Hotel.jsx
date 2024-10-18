@@ -14,8 +14,8 @@ const Hotel = ({ hotelData }) => {
   };
   const nights = 5;
 
-  const handleNavigation = () => {
-    navigate("/payment")
+  const handleNavigation = (hotel) => {
+    navigate("/payment", {state: { hotel }})
   }
 
   return (
@@ -28,7 +28,7 @@ const Hotel = ({ hotelData }) => {
             <div
               className="w-full md:w-[633px] h-60 rounded-md shadow-result flex flex-row mb-6"
               key={index}
-              onClick={()=>handleNavigation()}
+              onClick={()=>{handleNavigation(hotel)}}
             >
               <img src={hotel.image} className="py-2 pl-2" />
               <div className="w-full h-full flex flex-row">
