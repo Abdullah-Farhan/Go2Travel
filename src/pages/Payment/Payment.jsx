@@ -7,7 +7,7 @@ import star from "../../assets/svg/star.svg";
 import leafFilled from "../../assets/svg/leafFilled.svg";
 import leaf from "../../assets/svg/leaf.svg";
 import lens from "../../assets/svg/lens.svg";
-import schedule from "../../assets/svg/schedule.svg";
+import schedule from "../../assets/svg/Schedule.svg";
 import info from "../../assets/svg/info.svg"
 
 const Payment = () => {
