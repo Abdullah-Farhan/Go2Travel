@@ -3,14 +3,20 @@ import leafFilled from "../assets/svg/leafFilled.svg";
 import leaf from "../assets/svg/leaf.svg";
 import info from "../assets/svg/info.svg";
 import check from "../assets/svg/Done.svg";
+import { useNavigate } from "react-router-dom";
 
 const Hotel = ({ hotelData }) => {
+  const navigate = useNavigate()
   const searchFilter = {
     adult: 1,
     children: 0,
     rooms: 1,
   };
   const nights = 5;
+
+  const handleNavigation = () => {
+    navigate("/payment")
+  }
 
   return (
     <>
@@ -22,6 +28,7 @@ const Hotel = ({ hotelData }) => {
             <div
               className="w-full md:w-[633px] h-60 rounded-md shadow-result flex flex-row mb-6"
               key={index}
+              onClick={()=>handleNavigation()}
             >
               <img src={hotel.image} className="py-2 pl-2" />
               <div className="w-full h-full flex flex-row">
