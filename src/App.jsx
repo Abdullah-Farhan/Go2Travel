@@ -5,6 +5,8 @@ import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home.jsx";
 import Results from "./pages/Results/Results.jsx";
 import Payment from "./pages/Payment/Payment.jsx";
+import Checkout from "./pages/Checkout/Checkout.jsx";
+import StripeProvider from "./stripe/Provider/StripeProvider.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -20,6 +22,10 @@ function App() {
           }
         />
         <Route path="/payment" element={<Payment/>} />
+        <Route path="/checkout" element={
+          <StripeProvider>
+          <Checkout />
+        </StripeProvider>}/>
       </Routes>
       <Footer />
     </Router>

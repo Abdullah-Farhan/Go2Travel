@@ -6,97 +6,147 @@ import x from "../../assets/svg/x.svg";
 import pinterest from "../../assets/svg/pinterest.svg";
 
 const Footer = () => {
+  const location = window.location.pathname;
   return (
-    <footer className="flex flex-col items-center mt-8 w-full md:h-[600px] bg-slate-400 bg-[linear-gradient(to_right,_#525B31_0%,_#BED206_50%,_#525B31_100%)]">
-      <div className="w-full md:w-[954px] mt-16 flex flex-wrap justify-center font-montserrat h-auto text-xl">
-        
-        <div className="w-full md:w-[317px] block p-4">
-          <p>About Barfly</p>
-          <ul>
-            <li className="before:content-['•'] before:text-lg before:mr-2 mt-4">
-              <a href="" className="hover:underline">About Us</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Press</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Resources and Policies</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Careers</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Investor Relations</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Trust & Safety</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Contact us</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Accessibility Statement</a>
-            </li>
-          </ul>
-        </div>
+    <footer className="flex flex-col items-center mt-8 w-full pt-16 pb-10 bg-slate-400 bg-[linear-gradient(to_right,_#525B31_0%,_#BED206_50%,_#525B31_100%)]">
+      {location === "/checkout" || location === "/payment" ? (
+        <></>
+      ) : (
+        <div className="w-full md:w-[954px] mt-16 flex flex-wrap justify-center font-montserrat h-auto text-xl">
+          <div className="w-full md:w-[317px] block p-4">
+            <p>About Barfly</p>
+            <ul>
+              <li className="before:content-['•'] before:text-lg before:mr-2 mt-4">
+                <a href="" className="hover:underline">
+                  About Us
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Press
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Resources and Policies
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Careers
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Investor Relations
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Trust & Safety
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Contact us
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Accessibility Statement
+                </a>
+              </li>
+            </ul>
+          </div>
 
-        <div className="w-full md:w-[287px] block p-4">
-          <p>Explore</p>
-          <ul>
-            <li className="before:content-['•'] before:text-lg before:mr-2 mt-4">
-              <a href="" className="hover:underline">Write a Review</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Add a Place</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Join</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Travelers' Choice</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">GreenLeaders</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Blog</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Help Center</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Barfly Plus</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Travel Articles</a>
-            </li>
-          </ul>
-        </div>
+          <div className="w-full md:w-[287px] block p-4">
+            <p>Explore</p>
+            <ul>
+              <li className="before:content-['•'] before:text-lg before:mr-2 mt-4">
+                <a href="" className="hover:underline">
+                  Write a Review
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Add a Place
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Join
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Travelers' Choice
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  GreenLeaders
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Blog
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Help Center
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Barfly Plus
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Travel Articles
+                </a>
+              </li>
+            </ul>
+          </div>
 
-        <div className="w-full md:w-[347px] block p-4">
-          <p>Do business with us</p>
-          <ul>
-            <li className="before:content-['•'] before:text-lg before:mr-2 mt-4">
-              <a href="" className="hover:underline">Owners</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Business Advantage</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Sponsored Placement</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Advertise with Us</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Access our Content API</a>
-            </li>
-            <li className="before:content-['•'] before:text-lg before:mr-2">
-              <a href="" className="hover:underline">Become an Affiliate</a>
-            </li>
-          </ul>
+          <div className="w-full md:w-[347px] block p-4">
+            <p>Do business with us</p>
+            <ul>
+              <li className="before:content-['•'] before:text-lg before:mr-2 mt-4">
+                <a href="" className="hover:underline">
+                  Owners
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Business Advantage
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Sponsored Placement
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Advertise with Us
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Access our Content API
+                </a>
+              </li>
+              <li className="before:content-['•'] before:text-lg before:mr-2">
+                <a href="" className="hover:underline">
+                  Become an Affiliate
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="w-full">
         <div className="w-full mt-10 justify-center flex flex-wrap">
