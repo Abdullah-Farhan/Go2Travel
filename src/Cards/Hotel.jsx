@@ -15,7 +15,7 @@ const Hotel = ({ hotelData }) => {
   const nights = 5;
 
   const handleNavigation = (hotel) => {
-    navigate("/payment", {state: { hotel }})
+    navigate("/hotel-info", {state: { hotel }})
   }
 
   return (

@@ -14,7 +14,7 @@ const hotels = [
         bookWithoutCard: true,
         beach:true,
         hotel: false,
-        rating: 5,
+        rating: 4,
         resort: false,
         guestHouse:false,
         sustainability: true,
@@ -24,7 +24,8 @@ const hotels = [
         cinema: true,
         spa: true,
         reviews: 7.9,
-        type: "Delux Three Bedroom Apartment"
+        type: "Delux Three Bedroom Apartment",
+        guestReviews: 579
     },
     {
         name: "Jood Hotel Apartments",
