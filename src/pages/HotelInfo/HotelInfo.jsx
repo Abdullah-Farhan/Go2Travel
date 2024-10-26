@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import search from "../../assets/svg/lens.svg";
-import schedule from "../../assets/svg/schedule.svg";
+import schedule from "../../assets/svg/Schedule.svg";
 import guest from "../../assets/svg/guest.svg";
 import maps from "../../assets/svg/maps.svg";
 import star from "../../assets/svg/star.svg";
