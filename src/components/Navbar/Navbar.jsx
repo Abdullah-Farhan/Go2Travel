@@ -55,7 +55,7 @@ const Navbar = () => {
       {location === "/payment" || location === "/checkout" ? (
         <>
           <div className="hidden md:flex w-full flex-row justify-center py-[25px] items-center bg-[linear-gradient(to_right,_#525B31_0%,_#BED206_50%,_#525B31_100%)]">
-            <Link to={"/"} className="flex items-center">
+            <Link to={"/"} className="flex justify-center items-center">
               <img
                 src={logo}
                 className="w-[60px] h-[60px]"
@@ -76,11 +76,7 @@ const Navbar = () => {
                     ? "text-[#D2B57A] bg-white"
                     : "hover:text-[#D2B57A]"
                 }`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("/");
-                  handleLinkClick("home");
-                }}
+                onClick={() => handleLinkClick("home")}
               >
                 <Link to={"/"} className="relative z-10 font-p">
                   Home
@@ -99,7 +95,7 @@ const Navbar = () => {
                 }`}
                 onClick={() => handleLinkClick("about")}
               >
-                <a href="" className="relative z-10 font-inter">
+                <a href="#" className="relative z-10 font-inter">
                   About
                   <span
                     className={`absolute mt-[20px] left-0 right-0 h-[1px] bg-[#D2B57A] transition-all duration-200 w-0 group-hover:w-full ${
@@ -117,7 +113,7 @@ const Navbar = () => {
                 onClick={() => handleLinkClick("help")}
               >
                 <a
-                  href=""
+                  href="#"
                   className="relative z-10 flex justify-center items-center hover:bg-white"
                 >
                   Help
