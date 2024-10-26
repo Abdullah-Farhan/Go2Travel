@@ -26,7 +26,7 @@ const Hotel = ({ hotelData }) => {
         <>
           {hotelData.map((hotel, index) => (
             <div
-              className="w-full md:w-[633px] h-60 rounded-md shadow-result flex flex-row mb-6"
+              className="w-full md:w-[633px] h-60 rounded-md shadow-result flex flex-row mb-6 cursor-pointer"
               key={index}
               onClick={()=>{handleNavigation(hotel)}}
             >

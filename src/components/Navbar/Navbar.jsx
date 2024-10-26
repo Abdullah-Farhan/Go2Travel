@@ -9,7 +9,7 @@ import search from "../../assets/svg/search.svg";
 import user from "../../assets/svg/user.svg";
 import bed from "../../assets/svg/Bed.svg";
 import schedule from "../../assets/svg/Schedule.svg";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [activeLink, setActiveLink] = useState("home");
@@ -55,18 +55,20 @@ const Navbar = () => {
       {location === "/payment" || location === "/checkout" ? (
         <>
           <div className="hidden md:flex w-full flex-row justify-center py-[25px] items-center bg-[linear-gradient(to_right,_#525B31_0%,_#BED206_50%,_#525B31_100%)]">
-            <img
-              src={logo}
-              className="w-[60px] h-[60px]"
-              alt="Logo"
-              onClick={() => handleNavigation()}
-            />
-            <h1
-              className="text-white font-bold ml-[20px] mr-[170px] font-inter"
-              onClick={() => handleNavigation()}
-            >
-              Barfly.com
-            </h1>
+            <Link to={"/"} className="flex items-center">
+              <img
+                src={logo}
+                className="w-[60px] h-[60px]"
+                alt="Logo"
+                onClick={() => handleNavigation()}
+              />
+              <h1
+                className="text-white font-bold ml-[20px] mr-[170px] font-inter"
+                onClick={() => handleNavigation()}
+              >
+                Barfly.com
+              </h1>
+            </Link>
             <ul className="text-white font-semibold text-[15px] flex flex-row space-x-1 relative">
               <li
                 className={`group w-[63px] h-[28px] hover:bg-white flex justify-center items-center relative cursor-pointer transition-all duration-200 rounded-[5px] ${
@@ -74,16 +76,20 @@ const Navbar = () => {
                     ? "text-[#D2B57A] bg-white"
                     : "hover:text-[#D2B57A]"
                 }`}
-                onClick={() => handleLinkClick("home")}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/");
+                  handleLinkClick("home");
+                }}
               >
-                <a href="#" className="relative z-10 font-p">
+                <Link to={"/"} className="relative z-10 font-p">
                   Home
                   <span
                     className={`absolute mt-[20px] left-0 right-0 h-[1px] bg-[#D2B57A] transition-all duration-200 w-0 group-hover:w-full ${
                       activeLink === "home" ? "w-full" : "w-0"
                     }`}
                   ></span>
-                </a>
+                </Link>
               </li>
               <li
                 className={`group w-[63px] h-[28px] hover:bg-white flex justify-center items-center relative cursor-pointer transition-all duration-200 rounded-[5px] ${
@@ -93,7 +99,7 @@ const Navbar = () => {
                 }`}
                 onClick={() => handleLinkClick("about")}
               >
-                <a href="#" className="relative z-10 font-inter">
+                <a href="" className="relative z-10 font-inter">
                   About
                   <span
                     className={`absolute mt-[20px] left-0 right-0 h-[1px] bg-[#D2B57A] transition-all duration-200 w-0 group-hover:w-full ${
@@ -111,7 +117,7 @@ const Navbar = () => {
                 onClick={() => handleLinkClick("help")}
               >
                 <a
-                  href="#"
+                  href=""
                   className="relative z-10 flex justify-center items-center hover:bg-white"
                 >
                   Help
@@ -142,18 +148,20 @@ const Navbar = () => {
         >
           {/* Logo + Home buttons section */}
           <div className="hidden md:flex w-full flex-row justify-center py-[25px] items-center">
-            <img
-              src={logo}
-              className="w-[60px] h-[60px]"
-              alt="Logo"
-              onClick={() => handleNavigation()}
-            />
-            <h1
-              className="text-white font-bold ml-[20px] mr-[170px] font-inter"
-              onClick={() => handleNavigation()}
-            >
-              Barfly.com
-            </h1>
+            <Link to={"/"} className="flex justify-center items-center">
+              <img
+                src={logo}
+                className="w-[60px] h-[60px]"
+                alt="Logo"
+                onClick={() => handleNavigation()}
+              />
+              <h1
+                className="text-white font-bold ml-[20px] mr-[170px] font-inter"
+                onClick={() => handleNavigation()}
+              >
+                Barfly.com
+              </h1>
+            </Link>
             <ul className="text-white font-semibold text-[15px] flex flex-row space-x-1 relative">
               <li
                 className={`group w-[63px] h-[28px] hover:bg-white flex justify-center items-center relative cursor-pointer transition-all duration-200 rounded-[5px] ${
@@ -163,14 +171,14 @@ const Navbar = () => {
                 }`}
                 onClick={() => handleLinkClick("home")}
               >
-                <a href="#" className="relative z-10 font-p">
+                <Link to={"/"} className="relative z-10 font-p">
                   Home
                   <span
                     className={`absolute mt-[20px] left-0 right-0 h-[1px] bg-[#D2B57A] transition-all duration-200 w-0 group-hover:w-full ${
                       activeLink === "home" ? "w-full" : "w-0"
                     }`}
                   ></span>
-                </a>
+                </Link>
               </li>
               <li
                 className={`group w-[63px] h-[28px] hover:bg-white flex justify-center items-center relative cursor-pointer transition-all duration-200 rounded-[5px] ${
@@ -299,7 +307,7 @@ const Navbar = () => {
                     </button>
                     {dropdownOpen && (
                       <div className="absolute z-10 mt-80 w-60 h-56 bg-white rounded-lg shadow-lg">
-                        <section className="flex flex-row justify-between h-16 border-b border-b-[#D2B57A]">
+                        <section className="flex flex-row justify-between h-16 border-b border-b-[#D2B57A] pr-3">
                           <div className="pt-4 pl-6">
                             <p className="font-bold text-custom-green">Adult</p>
                             <p className="text-custom-green text-[10px]">
@@ -329,7 +337,7 @@ const Navbar = () => {
                             </div>
                           </div>
                         </section>
-                        <section className="flex flex-row justify-between h-16 border-b border-b-[#D2B57A]">
+                        <section className="flex flex-row justify-between h-16 border-b border-b-[#D2B57A] pr-3">
                           <div className="pt-4 pl-6">
                             <p className="font-bold text-custom-green">
                               Children
@@ -361,7 +369,7 @@ const Navbar = () => {
                             </div>
                           </div>
                         </section>
-                        <section className="flex flex-row justify-between h-12 border-b border-b-[#D2B57A]">
+                        <section className="flex flex-row justify-between h-12 border-b border-b-[#D2B57A] pr-3">
                           <div className="pl-6 h-full flex flex-row items-center">
                             <p className="font-bold text-custom-green">Rooms</p>
                           </div>

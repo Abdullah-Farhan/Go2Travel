@@ -10,13 +10,14 @@ import heart from "../../assets/svg/heart.svg";
 import connect from "../../assets/svg/connect.svg";
 import checkbox from "../../assets/svg/checkbox.svg";
 import loc from "../../assets/svg/location.svg";
+import jood from "../../assets/svg/jood.svg";
 
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const HotelInfo = () => {
+  const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState("overview");
   const [searchedPlace, setSearchedPlace] = useState("Dubai");
-  const { state } = useLocation();
   const location = "United Arab Emirates";
   const searchFilter = {
     adult: 1,
@@ -29,6 +30,38 @@ const HotelInfo = () => {
     checkin: "Monday, Oct 2, 2023",
     checout: "Saturday, Oct 6, 2023",
   };
+
+  let { state } = useLocation();
+  if (!state) {
+    state = {
+      hotel: {
+        name: "Jood Hotel Apartments",
+        location: "Deria, Dubai",
+        image: jood,
+        mapsLink: "https://maps.app.goo.gl/rcBWo3V5VqfETFEJ6",
+        level: 1,
+        costPerNight: 23786,
+        tax: Math.round(10000 * 0.025),
+        prePayment: true,
+        cancelation: true,
+        bookWithoutCard: true,
+        beach: true,
+        hotel: false,
+        rating: 4,
+        resort: false,
+        guestHouse: false,
+        sustainability: true,
+        fitness: false,
+        bars: true,
+        mall: false,
+        cinema: true,
+        spa: true,
+        reviews: 7.9,
+        type: "Delux Three Bedroom Apartment",
+        guestReviews: 579,
+      },
+    };
+  }
 
   const handleLinkClick = (link, event) => {
     event.preventDefault();
@@ -215,7 +248,7 @@ const HotelInfo = () => {
                 <div className="flex flex-grow md:justify-end">
                   <img src={heart} alt="" />
                   <img src={connect} alt="" className="mx-2" />
-                  <button className="font-medium text-white text-xl  rounded bg-custom-green px-4 py-1">
+                  <button className="font-medium text-white text-xl  rounded bg-custom-green px-4 py-1" onClick={()=>navigate("/payment", { state })}>
                     Reserve
                   </button>
                 </div>
@@ -232,6 +265,10 @@ const HotelInfo = () => {
               >
                 {state.hotel.location}
               </a>
+            </div>
+
+            <div className="w-full h-96">
+            <img src={jood} className="w-full h-full bg-cover"/>
             </div>
           </div>
         </div>
@@ -289,7 +326,7 @@ const HotelInfo = () => {
                 <p className="ml-3 text-[10px] text-custom-green">Free private parking available at hotel</p>
               </div>
             </div>
-            <button className="font-medium text-xl text-white bg-custom-green rounded py-1 px-3 mt-7 mb-3">Reserve</button>
+            <button className="font-medium text-xl text-white bg-custom-green rounded py-1 px-3 mt-7 mb-3" onClick={()=>navigate("/payment", { state })}>Reserve</button>
           </div>
         </div>
       </div>

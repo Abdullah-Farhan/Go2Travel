@@ -14,9 +14,38 @@ import visa from "../../assets/svg/visa.svg";
 import master from "../../assets/svg/master.svg";
 import amex from "../../assets/svg/amex.svg";
 import lock from "../../assets/svg/lock.svg"
+import jood from "../../assets/svg/jood.svg";
 
 const Checkout = () => {
-  const { state } = useLocation();
+  let { state } = useLocation();
+  if (!state) {
+    state = {hotel : {
+      name: "Jood Hotel Apartments",
+      location: "Deria, Dubai",
+      image: jood,
+      mapsLink:"https://maps.app.goo.gl/rcBWo3V5VqfETFEJ6",
+      level: 1    ,
+      costPerNight: 23786,
+      tax: Math.round(10000*0.025),
+      prePayment: true,
+      cancelation: true,
+      bookWithoutCard: true,
+      beach:true,
+      hotel: false,
+      rating: 4,
+      resort: false,
+      guestHouse:false,
+      sustainability: true,
+      fitness: false,
+      bars: true,
+      mall: false,
+      cinema: true,
+      spa: true,
+      reviews: 7.9,
+      type: "Delux Three Bedroom Apartment",
+      guestReviews: 579
+  }}
+  }
   console.log(state);
 
   const signedInUserDetails = {
@@ -69,25 +98,25 @@ const Checkout = () => {
             <div className="w-full border border-[#4F5831] rounded-md pl-4 flex flex-col">
               <div className="w-full flex mt-2">
                 <div className="w-20 flex border-r border-r-[#4F5831]">
-                  {Array(state.hotel.rating)
-                    .fill(0)
-                    .map((_, index) => (
+                  {Array(state?.hotel?.rating)
+                    ?.fill(0)
+                    ?.map((_, index) => (
                       <img src={star} alt="rating" className="w-3 h-3 mr-0.5" />
                     ))}
                 </div>
                 <div className="flex items-center ml-2.5">
-                  {Array(state.hotel.level)
-                    .fill(0)
-                    .map((_, index) => (
+                  {Array(state?.hotel?.level)
+                    ?.fill(0)
+                    ?.map((_, index) => (
                       <img
                         src={leafFilled}
                         alt="sustainability level"
                         className="w-4 h-4"
                       />
                     ))}
-                  {Array(3 - state.hotel.level)
-                    .fill(0)
-                    .map((_, index) => (
+                  {Array(3 - state?.hotel?.level)
+                    ?.fill(0)
+                    ?.map((_, index) => (
                       <img
                         src={leaf}
                         alt="sustainability level"
@@ -95,23 +124,23 @@ const Checkout = () => {
                       />
                     ))}
                   <p className="text-[10px] text-custom-gold ml-2.5">
-                    Travel sustainable level {state.hotel.level}
+                    Travel sustainable level {state?.hotel?.level}
                   </p>
                 </div>
               </div>
               <div className="w-full flex justify-between">
                 <p className="font-bold text-custom-green mt-4">
-                  {state.hotel.name}
+                  {state?.hotel?.name}
                 </p>
                 <div className="flex flex-row justify-end text-[7px] text-custom-green font-semibold mt-4 pr-3">
                   <div>
-                    {state.hotel.reviews > 9 ? (
+                    {state?.hotel?.reviews > 9 ? (
                       <>
                         <p>Wonderful</p>
                       </>
                     ) : (
                       <>
-                        {state.hotel.reviews > 8 ? (
+                        {state?.hotel?.reviews > 8 ? (
                           <>
                             <p>Excellent</p>
                           </>
@@ -125,17 +154,17 @@ const Checkout = () => {
                     </p>
                   </div>
                   <div className="flex justify-center items-center w-7 h-6 text-white rounded-sm bg-custom-gold font-bold text-base">
-                    <p>{state.hotel.reviews}</p>
+                    <p>{state?.hotel?.reviews}</p>
                   </div>
                 </div>
               </div>
               <p className="mt-[-8px]">
                 <a
-                  href={state.hotel.mapsLink}
+                  href={state?.hotel?.mapsLink}
                   target="_blank"
                   className="text-[10px] text-custom-green underline"
                 >
-                  {state.hotel.location}
+                  {state?.hotel?.location}
                 </a>
               </p>
               <div className="flex flex-col">
@@ -167,7 +196,7 @@ const Checkout = () => {
                     Destination / propert name
                   </p>
                   <p className="text-custom-green text-[10px] font-medium my-4">
-                    {state.hotel.location}
+                    {state?.hotel?.location}
                   </p>
                 </div>
               </div>
@@ -233,13 +262,13 @@ const Checkout = () => {
               <div className="w-[50%] pr-4 mb-5">
                 <div className="w-full flex flex-row justify-end">
                   <p className="font-bold mr-1 text-custom-green">
-                    Rs {state.hotel.costPerNight * night}
+                    Rs {state?.hotel?.costPerNight * night}
                   </p>
                   <img src={info} />
                 </div>
                 <div className="w-full flex flex-row justify-end">
                   <p className="text-custom-green text-[7px]">
-                    +{state.hotel.tax * night} taxes & charges
+                    +{state?.hotel?.tax * night} taxes & charges
                   </p>
                 </div>
               </div>
@@ -368,7 +397,7 @@ const Checkout = () => {
                     paymentMethodSelected === "gpay"
                       ? "border border-custom-gold"
                       : ""
-                  } shadow-2xl rounded-md`}
+                  } shadow-md rounded-md`}
                   onClick={() => setPaymentMethodSelected("gpay")}
                 >
                   <img src={gpay} />

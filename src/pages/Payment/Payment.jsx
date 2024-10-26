@@ -8,11 +8,42 @@ import leafFilled from "../../assets/svg/leafFilled.svg";
 import leaf from "../../assets/svg/leaf.svg";
 import lens from "../../assets/svg/lens.svg";
 import schedule from "../../assets/svg/Schedule.svg";
-import info from "../../assets/svg/info.svg"
+import info from "../../assets/svg/info.svg";
+import jood from "../../assets/svg/jood.svg";
 
 const Payment = () => {
   const navigate = useNavigate();
-  const { state } = useLocation();
+  let { state } = useLocation();
+  if (!state) {
+    state = {
+      hotel: {
+        name: "Jood Hotel Apartments",
+        location: "Deria, Dubai",
+        image: jood,
+        mapsLink: "https://maps.app.goo.gl/rcBWo3V5VqfETFEJ6",
+        level: 1,
+        costPerNight: 23786,
+        tax: Math.round(10000 * 0.025),
+        prePayment: true,
+        cancelation: true,
+        bookWithoutCard: true,
+        beach: true,
+        hotel: false,
+        rating: 4,
+        resort: false,
+        guestHouse: false,
+        sustainability: true,
+        fitness: false,
+        bars: true,
+        mall: false,
+        cinema: true,
+        spa: true,
+        reviews: 7.9,
+        type: "Delux Three Bedroom Apartment",
+        guestReviews: 579,
+      },
+    };
+  }
   const signedInUserDetails = {
     email: "babar_azam@gmail.com",
     pfp: "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
@@ -32,8 +63,8 @@ const Payment = () => {
   };
 
   const handleNavigation = () => {
-    navigate("/checkout", { state })
-  }
+    navigate("/checkout", { state });
+  };
 
   return (
     <div className="flex justify-center">
@@ -463,12 +494,13 @@ const Payment = () => {
               </div>
             </section>
             <section className="w-full h-4 mt-10 flex justify-end">
-                    <button className="w-24 h-7 bg-custom-gold text-white font-semibold text-[10px] flex justify-center items-center rounded-sm"
-                    onClick={()=>handleNavigation()}
-                    >
-                      Final details &gt;
-                    </button>
-          </section>
+              <button
+                className="w-24 h-7 bg-custom-gold text-white font-semibold text-[10px] flex justify-center items-center rounded-sm"
+                onClick={() => handleNavigation()}
+              >
+                Final details &gt;
+              </button>
+            </section>
           </section>
         </section>
       </section>
