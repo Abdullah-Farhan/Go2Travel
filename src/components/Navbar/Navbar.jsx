@@ -20,6 +20,7 @@ const Navbar = () => {
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [rooms, setRooms] = useState(1);
+  const [guest, setGuest] = useState();
   const navigate = useNavigate();
 
   const location = window.location.pathname;
@@ -39,11 +40,16 @@ const Navbar = () => {
   };
 
   const toggleDropdown = () => {
+    setGuest({
+      adults: adults,
+      children: children,
+      rooms: rooms
+    })
     setDropdownOpen(!dropdownOpen);
   };
 
   const handleSearchResults = () => {
-    navigate("/results");
+    navigate("/results", {state: {guest}});
   };
 
   const handleNavigation = () => {
@@ -290,9 +296,18 @@ const Navbar = () => {
                       <p className="text-[#525B31] font-bold text-base font-montserrat">
                         Who?
                       </p>
-                      <p className="text-[#525B31] text-[15px] font-montserrat">
-                        Add Guests
-                      </p>
+                      {guest    ? (
+                        <>
+                          <p>
+                            {adults} adults | {children} children | {rooms}{" "}
+                            rooms
+                          </p>
+                        </>
+                      ) : (
+                        <p className="text-[#525B31] text-[15px] font-montserrat">
+                          Add Guests
+                        </p>
+                      )}
                     </div>
                     <button
                       className="flex flex-row w-[140px] h-14 items-center px-4 py-2 bg-[#D2B57A] text-white transition rounded-[40px] ml-auto"

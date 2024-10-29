@@ -9,6 +9,8 @@ const Results = ({ searchedValue }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(hotels.length / itemsPerPage);
+  const guest = location.state?.guest;
+  console.log(guest);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -39,8 +41,8 @@ const Results = ({ searchedValue }) => {
 
   const handleFilterApply = (event) => {
     event.preventDefault();
-    setIsOpen(!isOpen)
-  }
+    setIsOpen(!isOpen);
+  };
 
   return (
     <section className="w-full flex flex-row justify-center">
@@ -81,8 +83,18 @@ const Results = ({ searchedValue }) => {
               {/* Ensure props are passed to Filter if needed */}
               <Filter />
               <div className="flex flex-row justify-between">
-              <button className="border-[2px] border-black rounded-md p-5 mt-2" onClick={()=>setIsOpen(!isOpen)}>Cancel</button>
-              <button className="bg-custom-gold rounded-md p-5 text-white mt-2" onClick={(event)=>handleFilterApply(event)}>Apply Filter</button>
+                <button
+                  className="border-[2px] border-black rounded-md p-5 mt-2"
+                  onClick={() => setIsOpen(!isOpen)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="bg-custom-gold rounded-md p-5 text-white mt-2"
+                  onClick={(event) => handleFilterApply(event)}
+                >
+                  Apply Filter
+                </button>
               </div>
             </div>
           </div>

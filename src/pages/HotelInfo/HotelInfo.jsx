@@ -11,8 +11,18 @@ import connect from "../../assets/svg/connect.svg";
 import checkbox from "../../assets/svg/checkbox.svg";
 import loc from "../../assets/svg/location.svg";
 import jood from "../../assets/svg/jood.svg";
-
+import steam from "../../assets/svg/steam.svg";
+import swimming from "../../assets/svg/swimming.svg";
+import transport from "../../assets/svg/transport.svg";
+import smoking from "../../assets/svg/smoking.svg";
+import nosmoke from "../../assets/svg/nosmoke.svg";
+import hours from "../../assets/svg/hours.svg";
+import fitness from "../../assets/svg/fitness.svg";
+import uae from "../../assets/svg/uae.svg";
+import available from "../../assets/svg/available.svg";
+import bell from "../../assets/svg/bell.svg";
 import { useLocation, useNavigate } from "react-router-dom";
+import TopAccomodation from "../../Cards/TopAccomodation";
 
 const HotelInfo = () => {
   const navigate = useNavigate();
@@ -23,6 +33,46 @@ const HotelInfo = () => {
     adult: 1,
     children: 0,
     rooms: 1,
+  };
+  const questions = Array(9).fill("Where to park?");
+
+  const nearbyInfo = {
+    "What's nearby": [
+      { name: "Deira Clock Tower", distance: "600 m" },
+      { name: "Union Metro East Exit Park", distance: "850 m" },
+      { name: "park deira dubai", distance: "1,000 m" },
+      { name: "The Floating Bridge", distance: "1.4 km" },
+      { name: "Al Bastakiya", distance: "2.1 km" },
+      { name: "Creek Park", distance: "2.2 km" },
+      { name: "Dubai Museum", distance: "2.4 km" },
+      { name: "Karama Park", distance: "2.4 km" },
+      { name: "Heritage Village", distance: "3.2 km" },
+      { name: "Saeed Al Maktoum House", distance: "3.2 km" },
+    ],
+    "Top attractions": [
+      { name: "Deira Clock Tower", distance: "600 m" },
+      { name: "Union Metro East Exit Park", distance: "850 m" },
+      { name: "park deira dubai", distance: "1,000 m" },
+      { name: "The Floating Bridge", distance: "1.4 km" },
+      { name: "Al Bastakiya", distance: "2.1 km" },
+      { name: "Creek Park", distance: "2.2 km" },
+      { name: "Dubai Museum", distance: "2.4 km" },
+      { name: "Karama Park", distance: "2.4 km" },
+      { name: "Heritage Village", distance: "3.2 km" },
+      { name: "Saeed Al Maktoum House", distance: "3.2 km" },
+    ],
+    "Beaches in the nearby": [
+      { name: "Deira Clock Tower", distance: "600 m" },
+      { name: "Union Metro East Exit Park", distance: "850 m" },
+      { name: "park deira dubai", distance: "1,000 m" },
+      { name: "The Floating Bridge", distance: "1.4 km" },
+      { name: "Al Bastakiya", distance: "2.1 km" },
+      { name: "Creek Park", distance: "2.2 km" },
+      { name: "Dubai Museum", distance: "2.4 km" },
+      { name: "Karama Park", distance: "2.4 km" },
+      { name: "Heritage Village", distance: "3.2 km" },
+      { name: "Saeed Al Maktoum House", distance: "3.2 km" },
+    ],
   };
   const nights = 5;
 
@@ -248,7 +298,10 @@ const HotelInfo = () => {
                 <div className="flex flex-grow md:justify-end">
                   <img src={heart} alt="" />
                   <img src={connect} alt="" className="mx-2" />
-                  <button className="font-medium text-white text-xl  rounded bg-custom-green px-4 py-1" onClick={()=>navigate("/payment", { state })}>
+                  <button
+                    className="font-medium text-white text-xl  rounded bg-custom-green px-4 py-1"
+                    onClick={() => navigate("/payment", { state })}
+                  >
                     Reserve
                   </button>
                 </div>
@@ -268,7 +321,7 @@ const HotelInfo = () => {
             </div>
 
             <div className="w-full h-96">
-            <img src={jood} className="w-full h-full bg-cover"/>
+              <img src={jood} className="w-full h-full bg-cover" />
             </div>
           </div>
         </div>
@@ -287,7 +340,7 @@ const HotelInfo = () => {
               sauna and a hot tub. The property has a concierge service, a tour
               desk and currency exchange for guests.
             </p>
-            <br/>
+            <br />
             <p>
               At the hotel all rooms come with air conditioning, a seating area,
               a flat-screen TV with satellite channels, a kitchen, a dining
@@ -312,7 +365,9 @@ const HotelInfo = () => {
                   Top Location: Highly rated by recent guests
                 </p>
               </div>
-              <p className="text-custom-green text-[13px] my-3 font-semibold">Rooms with</p>
+              <p className="text-custom-green text-[13px] my-3 font-semibold">
+                Rooms with
+              </p>
               <div className="flex flex-row w-full items-center">
                 <img src={checkbox} />
                 <p className="ml-3 text-[10px] text-custom-green">Terrace</p>
@@ -323,12 +378,266 @@ const HotelInfo = () => {
               </div>
               <div className="flex flex-row w-full items-center">
                 <img src={checkbox} />
-                <p className="ml-3 text-[10px] text-custom-green">Free private parking available at hotel</p>
+                <p className="ml-3 text-[10px] text-custom-green">
+                  Free private parking available at hotel
+                </p>
               </div>
             </div>
-            <button className="font-medium text-xl text-white bg-custom-green rounded py-1 px-3 mt-7 mb-3" onClick={()=>navigate("/payment", { state })}>Reserve</button>
+            <button
+              className="font-medium text-xl text-white bg-custom-green rounded py-1 px-3 mt-7 mb-3"
+              onClick={() => navigate("/payment", { state })}
+            >
+              Reserve
+            </button>
           </div>
         </div>
+        <div>
+          <p className="font-bold text-custom-green">
+            {state.hotel.name} has been welcoming Booking.com guests since May
+            27, 2023
+          </p>
+          <p className="text-custom-green">
+            Distance in property description is calculated using © OpenStreetMap
+          </p>
+        </div>
+
+        <div class="p-4">
+          <h3 class="text-custom-green font-semibold text-lg mb-4">
+            Most popular facilities
+          </h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-custom-green">
+            <div class="flex items-center space-x-2">
+              <img src={steam} alt="Steam Room" class="w-6 h-6" />
+              <span>Steam Room</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <img
+                src={smoking}
+                alt="Designated smoking areas"
+                class="w-6 h-6"
+              />
+              <span>Designated smoking areas</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <img src={bell} alt="Concierge" class="w-6 h-6" />
+              <span>Concierge</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <img src={nosmoke} alt="Non smoking rooms" class="w-6 h-6" />
+              <span>Non smoking rooms</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <img src={transport} alt="Airport shuttle" class="w-6 h-6" />
+              <span>Airport shuttle</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <img src={checkbox} alt="24-hour security" class="w-6 h-6" />
+              <span>24-hour security</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <img src={hours} alt="24 hour front desk" class="w-6 h-6" />
+              <span>24 hour front desk</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <img src={fitness} alt="Fitness center" class="w-6 h-6" />
+              <span>Fitness center</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <img src={swimming} alt="Swimming pool" class="w-6 h-6" />
+              <span>Swimming pool</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <img
+                src={checkbox}
+                alt="Outdoor play equipment for kids"
+                class="w-6 h-6"
+              />
+              <span>Outdoor play equipment for kids</span>
+            </div>
+          </div>
+        </div>
+
+        <span className="w-full h-0.5 bg-custom-green block mt-3"></span>
+
+        <div className="p-6">
+          {/* Guest Review Header */}
+          <h3 className="text-custom-green font-semibold text-lg mb-4">
+            Guest Review
+          </h3>
+
+          {/* Categories Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            {/* Individual Category */}
+            {[
+              { title: "Staff", score: 9.6 },
+              { title: "Comfort", score: 9.2 },
+              { title: "Free Wifi", score: 9.7 },
+              { title: "Facilities", score: 8.2 },
+              { title: "Value for money", score: 8.3 },
+              { title: "Cleanliness", score: 7.6 },
+              { title: "Location", score: 9.5 },
+            ].map(({ title, score }) => (
+              <div key={title}>
+                <div className="flex justify-between mb-1">
+                  <span>{title}</span>
+                  <span>{score}</span>
+                </div>
+                <div className="h-2 bg-gray-200 rounded-full">
+                  <div
+                    className="h-2 bg-custom-green rounded-full"
+                    style={{ width: `${score * 10}%` }}
+                  ></div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Select Topics Section */}
+          <div className="mb-6">
+            <h4 className="text-custom-green font-semibold mb-2">
+              Select topics to read reviews
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {["Clean", "Location", "Room", "Pool", "Wifi"].map((topic) => (
+                <button
+                  key={topic}
+                  className="px-3 py-1 border-2 border-custom-green text-custom-green rounded-sm"
+                >
+                  + {topic}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Guest Reviews Section */}
+          <h4 className="text-custom-green font-semibold mb-4">
+            See what guests loved the most
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {/* Review Card */}
+            {[
+              {
+                name: "Babar Azam",
+                country: "Pakistan",
+                review:
+                  "“Exceptional specially staff behavior cleaning astonishing”",
+                initial: "B",
+                flag: "path-to-flag",
+              },
+              {
+                name: "Muhammad",
+                country: "UAE",
+                review:
+                  "“Cleanliness, location, Staff cooperation - Mr. Abrari & Ms. Nada Excellent people”",
+                initial: "M",
+                flag: "path-to-flag",
+              },
+              {
+                name: "Zubair",
+                country: "Saudi Arabia",
+                review:
+                  "“Good location, net and very cleaned service, especially receptionist Nada...”",
+                initial: "Z",
+                flag: "path-to-flag",
+              },
+            ].map(({ name, country, review, initial, flag }) => (
+              <div
+                key={name}
+                className="border rounded-lg p-4 text-custom-green space-y-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-custom-gold text-white flex items-center justify-center rounded-full font-bold">
+                    {initial}
+                  </div>
+                  <div>
+                    <p className="font-semibold">{name}</p>
+                    <p className="text-sm flex items-center">
+                      <img src={flag} alt={country} className="w-4 h-4 mr-1" />{" "}
+                      {country}
+                    </p>
+                  </div>
+                </div>
+                <p>{review}</p>
+                <a
+                  href="#"
+                  className="text-custom-gold font-semibold underline"
+                >
+                  Read all
+                </a>
+              </div>
+            ))}
+          </div>
+
+          {/* Read All Button */}
+          <button className="w-full md:w-auto px-6 py-2 bg-custom-green text-white font-semibold rounded-md">
+            Read all
+          </button>
+        </div>
+
+        <span className="w-full h-0.5 bg-custom-green block mt-3"></span>
+
+        <div className="flex flex-col space-y-8 text-custom-green p-4">
+          {/* Top Section */}
+          <div className="flex flex-wrap gap-6 justify-center">
+            {/* Left Column */}
+            <div className="flex flex-col space-y-3 p-4 border border-gray-300 rounded-lg w-full md:w-1/3">
+              <h2 className="font-semibold">Travelers are asking</h2>
+              {questions.map((question, index) => (
+                <div key={index} className="flex justify-between">
+                  <span>{question}</span>
+                  <span>&gt;</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Middle Column */}
+            <div className="flex flex-col space-y-3 p-4 border border-gray-300 rounded-lg md:flex-grow">
+              <h2 className="font-semibold">Travelers are asking</h2>
+              {questions.map((question, index) => (
+                <div key={index} className="flex justify-between">
+                  <span>{question}</span>
+                  <span>&gt;</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Right Column */}
+            <div className="flex flex-col justify-center items-center p-6 border border-gray-300 rounded-lg text-center w-full md:w-1/3">
+              <p className="font-semibold">Still looking?</p>
+              <button className="mt-2 px-4 py-2 bg-custom-green text-white rounded-lg">
+                Ask question
+              </button>
+              <p className="mt-1">We reply instantly</p>
+            </div>
+          </div>
+
+          {/* Nearby Information */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {Object.keys(nearbyInfo).map((sectionTitle, index) => (
+              <div key={index}>
+                <h3 className="font-semibold mb-3">{sectionTitle}</h3>
+                <ul className="space-y-1">
+                  {nearbyInfo[sectionTitle].map((location, idx) => (
+                    <li key={idx}>
+                      {location.name} – {location.distance}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        
+        <span className="w-full h-0.5 bg-custom-green block mt-3"></span>
+
+        
+        <section>
+          <p className="text-2xl font-extrabold mt-16 mb-4 font-montserrat text-custom-green">
+            Inspired By Properties You Looked At
+          </p>
+          <TopAccomodation />
+        </section>
       </div>
     </div>
   );
