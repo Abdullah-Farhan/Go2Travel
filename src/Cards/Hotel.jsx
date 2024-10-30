@@ -5,15 +5,13 @@ import leaf from "../assets/svg/leaf.svg";
 import info from "../assets/svg/info.svg";
 import check from "../assets/svg/Done.svg";
 import { useNavigate } from "react-router-dom";
-import { DateContext } from "../Context/DateContext";
-import { GuestContext } from "../Context/GuestContext";
-import { HotelContext } from "../Context/hotelContext";
+import { FlightsContext } from "../Context/FlightsContext";
 
 const Hotel = ({ hotelData }) => {
   const navigate = useNavigate();
-  const { guest } = useContext(GuestContext);
-  const { selectedDates } = useContext(DateContext);
-  const { setSelectedHotel } = useContext(HotelContext); // Use the new context
+  const { guest } = useContext(FlightsContext);
+  const { selectedDates } = useContext(FlightsContext);
+  const { setSelectedHotel } = useContext(FlightsContext); 
 
   const [searchFilter, setSearchFilter] = useState({
     adults: guest ? guest.adults : 1,

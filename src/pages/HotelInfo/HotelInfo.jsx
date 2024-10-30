@@ -23,8 +23,7 @@ import available from "../../assets/svg/available.svg";
 import bell from "../../assets/svg/bell.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import TopAccomodation from "../../Cards/TopAccomodation";
-import { GuestContext } from "../../Context/GuestContext";
-import { DateContext } from "../../Context/DateContext";
+import { FlightsContext } from "../../Context/FlightsContext";
 import DatePicker from "react-multi-date-picker";
 import "react-multi-date-picker/styles/layouts/prime.css";
 
@@ -33,8 +32,10 @@ const HotelInfo = () => {
   const [activeLink, setActiveLink] = useState("overview");
   const [searchedPlace, setSearchedPlace] = useState("Dubai");
   const location = "United Arab Emirates";
-  const { guest } = useContext(GuestContext);
-  const { selectedDates } = useContext(DateContext);
+  const { guest } = useContext(FlightsContext);
+  const { selectedDates } = useContext(FlightsContext);
+  const { selectedHotel} = useContext(FlightsContext)
+  const { searchQuery } = useContext(FlightsContext)
   const [checkInDate, setCheckInDate] = useState(
     selectedDates ? selectedDates[0] : null
   );
@@ -90,37 +91,8 @@ const HotelInfo = () => {
     ],
   };
 
-  let { state } = useLocation();
-  if (!state) {
-    state = {
-      hotel: {
-        name: "Jood Hotel Apartments",
-        location: "Deria, Dubai",
-        image: jood,
-        mapsLink: "https://maps.app.goo.gl/rcBWo3V5VqfETFEJ6",
-        level: 1,
-        costPerNight: 23786,
-        tax: Math.round(10000 * 0.025),
-        prePayment: true,
-        cancelation: true,
-        bookWithoutCard: true,
-        beach: true,
-        hotel: false,
-        rating: 4,
-        resort: false,
-        guestHouse: false,
-        sustainability: true,
-        fitness: false,
-        bars: true,
-        mall: false,
-        cinema: true,
-        spa: true,
-        reviews: 7.9,
-        type: "Delux Three Bedroom Apartment",
-        guestReviews: 579,
-      },
-    };
-  }
+  console.log(selectedHotel);
+  
 
   const handleLinkClick = (link, event) => {
     event.preventDefault();
@@ -153,7 +125,7 @@ const HotelInfo = () => {
         <div className="w-full flex justify-start flex-col md:flex-row">
           <p className="text-custom-gold">
             Home &gt; {location} &gt; search results{" "}
-            <span className="text-custom-green">&gt; {state.hotel.name}</span>
+            <span className="text-custom-green">&gt; {selectedHotel.name}</span>
           </p>
         </div>
         {/* Links */}
@@ -170,7 +142,7 @@ const HotelInfo = () => {
               </a>
             </li>
             <li className="group mr-7">
-              <a href="" onClick={(event) => handleLinkClick("info", event)}>
+              <a href="#info" onClick={(event) => handleLinkClick("info", event)}>
                 <p className="font-medium mb-1 text-custom-green">
                   Info & Prices
                 </p>
@@ -212,7 +184,7 @@ const HotelInfo = () => {
                 onClick={(event) => handleLinkClick("reviews", event)}
               >
                 <p className="font-medium mb-1 text-custom-green">
-                  Guest Reviews ({state.hotel.guestReviews})
+                  Guest Reviews ({selectedHotel.guestReviews})
                 </p>
                 <span
                   className={`block h-[2px] bg-[#4F5831] left-0 right-0 transition-all duration-200 w-0 group-hover:w-full ${
@@ -237,7 +209,7 @@ const HotelInfo = () => {
               <img className="w-4 h-4" src={search} alt="Search icon" />
               <input
                 type="search"
-                value={searchedPlace}
+                value={searchQuery}
                 onChange={(e) => setSearchedPlace(e.target.value)}
                 className="ml-4 text-[10px] font-medium text-custom-green w-full outline-none"
               />
@@ -292,7 +264,7 @@ const HotelInfo = () => {
               </button>
             </div>
             <div className="mt-2 flex w-full justify-center">
-              <a href={state.hotel.mapsLink}>
+              <a href={selectedHotel.mapsLink}>
                 <img src={maps} alt="Maps link" />
               </a>
             </div>
@@ -302,7 +274,7 @@ const HotelInfo = () => {
           <div className="w-full ml-5">
             <div className="flex items-center flex-col md:flex-row">
               <div className="w-20 flex border-r border-r-[#4F5831]">
-                {Array(state.hotel.rating)
+                {Array(selectedHotel.rating)
                   .fill(0)
                   .map((_, index) => (
                     <img
@@ -315,7 +287,7 @@ const HotelInfo = () => {
               </div>
               <div className="w-full flex md:flex-row flex-col">
                 <div className="ml-2 flex items-center">
-                  {Array(state.hotel.level)
+                  {Array(selectedHotel.level)
                     .fill(0)
                     .map((_, index) => (
                       <img
@@ -325,7 +297,7 @@ const HotelInfo = () => {
                         className="w-4 h-4"
                       />
                     ))}
-                  {Array(3 - state.hotel.level)
+                  {Array(3 - selectedHotel.level)
                     .fill(0)
                     .map((_, index) => (
                       <img
@@ -336,7 +308,7 @@ const HotelInfo = () => {
                       />
                     ))}
                   <p className="text-custom-gold ml-2">
-                    Travel sustainable level {state.hotel.level}
+                    Travel sustainable level {selectedHotel.level}
                   </p>
                 </div>
                 <div className="flex flex-grow md:justify-end">
@@ -344,7 +316,7 @@ const HotelInfo = () => {
                   <img src={connect} alt="" className="mx-2" />
                   <button
                     className="font-medium text-white text-xl  rounded bg-custom-green px-4 py-1"
-                    onClick={() => navigate("/payment", { state })}
+                    onClick={() => navigate("/payment")}
                   >
                     Reserve
                   </button>
@@ -354,23 +326,23 @@ const HotelInfo = () => {
 
             <div>
               <p className="text-custom-green font-extrabold text-xl mb-[-10px]">
-                {state.hotel.name}
+                {selectedHotel.name}
               </p>
               <a
-                href={state.hotel.mapsLink}
+                href={selectedHotel.mapsLink}
                 className="underline text-custom-green text-[10px]"
               >
-                {state.hotel.location}
+                {selectedHotel.location}
               </a>
             </div>
 
-            <div className="w-full h-96">
+            <div className="w-full h-80 md:h-96">
               <img src={jood} className="w-full h-full object-contain" />
             </div>
           </div>
         </div>
 
-        <div className="flex md:flex-row flex-col mt-3">
+        <div className="flex md:flex-row flex-col mt-3" id="info">
           <div className="flex md:w-3/4 w-full flex-col pr-2">
             <p className="font-bold text-custom-green mb-4">
               Get the celebrity treatment with world-class service at Jood Hotel
@@ -429,7 +401,7 @@ const HotelInfo = () => {
             </div>
             <button
               className="font-medium text-xl text-white bg-custom-green rounded py-1 px-3 mt-7 mb-3"
-              onClick={() => navigate("/payment", { state })}
+              onClick={() => navigate("/payment")}
             >
               Reserve
             </button>
@@ -437,7 +409,7 @@ const HotelInfo = () => {
         </div>
         <div>
           <p className="font-bold text-custom-green">
-            {state.hotel.name} has been welcoming Booking.com guests since May
+            {selectedHotel.name} has been welcoming Booking.com guests since May
             27, 2023
           </p>
           <p className="text-custom-green">
@@ -445,7 +417,7 @@ const HotelInfo = () => {
           </p>
         </div>
 
-        <div className="p-4">
+        <div className="p-4" id="facilities">
           <h3 className="text-custom-green font-semibold text-lg mb-4">
             Most popular facilities
           </h3>
@@ -503,7 +475,7 @@ const HotelInfo = () => {
 
         <span className="w-full h-0.5 bg-custom-green block mt-3"></span>
 
-        <div className="p-6">
+        <div className="p-6" id="reviews">
           {/* Guest Review Header */}
           <h3 className="text-custom-green font-semibold text-lg mb-4">
             Guest Review

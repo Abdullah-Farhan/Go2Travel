@@ -10,8 +10,7 @@ import user from "../../assets/svg/user.svg";
 import bed from "../../assets/svg/Bed.svg";
 import schedule from "../../assets/svg/Schedule.svg";
 import { Link, useNavigate } from "react-router-dom";
-import { GuestContext } from "../../Context/GuestContext";
-import { SearchContext } from "../../Context/SearchContext";
+import { FlightsContext } from "../../Context/FlightsContext";
 
 const Navbar = () => {
   const [activeLink, setActiveLink] = useState("home");
@@ -20,13 +19,13 @@ const Navbar = () => {
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [rooms, setRooms] = useState(1);
-  const { guest, setGuest } = useContext(GuestContext);
+  const { guest, setGuest } = useContext(FlightsContext);
   const [destination, setDestination] = useState();
   const navigate = useNavigate();
-  const {setSearchQuery} = useContext(SearchContext);
-
+  const { setSearchQuery } = useContext(FlightsContext);
   const location = window.location.pathname;
-
+  const {tripType, setTripType} = useContext(FlightsContext);
+  
   const handleLinkClick = (link) => {
     setActiveLink(link);
   };
@@ -45,7 +44,7 @@ const Navbar = () => {
   };
 
   const handleSearchResults = () => {
-    setSearchQuery(destination)
+    setSearchQuery(destination);
     navigate("/results");
   };
 
@@ -259,9 +258,9 @@ const Navbar = () => {
             <>
               <div className="hidden md:flex w-full  flex-col justify-end items-center">
                 <div className="w-[954px] h-[80px] bg-white rounded-[40px] bottom-0 shadow-search-container flex flex-row justify-between">
-                  <div className="w-[291px] h-20 rounded-[40px] shadow-search flex flex-row items-center px-2 py-3">
-                    <div className="h-full ml-10">
-                      <img src={bed} />
+                  <div className="w-1/4 h-20 rounded-[40px] shadow-search flex flex-row items-center px-2 py-3">
+                    <div className="h-full ml-1">
+                      <img src={bed} className="w-8 h-8" />
                     </div>
                     <div className="ml-4 h-full">
                       <p className="text-[#525B31] font-bold text-base font-montserrat">
@@ -270,16 +269,16 @@ const Navbar = () => {
                       <input
                         type="search"
                         placeholder="Search Destination"
-                        className="text-[#525B31] text-base font-montserrat outline-none"
+                        className="text-[#525B31] text-base font-montserrat outline-none w-full"
                         value={destination}
                         onChange={(text) => setDestination(text.target.value)}
                       />
                     </div>
                   </div>
 
-                  <div className="w-[273px] h-20 rounded-[40px] shadow-search mx-2.5 items-center px-2 py-3 flex flex-row">
-                    <div className="h-full ml-4 mr-2">
-                      <img src={schedule} width={20} height={20} />
+                  <div className="w-1/4 h-20 rounded-[40px] shadow-search mx-2.5 items-center px-2 py-3 flex flex-row">
+                    <div className="h-full mr-2">
+                      <img src={schedule} className="w-8 h-8" />
                     </div>
                     <div className="h-full">
                       <p className="text-[#525B31] font-bold text-base font-montserrat">
@@ -289,9 +288,25 @@ const Navbar = () => {
                     </div>
                   </div>
 
-                  <div className="w-[370px] h-20 rounded-[40px] shadow-search flex flex-row items-center px-2 py-3">
-                    <div className="h-full flex flex-col ml-10 mr-[25px]">
-                      <img src={user} width={20} height={20} />
+                  <div className="w-1/4 h-20 rounded-[40px] shadow-search flex flex-col items-center px-2 py-3">
+                    <p className="text-[#525B31] font-bold text-base font-montserrat">
+                      Flight Type?
+                    </p>
+                    <select
+                      id="tripType"
+                      onChange={(value) => setTripType(value.target.value)}
+                      className="outline-none rounded-md p-2"
+                      defaultValue="One Way"
+                    >
+                      <option value="roundTrip">One Way</option>
+                      <option value="oneWay">Return</option>
+                      <option value="multiCity">Multi-Way</option>
+                    </select>
+                  </div>
+
+                  <div className="w-1/4 h-20 rounded-[40px] shadow-search flex flex-row items-center px-2 py-3">
+                    <div className="h-full flex flex-col mr-1">
+                      <img src={user} className="w-10 h-10 ml-1" />
                     </div>
                     <div onClick={() => toggleDropdown()}>
                       <p className="text-[#525B31] font-bold text-base font-montserrat">
@@ -299,7 +314,7 @@ const Navbar = () => {
                       </p>
                       {guest ? (
                         <>
-                          <p>
+                          <p className="text-xs">
                             {adults} adults | {children} children | {rooms}{" "}
                             rooms
                           </p>

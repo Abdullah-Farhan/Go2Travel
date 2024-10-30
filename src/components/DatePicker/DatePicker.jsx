@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import DatePicker from "react-multi-date-picker";
 import "./style.css";
-import "react-multi-date-picker/styles/layouts/prime.css"; 
-import { DateContext } from "../../Context/DateContext";
+import "react-multi-date-picker/styles/layouts/prime.css";
+import { FlightsContext } from "../../Context/FlightsContext";
 
 const CustomCalendar = () => {
-  const { selectedDates, setSelectedDates } = useContext(DateContext);
+  const { selectedDates, setSelectedDates } = useContext(FlightsContext);
   
   const today = new Date();
 

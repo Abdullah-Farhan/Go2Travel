@@ -9,15 +9,12 @@ import Payment from "./pages/Payment/Payment.jsx";
 import Checkout from "./pages/Checkout/Checkout.jsx";
 import StripeProvider from "./stripe/Provider/StripeProvider.jsx";
 import HotelInfo from "./pages/HotelInfo/HotelInfo.jsx";
-import { DateProvider } from "./Context/DateContext.jsx";
-import { HotelProvider } from "./Context/hotelContext.jsx";
-import { SearchProvider } from "./Context/SearchContext.jsx";
 import {
   Navigate,
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
-import { GuestProvider } from "./Context/GuestContext.jsx";
+import { FlightsProvider } from "./Context/FlightsContext.jsx";
 
 const router = createBrowserRouter([
   {
@@ -54,15 +51,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
-      <DateProvider>
-        <HotelProvider>
-          <GuestProvider>
-            <SearchProvider>
-              <RouterProvider router={router} />
-            </SearchProvider>
-          </GuestProvider>
-        </HotelProvider>
-      </DateProvider>
+      <FlightsProvider>
+        <RouterProvider router={router} />
+      </FlightsProvider>
     </>
   );
 }

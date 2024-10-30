@@ -4,10 +4,10 @@ import arrows from "../../assets/svg/Sortingarrowheads.svg";
 import Hotel from "../../Cards/Hotel.jsx";
 import hotels from "../../utils/Hotels/Hotels.jsx";
 import Filter from "./components/Filter.jsx";
-import { SearchContext } from "../../Context/SearchContext.jsx";
+import { FlightsContext } from "../../Context/FlightsContext.jsx";
 
 const Results = () => {
-  const {searchQuery} = useContext(SearchContext);
+  const {searchQuery} = useContext(FlightsContext);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(hotels.length / itemsPerPage);

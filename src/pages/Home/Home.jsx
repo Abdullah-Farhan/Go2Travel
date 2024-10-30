@@ -12,17 +12,14 @@ import TopActivities from "../../Cards/TopActivities.jsx";
 import Bar from "../../Cards/Bar.jsx";
 import Shopping from "../../Cards/Shopping.jsx";
 import Trending from "../../Cards/Trending.jsx";
-import { DateContext } from "../../Context/DateContext.jsx";
-import { HotelContext } from "../../Context/hotelContext.jsx";
-import { GuestContext } from "../../Context/GuestContext.jsx";
-import { SearchContext } from "../../Context/SearchContext.jsx";
+import { FlightsContext } from "../../Context/FlightsContext.jsx";
 
 const Home = () => {
   const [activeLink, setActiveLink] = useState("destination");
-  const {setSelectedDates} = useContext(DateContext);
-  const {setGuest} = useContext(GuestContext);
-  const {setSelectedHotel} = useContext(HotelContext)
-  const {setSearchQuery} = useContext(SearchContext)
+  const {setSelectedDates} = useContext(FlightsContext);
+  const {setGuest} = useContext(FlightsContext);
+  const {setSelectedHotel} = useContext(FlightsContext)
+  const {setSearchQuery} = useContext(FlightsContext)
   useEffect(()=> {
     setSelectedDates(null);
     setGuest(null);

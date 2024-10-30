@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import guests from "../../assets/svg/guest.svg";
 import cancelation from "../../assets/svg/cancelation.svg";
 import iota from "../../assets/svg/iota.svg";
@@ -10,16 +10,14 @@ import lens from "../../assets/svg/lens.svg";
 import schedule from "../../assets/svg/Schedule.svg";
 import info from "../../assets/svg/info.svg";
 import jood from "../../assets/svg/jood.svg";
-import { DateContext } from "../../Context/DateContext";
-import { HotelContext } from "../../Context/hotelContext";
-import { GuestContext } from "../../Context/GuestContext";
+import { FlightsContext } from "../../Context/FlightsContext";
 
 const Payment = () => {
   const navigate = useNavigate();
-  const { selectedHotel } = useContext(HotelContext)
+  const { selectedHotel } = useContext(FlightsContext)
   console.log(selectedHotel);
-  const { guest } = useContext(GuestContext);
-  const { selectedDates } = useContext(DateContext);
+  const { guest } = useContext(FlightsContext);
+  const { selectedDates } = useContext(FlightsContext);
   const [checkInDate, setCheckInDate] = useState(
     selectedDates ? selectedDates[0] : null
   );
@@ -48,6 +46,25 @@ console.log(selectedHotel);
   const handleNavigation = () => {
     navigate("/checkout");
   };
+
+  useEffect(() => {
+    if (checkInDate && checkOutDate) {
+      const nightsCount = Math.ceil(
+        (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)
+      );
+      setNights(nightsCount);
+    }
+  }, [checkInDate, checkOutDate]);
+
+  useEffect(() => {
+    if (guest) {
+      setSearchFilter({
+        adults: guest.adults,
+        children: guest.children,
+        rooms: guest.rooms,
+      });
+    }
+  }, [guest]);
 
   return (
     <div className="flex justify-center">
@@ -234,7 +251,7 @@ console.log(selectedHotel);
                     Total guests
                   </p>
                   <p className="text-custom-green text-[10px] font-medium my-4">
-                    {searchFilter.adult} adults | {searchFilter.children}{" "}
+                    {searchFilter.adults} adults | {searchFilter.children}{" "}
                     children | {searchFilter.rooms} rooms
                   </p>
                 </div>
