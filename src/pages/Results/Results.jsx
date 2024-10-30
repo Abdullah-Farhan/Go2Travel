@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import sort from "../../assets/svg/sort.svg";
 import arrows from "../../assets/svg/Sortingarrowheads.svg";
 import Hotel from "../../Cards/Hotel.jsx";
 import hotels from "../../utils/Hotels/Hotels.jsx";
 import Filter from "./components/Filter.jsx";
+import { SearchContext } from "../../Context/SearchContext.jsx";
 
-const Results = ({ searchedValue }) => {
+const Results = () => {
+  const {searchQuery} = useContext(SearchContext);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(hotels.length / itemsPerPage);
-  const guest = location.state?.guest;
-  console.log(guest);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -49,7 +49,7 @@ const Results = ({ searchedValue }) => {
       <div className="w-full max-w-[954px] mt-14 flex flex-row">
         <p className="text-[#525B31] absolute">
           <span className="text-[#D2B57A]">Home</span> &gt;{" "}
-          <span className="text-[#D2B57A]">{searchedValue}</span> &gt; search
+          <span className="text-[#D2B57A]">{searchQuery}</span> &gt; search
           results{" "}
         </p>
 
@@ -103,7 +103,7 @@ const Results = ({ searchedValue }) => {
         {/* Card Components Section */}
         <div className="w-[680px] h-[2993px] mt-8 pl-5 flex flex-col">
           <p className="text-custom-green text2xl font-bold">
-            {searchedValue}: {searchedResults} results found
+            {searchQuery}: {searchedResults} results found
           </p>
           <div
             className="flex flex-row justify-center items-center w-96 h-16 rounded-[40px] shadow-result mt-2 mb-5"
@@ -143,7 +143,7 @@ const Results = ({ searchedValue }) => {
             <Hotel hotelData={currentItems} />
           </div>
           <p className="text-xl text-custom-green mb-3">
-            {searchedValue}: {searchedResults} results found{" "}
+            {searchQuery}: {searchedResults} results found{" "}
           </p>
 
           {/* Pagination controls */}

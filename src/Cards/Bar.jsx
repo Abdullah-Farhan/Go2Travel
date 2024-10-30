@@ -14,7 +14,7 @@ const Bar = () => {
   return (
     <div className="relative flex items-center justify-between">
       <button
-        className="absolute left-0 z-10 p-2 bg-white rounded-full"
+        className="absolute left-0 z-10 p-2 bg-white rounded-full w-10 h-10"
         onClick={scrollLeft}
       >
         &lt;
@@ -38,7 +38,7 @@ const Bar = () => {
       </div>
 
       <button
-        className="absolute right-0 z-10 p-2 bg-white rounded-full"
+        className="absolute right-0 z-10 p-2 bg-white rounded-full w-10 h-10"
         onClick={scrollRight}
       >
         &gt;

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import search from "../../assets/svg/lens.svg";
 import schedule from "../../assets/svg/Schedule.svg";
-import guest from "../../assets/svg/guest.svg";
+import guests from "../../assets/svg/guest.svg";
 import maps from "../../assets/svg/maps.svg";
 import star from "../../assets/svg/star.svg";
 import leafFilled from "../../assets/svg/leafFilled.svg";
@@ -23,17 +23,32 @@ import available from "../../assets/svg/available.svg";
 import bell from "../../assets/svg/bell.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import TopAccomodation from "../../Cards/TopAccomodation";
+import { GuestContext } from "../../Context/GuestContext";
+import { DateContext } from "../../Context/DateContext";
+import DatePicker from "react-multi-date-picker";
+import "react-multi-date-picker/styles/layouts/prime.css";
 
 const HotelInfo = () => {
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState("overview");
   const [searchedPlace, setSearchedPlace] = useState("Dubai");
   const location = "United Arab Emirates";
-  const searchFilter = {
-    adult: 1,
-    children: 0,
-    rooms: 1,
-  };
+  const { guest } = useContext(GuestContext);
+  const { selectedDates } = useContext(DateContext);
+  const [checkInDate, setCheckInDate] = useState(
+    selectedDates ? selectedDates[0] : null
+  );
+  const [checkOutDate, setCheckOutDate] = useState(
+    selectedDates ? selectedDates[1] : null
+  );
+  const [nights, setNights] = useState(0);
+  const [searchFilter, setSearchFilter] = useState({
+    adults: guest ? guest.adults : 1,
+    children: guest ? guest.children : 0,
+    rooms: guest ? guest.rooms : 1,
+  });
+  
+
   const questions = Array(9).fill("Where to park?");
 
   const nearbyInfo = {
@@ -74,12 +89,6 @@ const HotelInfo = () => {
       { name: "Saeed Al Maktoum House", distance: "3.2 km" },
     ],
   };
-  const nights = 5;
-
-  const date = {
-    checkin: "Monday, Oct 2, 2023",
-    checout: "Saturday, Oct 6, 2023",
-  };
 
   let { state } = useLocation();
   if (!state) {
@@ -117,6 +126,25 @@ const HotelInfo = () => {
     event.preventDefault();
     setActiveLink(link);
   };
+
+  useEffect(() => {
+    if (checkInDate && checkOutDate) {
+      const nightsCount = Math.ceil(
+        (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)
+      );
+      setNights(nightsCount);
+    }
+  }, [checkInDate, checkOutDate]);
+
+  useEffect(() => {
+    if (guest) {
+      setSearchFilter({
+        adults: guest.adults,
+        children: guest.children,
+        rooms: guest.rooms,
+      });
+    }
+  }, [guest]);
 
   return (
     <div className="flex flex-col items-center">
@@ -206,50 +234,66 @@ const HotelInfo = () => {
               Destination / property name
             </p>
             <div className="flex w-[97%] shadow-search mt-2 py-1 px-2 rounded">
-              <img className="w-4 h-4" src={search} />
+              <img className="w-4 h-4" src={search} alt="Search icon" />
               <input
-                type="text"
+                type="search"
                 value={searchedPlace}
-                className="ml-4 text-[10px] font-medium text-custom-green w-full"
+                onChange={(e) => setSearchedPlace(e.target.value)}
+                className="ml-4 text-[10px] font-medium text-custom-green w-full outline-none"
               />
             </div>
+
+            {/* Date Pickers */}
             <p className="mt-2 text-[10px] text-custom-green">Check-in date</p>
-            <div className="flex w-[97%] shadow-search mt-2 py-1 px-2 rounded">
-              <img className="w-4 h-4" src={schedule} />
-              <input
-                type="text"
-                value={date.checkin}
-                className="ml-4 text-[10px] font-medium text-custom-green w-full"
+            <div className="flex w-[97%] shadow-search mt-2 rounded justify-center">
+              <DatePicker
+                selected={checkInDate}
+                value={checkInDate}
+                onChange={(date) => setCheckInDate(date)}
+                minDate={new Date()}
+                className="w-[97%] mt-2 p-2 shadow-search rounded"
+                placeholderText="Select Check-in Date"
+                dateFormat="EEEE, MMMM d, yyyy"
               />
             </div>
+
             <p className="mt-2 text-[10px] text-custom-green">Check-out date</p>
-            <div className="flex w-[97%] shadow-search mt-2 py-1 px-2 rounded">
-              <img className="w-4 h-4" src={schedule} />
-              <input
-                type="text"
-                value={date.checout}
-                className="ml-4 text-[10px] font-medium text-custom-green w-full"
+            <div className="flex w-[97%] shadow-search mt-2 rounded justify-center">
+              <DatePicker
+                selected={checkOutDate}
+                onChange={(date) => setCheckOutDate(date)}
+                value={checkOutDate}
+                minDate={checkInDate || new Date()}
+                className="shadow-search rounded outline-none"
+                placeholderText="Select Check-out Date"
+                dateFormat="EEEE, MMMM d, yyyy"
+                style={{ outline: "none", boxShadow: "none" }}
               />
             </div>
+
             <p className="mt-2 text-[10px] text-custom-green">
               {nights} nights stay
             </p>
+
+            {/* Guest and Room Info */}
             <div className="flex w-[97%] shadow-search mt-2 py-1 px-2 rounded">
-              <img className="w-4 h-4" src={guest} />
+              <img className="w-4 h-4" src={guests} alt="Guest icon" />
               <input
                 type="text"
-                value={`${searchFilter.adult} adults | ${searchFilter.children} children | ${searchFilter.rooms} rooms`}
+                value={`${searchFilter.adults} adults | ${searchFilter.children} children | ${searchFilter.rooms} rooms`}
+                readOnly
                 className="ml-4 text-[10px] font-medium text-custom-green outline-none"
               />
             </div>
+
             <div className="w-full flex justify-center mt-5">
               <button className="text-white bg-custom-green px-6 py-1 justify-center text-medium text-xl rounded">
                 Search
               </button>
             </div>
             <div className="mt-2 flex w-full justify-center">
-              <a href={`${state.hotel.mapsLink}`}>
-                <img src={maps} />
+              <a href={state.hotel.mapsLink}>
+                <img src={maps} alt="Maps link" />
               </a>
             </div>
           </div>
@@ -321,7 +365,7 @@ const HotelInfo = () => {
             </div>
 
             <div className="w-full h-96">
-              <img src={jood} className="w-full h-full bg-cover" />
+              <img src={jood} className="w-full h-full object-contain" />
             </div>
           </div>
         </div>
@@ -401,56 +445,56 @@ const HotelInfo = () => {
           </p>
         </div>
 
-        <div class="p-4">
-          <h3 class="text-custom-green font-semibold text-lg mb-4">
+        <div className="p-4">
+          <h3 className="text-custom-green font-semibold text-lg mb-4">
             Most popular facilities
           </h3>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-custom-green">
-            <div class="flex items-center space-x-2">
-              <img src={steam} alt="Steam Room" class="w-6 h-6" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-custom-green">
+            <div className="flex items-center space-x-2">
+              <img src={steam} alt="Steam Room" className="w-6 h-6" />
               <span>Steam Room</span>
             </div>
-            <div class="flex items-center space-x-2">
+            <div className="flex items-center space-x-2">
               <img
                 src={smoking}
                 alt="Designated smoking areas"
-                class="w-6 h-6"
+                className="w-6 h-6"
               />
               <span>Designated smoking areas</span>
             </div>
-            <div class="flex items-center space-x-2">
-              <img src={bell} alt="Concierge" class="w-6 h-6" />
+            <div className="flex items-center space-x-2">
+              <img src={bell} alt="Concierge" className="w-6 h-6" />
               <span>Concierge</span>
             </div>
-            <div class="flex items-center space-x-2">
-              <img src={nosmoke} alt="Non smoking rooms" class="w-6 h-6" />
+            <div className="flex items-center space-x-2">
+              <img src={nosmoke} alt="Non smoking rooms" className="w-6 h-6" />
               <span>Non smoking rooms</span>
             </div>
-            <div class="flex items-center space-x-2">
-              <img src={transport} alt="Airport shuttle" class="w-6 h-6" />
+            <div className="flex items-center space-x-2">
+              <img src={transport} alt="Airport shuttle" className="w-6 h-6" />
               <span>Airport shuttle</span>
             </div>
-            <div class="flex items-center space-x-2">
-              <img src={checkbox} alt="24-hour security" class="w-6 h-6" />
+            <div className="flex items-center space-x-2">
+              <img src={checkbox} alt="24-hour security" className="w-6 h-6" />
               <span>24-hour security</span>
             </div>
-            <div class="flex items-center space-x-2">
-              <img src={hours} alt="24 hour front desk" class="w-6 h-6" />
+            <div className="flex items-center space-x-2">
+              <img src={hours} alt="24 hour front desk" className="w-6 h-6" />
               <span>24 hour front desk</span>
             </div>
-            <div class="flex items-center space-x-2">
-              <img src={fitness} alt="Fitness center" class="w-6 h-6" />
+            <div className="flex items-center space-x-2">
+              <img src={fitness} alt="Fitness center" className="w-6 h-6" />
               <span>Fitness center</span>
             </div>
-            <div class="flex items-center space-x-2">
-              <img src={swimming} alt="Swimming pool" class="w-6 h-6" />
+            <div className="flex items-center space-x-2">
+              <img src={swimming} alt="Swimming pool" className="w-6 h-6" />
               <span>Swimming pool</span>
             </div>
-            <div class="flex items-center space-x-2">
+            <div className="flex items-center space-x-2">
               <img
                 src={checkbox}
                 alt="Outdoor play equipment for kids"
-                class="w-6 h-6"
+                className="w-6 h-6"
               />
               <span>Outdoor play equipment for kids</span>
             </div>
@@ -628,10 +672,8 @@ const HotelInfo = () => {
           </div>
         </div>
 
-        
         <span className="w-full h-0.5 bg-custom-green block mt-3"></span>
 
-        
         <section>
           <p className="text-2xl font-extrabold mt-16 mb-4 font-montserrat text-custom-green">
             Inspired By Properties You Looked At

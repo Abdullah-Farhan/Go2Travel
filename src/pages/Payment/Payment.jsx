@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import guest from "../../assets/svg/guest.svg";
+import React, { useState, useContext } from "react";
+import guests from "../../assets/svg/guest.svg";
 import cancelation from "../../assets/svg/cancelation.svg";
 import iota from "../../assets/svg/iota.svg";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -10,40 +10,22 @@ import lens from "../../assets/svg/lens.svg";
 import schedule from "../../assets/svg/Schedule.svg";
 import info from "../../assets/svg/info.svg";
 import jood from "../../assets/svg/jood.svg";
+import { DateContext } from "../../Context/DateContext";
+import { HotelContext } from "../../Context/hotelContext";
+import { GuestContext } from "../../Context/GuestContext";
 
 const Payment = () => {
   const navigate = useNavigate();
-  let { state } = useLocation();
-  if (!state) {
-    state = {
-      hotel: {
-        name: "Jood Hotel Apartments",
-        location: "Deria, Dubai",
-        image: jood,
-        mapsLink: "https://maps.app.goo.gl/rcBWo3V5VqfETFEJ6",
-        level: 1,
-        costPerNight: 23786,
-        tax: Math.round(10000 * 0.025),
-        prePayment: true,
-        cancelation: true,
-        bookWithoutCard: true,
-        beach: true,
-        hotel: false,
-        rating: 4,
-        resort: false,
-        guestHouse: false,
-        sustainability: true,
-        fitness: false,
-        bars: true,
-        mall: false,
-        cinema: true,
-        spa: true,
-        reviews: 7.9,
-        type: "Delux Three Bedroom Apartment",
-        guestReviews: 579,
-      },
-    };
-  }
+  const { selectedHotel } = useContext(HotelContext)
+  console.log(selectedHotel);
+  const { guest } = useContext(GuestContext);
+  const { selectedDates } = useContext(DateContext);
+  const [checkInDate, setCheckInDate] = useState(
+    selectedDates ? selectedDates[0] : null
+  );
+  const [checkOutDate, setCheckOutDate] = useState(
+    selectedDates ? selectedDates[1] : null
+  );
   const signedInUserDetails = {
     email: "babar_azam@gmail.com",
     pfp: "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
@@ -51,19 +33,20 @@ const Payment = () => {
   const [isOn, setIsOn] = useState(false);
   const [selected, setSelected] = useState("");
   const [request, setRequest] = useState("");
-  const searchFilter = {
-    adult: 1,
-    children: 0,
-    rooms: 1,
-  };
-  const night = 5;
+  const [searchFilter, setSearchFilter] = useState({
+    adults: guest ? guest.adults : 1,
+    children: guest ? guest.children : 0,
+    rooms: guest ? guest.rooms : 1,
+  });
+  const [nights, setNights] = useState(0);
+console.log(selectedHotel);
 
   const toggleSwitch = () => {
     setIsOn(!isOn);
   };
 
   const handleNavigation = () => {
-    navigate("/checkout", { state });
+    navigate("/checkout");
   };
 
   return (
@@ -97,14 +80,14 @@ const Payment = () => {
             <div className="w-full border border-[#4F5831] rounded-md pl-4 flex flex-col">
               <div className="w-full flex mt-2">
                 <div className="w-20 flex border-r border-r-[#4F5831]">
-                  {Array(state.hotel.rating)
+                  {Array(selectedHotel.rating)
                     .fill(0)
                     .map((_, index) => (
                       <img src={star} alt="rating" className="w-3 h-3 mr-0.5" />
                     ))}
                 </div>
                 <div className="flex items-center ml-2.5">
-                  {Array(state.hotel.level)
+                  {Array(selectedHotel.level)
                     .fill(0)
                     .map((_, index) => (
                       <img
@@ -113,7 +96,7 @@ const Payment = () => {
                         className="w-4 h-4"
                       />
                     ))}
-                  {Array(3 - state.hotel.level)
+                  {Array(3 - selectedHotel.level)
                     .fill(0)
                     .map((_, index) => (
                       <img
@@ -123,23 +106,23 @@ const Payment = () => {
                       />
                     ))}
                   <p className="text-[10px] text-custom-gold ml-2.5">
-                    Travel sustainable level {state.hotel.level}
+                    Travel sustainable level {selectedHotel.level}
                   </p>
                 </div>
               </div>
               <div className="w-full flex justify-between">
                 <p className="font-bold text-custom-green mt-4">
-                  {state.hotel.name}
+                  {selectedHotel.name}
                 </p>
                 <div className="flex flex-row justify-end text-[7px] text-custom-green font-semibold mt-4 pr-3">
                   <div>
-                    {state.hotel.reviews > 9 ? (
+                    {selectedHotel.reviews > 9 ? (
                       <>
                         <p>Wonderful</p>
                       </>
                     ) : (
                       <>
-                        {state.hotel.reviews > 8 ? (
+                        {selectedHotel.reviews > 8 ? (
                           <>
                             <p>Excellent</p>
                           </>
@@ -153,17 +136,17 @@ const Payment = () => {
                     </p>
                   </div>
                   <div className="flex justify-center items-center w-7 h-6 text-white rounded-sm bg-custom-gold font-bold text-base">
-                    <p>{state.hotel.reviews}</p>
+                    <p>{selectedHotel.reviews}</p>
                   </div>
                 </div>
               </div>
               <p className="mt-[-8px]">
                 <a
-                  href={state.hotel.mapsLink}
+                  href={selectedHotel.mapsLink}
                   target="_blank"
                   className="text-[10px] text-custom-green underline"
                 >
-                  {state.hotel.location}
+                  {selectedHotel.location}
                 </a>
               </p>
               <div className="flex flex-col">
@@ -195,42 +178,56 @@ const Payment = () => {
                     Destination / propert name
                   </p>
                   <p className="text-custom-green text-[10px] font-medium my-4">
-                    {state.hotel.location}
+                    {selectedHotel.location}
                   </p>
                 </div>
               </div>
 
               <div className="flex mt-1">
                 <div>
-                  <img src={schedule} />
+                  <img src={schedule} alt="Schedule icon" />
                 </div>
                 <div className="flex flex-col ml-3">
                   <p className="text-custom-green text-[10px] font-semibold">
                     Check-in date
                   </p>
                   <p className="text-custom-green text-[10px] font-medium my-4">
-                    Monday, Oct 2, 2023
+                    {checkInDate
+                      ? checkInDate.toLocaleDateString("en-US", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
+                      : "Not selected"}
                   </p>
                 </div>
               </div>
 
               <div className="flex mt-1">
                 <div>
-                  <img src={schedule} />
+                  <img src={schedule} alt="Schedule icon" />
                 </div>
                 <div className="flex flex-col ml-3">
                   <p className="text-custom-green text-[10px] font-semibold">
                     Check-out date
                   </p>
                   <p className="text-custom-green text-[10px] font-medium my-4">
-                    Saturday, Oct 6, 2023
+                    {checkOutDate
+                      ? checkOutDate.toLocaleDateString("en-US", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
+                      : "Not selected"}
                   </p>
                 </div>
               </div>
 
               <div className="flex mt-1">
                 <div>
-                  <img src={guest} width={20} height={20} />
+                  <img src={guests} width={20} height={20} />
                 </div>
                 <div className="flex flex-col ml-3">
                   <p className="text-custom-green text-[10px] font-semibold">
@@ -246,7 +243,7 @@ const Payment = () => {
 
             <div className="w-full border border-[#4F5831] rounded-md pl-4 pt-4 flex">
               <div className="w-[50%] text-[10px]">
-                {night} Nights, {searchFilter.adult} adult{" "}
+                {nights} Nights, {searchFilter.adults} adult{" "}
                 {searchFilter.children > 0 ? (
                   <>| {searchFilter.children} childern</>
                 ) : (
@@ -261,13 +258,13 @@ const Payment = () => {
               <div className="w-[50%] pr-4 mb-5">
                 <div className="w-full flex flex-row justify-end">
                   <p className="font-bold mr-1 text-custom-green">
-                    Rs {state.hotel.costPerNight * night}
+                    Rs {selectedHotel.costPerNight * nights}
                   </p>
                   <img src={info} />
                 </div>
                 <div className="w-full flex flex-row justify-end">
                   <p className="text-custom-green text-[7px]">
-                    +{state.hotel.tax * night} taxes & charges
+                    +{selectedHotel.tax * nights} taxes & charges
                   </p>
                 </div>
               </div>
@@ -446,7 +443,7 @@ const Payment = () => {
                 Delux 3 bedroom apartment
               </p>
               <div className="flex flex-row mt-6 mb-3">
-                <img src={guest} className="mr-2" />
+                <img src={guests} className="mr-2" />
                 <p className="font-light text-xl text-custom-green">
                   Guests | 2 adults
                 </p>

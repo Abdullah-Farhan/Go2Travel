@@ -1,33 +1,46 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import DatePicker from "react-multi-date-picker";
-import "./style.css"
-import "react-multi-date-picker/styles/layouts/prime.css"; // Prime layout
+import "./style.css";
+import "react-multi-date-picker/styles/layouts/prime.css"; 
+import { DateContext } from "../../Context/DateContext";
 
 const CustomCalendar = () => {
-  const [value, setValue] = useState(null);
+  const { selectedDates, setSelectedDates } = useContext(DateContext);
+  
+  const today = new Date();
+
+  const isValidDate = (date) => {
+    return date >= today;
+  };
 
   return (
     <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "center" }} className="font-montserrat">
       <DatePicker
         placeholder="Add dates"
-        value={value}
-        onChange={setValue}
+        value={selectedDates}
+        onChange={(dates) => {
+          if (Array.isArray(dates)) {
+            const validDates = dates.filter(isValidDate).map(date => new Date(date)); // Ensure dates are Date objects
+            setSelectedDates(validDates.length > 0 ? validDates : null);
+          } else if (isValidDate(dates)) {
+            setSelectedDates(new Date(dates)); // Ensure single date is a Date object
+          }
+        }}
         numberOfMonths={2}
         weekDays={["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}
         hideYear
         className="custom-calendar"
         range
+        minDate={today}
       />
       <div style={{
         width: '2px',
-        backgroundColor: 'black', // Color of the vertical line
-        height: '100%', // Adjust height as needed
-        margin: '0 10px' // Space between calendars and line
+        backgroundColor: 'black',
+        height: '100%',
+        margin: '0 10px'
       }} />
     </div>
   );
 };
-
-
 
 export default CustomCalendar;

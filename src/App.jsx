@@ -9,11 +9,15 @@ import Payment from "./pages/Payment/Payment.jsx";
 import Checkout from "./pages/Checkout/Checkout.jsx";
 import StripeProvider from "./stripe/Provider/StripeProvider.jsx";
 import HotelInfo from "./pages/HotelInfo/HotelInfo.jsx";
+import { DateProvider } from "./Context/DateContext.jsx";
+import { HotelProvider } from "./Context/hotelContext.jsx";
+import { SearchProvider } from "./Context/SearchContext.jsx";
 import {
   Navigate,
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
+import { GuestProvider } from "./Context/GuestContext.jsx";
 
 const router = createBrowserRouter([
   {
@@ -21,15 +25,15 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />
+        element: <Home />,
       },
       {
-        path:"/results",
-        element: <Results searchedValue={"United Arab Emirates"} />
+        path: "/results",
+        element: <Results searchedValue={"United Arab Emirates"} />,
       },
       {
         path: "payment",
-        element: <Payment />
+        element: <Payment />,
       },
       {
         path: "checkout",
@@ -41,17 +45,24 @@ const router = createBrowserRouter([
       },
       {
         path: "hotel-info",
-        element: <HotelInfo />
-      }
-    ]
-  }
-])
-
+        element: <HotelInfo />,
+      },
+    ],
+  },
+]);
 
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
+      <DateProvider>
+        <HotelProvider>
+          <GuestProvider>
+            <SearchProvider>
+              <RouterProvider router={router} />
+            </SearchProvider>
+          </GuestProvider>
+        </HotelProvider>
+      </DateProvider>
     </>
   );
 }

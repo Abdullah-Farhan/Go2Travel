@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import star from "../../assets/svg/star.svg";
 import leafFilled from "../../assets/svg/leafFilled.svg";
@@ -13,38 +13,49 @@ import StripeForm from "../../components/StripeForm/StripeForm";
 import visa from "../../assets/svg/visa.svg";
 import master from "../../assets/svg/master.svg";
 import amex from "../../assets/svg/amex.svg";
-import lock from "../../assets/svg/lock.svg"
+import lock from "../../assets/svg/lock.svg";
 import jood from "../../assets/svg/jood.svg";
+import { DateContext } from "../../Context/DateContext";
 
 const Checkout = () => {
   let { state } = useLocation();
+
+  const { selectedDates } = useContext(DateContext);
+
+  const checkInDate =
+    selectedDates && Array.isArray(selectedDates) ? selectedDates[0] : null;
+  const checkOutDate =
+    selectedDates && Array.isArray(selectedDates) ? selectedDates[1] : null;
+
   if (!state) {
-    state = {hotel : {
-      name: "Jood Hotel Apartments",
-      location: "Deria, Dubai",
-      image: jood,
-      mapsLink:"https://maps.app.goo.gl/rcBWo3V5VqfETFEJ6",
-      level: 1    ,
-      costPerNight: 23786,
-      tax: Math.round(10000*0.025),
-      prePayment: true,
-      cancelation: true,
-      bookWithoutCard: true,
-      beach:true,
-      hotel: false,
-      rating: 4,
-      resort: false,
-      guestHouse:false,
-      sustainability: true,
-      fitness: false,
-      bars: true,
-      mall: false,
-      cinema: true,
-      spa: true,
-      reviews: 7.9,
-      type: "Delux Three Bedroom Apartment",
-      guestReviews: 579
-  }}
+    state = {
+      hotel: {
+        name: "Jood Hotel Apartments",
+        location: "Deria, Dubai",
+        image: jood,
+        mapsLink: "https://maps.app.goo.gl/rcBWo3V5VqfETFEJ6",
+        level: 1,
+        costPerNight: 23786,
+        tax: Math.round(10000 * 0.025),
+        prePayment: true,
+        cancelation: true,
+        bookWithoutCard: true,
+        beach: true,
+        hotel: false,
+        rating: 4,
+        resort: false,
+        guestHouse: false,
+        sustainability: true,
+        fitness: false,
+        bars: true,
+        mall: false,
+        cinema: true,
+        spa: true,
+        reviews: 7.9,
+        type: "Delux Three Bedroom Apartment",
+        guestReviews: 579,
+      },
+    };
   }
   console.log(state);
 
@@ -203,28 +214,42 @@ const Checkout = () => {
 
               <div className="flex mt-1">
                 <div>
-                  <img src={schedule} />
+                  <img src={schedule} alt="Schedule icon" />
                 </div>
                 <div className="flex flex-col ml-3">
                   <p className="text-custom-green text-[10px] font-semibold">
                     Check-in date
                   </p>
                   <p className="text-custom-green text-[10px] font-medium my-4">
-                    Monday, Oct 2, 2023
+                    {checkInDate
+                      ? checkInDate.toLocaleDateString("en-US", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
+                      : "Not selected"}
                   </p>
                 </div>
               </div>
 
               <div className="flex mt-1">
                 <div>
-                  <img src={schedule} />
+                  <img src={schedule} alt="Schedule icon" />
                 </div>
                 <div className="flex flex-col ml-3">
                   <p className="text-custom-green text-[10px] font-semibold">
                     Check-out date
                   </p>
                   <p className="text-custom-green text-[10px] font-medium my-4">
-                    Saturday, Oct 6, 2023
+                    {checkOutDate
+                      ? checkOutDate.toLocaleDateString("en-US", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
+                      : "Not selected"}
                   </p>
                 </div>
               </div>
@@ -407,19 +432,19 @@ const Checkout = () => {
               <section className="flex flex-col">
                 <p className="text-custom-green font-bold mt-5">New card</p>
                 <div className="flex mt-2">
-                    <img src={visa} />
-                    <img src={master} className="mx-2.5"/>
-                    <img src={amex} />
+                  <img src={visa} />
+                  <img src={master} className="mx-2.5" />
+                  <img src={amex} />
                 </div>
-                  <StripeForm />
+                <StripeForm />
               </section>
             </div>
             <div className="flex justify-end mt-10">
-                <button className="flex justify-around items-center w-44 h-8 bg-custom-gold rounded text-[10px] font-semibold text-white">
-                  <img src={lock} />
-                  Complete Booking 
-                  <p>&gt;</p>
-                </button>
+              <button className="flex justify-around items-center w-44 h-8 bg-custom-gold rounded text-[10px] font-semibold text-white">
+                <img src={lock} />
+                Complete Booking
+                <p>&gt;</p>
+              </button>
             </div>
           </section>
         </section>

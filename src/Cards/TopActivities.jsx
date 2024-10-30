@@ -1,4 +1,3 @@
-import places from "../utils/Places/Places.jsx";
 import activites from "../utils/Activities/Activities.jsx";
 import { useRef } from "react";
 
@@ -15,7 +14,7 @@ const TopActivities = () => {
   return (
     <div className="relative flex items-center justify-between">
       <button
-        className="absolute left-0 z-10 p-2 bg-white rounded-full"
+        className="absolute left-0 z-10 p-2 bg-white rounded-full w-10 h-10"
         onClick={scrollLeft}
       >
         &lt;
@@ -39,7 +38,7 @@ const TopActivities = () => {
       </div>
 
       <button
-        className="absolute right-0 z-10 p-2 bg-white rounded-full"
+        className="absolute right-0 z-10 p-2 bg-white rounded-full w-10 h-10"
         onClick={scrollRight}
       >
         &gt;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import DatePicker from "../DatePicker/DatePicker";
 import headerBg from "../../assets/png/headerBg.png";
 import logo from "../../assets/png/logo.png";
@@ -10,18 +10,20 @@ import user from "../../assets/svg/user.svg";
 import bed from "../../assets/svg/Bed.svg";
 import schedule from "../../assets/svg/Schedule.svg";
 import { Link, useNavigate } from "react-router-dom";
+import { GuestContext } from "../../Context/GuestContext";
+import { SearchContext } from "../../Context/SearchContext";
 
 const Navbar = () => {
   const [activeLink, setActiveLink] = useState("home");
   const [subActiveLink, setSubActiveLink] = useState("null");
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [rooms, setRooms] = useState(1);
-  const [guest, setGuest] = useState();
+  const { guest, setGuest } = useContext(GuestContext);
+  const [destination, setDestination] = useState();
   const navigate = useNavigate();
+  const {setSearchQuery} = useContext(SearchContext);
 
   const location = window.location.pathname;
 
@@ -33,23 +35,18 @@ const Navbar = () => {
     setSubActiveLink(link);
   };
 
-  const onChange = (dates) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-  };
-
   const toggleDropdown = () => {
     setGuest({
       adults: adults,
       children: children,
-      rooms: rooms
-    })
+      rooms: rooms,
+    });
     setDropdownOpen(!dropdownOpen);
   };
 
   const handleSearchResults = () => {
-    navigate("/results", {state: {guest}});
+    setSearchQuery(destination)
+    navigate("/results");
   };
 
   const handleNavigation = () => {
@@ -270,9 +267,13 @@ const Navbar = () => {
                       <p className="text-[#525B31] font-bold text-base font-montserrat">
                         Where?
                       </p>
-                      <p className="text-[#525B31] text-base font-montserrat">
-                        Search Destinations
-                      </p>
+                      <input
+                        type="search"
+                        placeholder="Search Destination"
+                        className="text-[#525B31] text-base font-montserrat outline-none"
+                        value={destination}
+                        onChange={(text) => setDestination(text.target.value)}
+                      />
                     </div>
                   </div>
 
@@ -296,7 +297,7 @@ const Navbar = () => {
                       <p className="text-[#525B31] font-bold text-base font-montserrat">
                         Who?
                       </p>
-                      {guest    ? (
+                      {guest ? (
                         <>
                           <p>
                             {adults} adults | {children} children | {rooms}{" "}
@@ -304,9 +305,49 @@ const Navbar = () => {
                           </p>
                         </>
                       ) : (
-                        <p className="text-[#525B31] text-[15px] font-montserrat">
-                          Add Guests
-                        </p>
+                        <div>
+                          {guest ? (
+                            <>
+                              <p>
+                                {guest.adults} adults | {guest.children}{" "}
+                                children | {guest.rooms} rooms
+                              </p>
+                            </>
+                          ) : (
+                            <p className="text-[#525B31] text-[15px] font-montserrat">
+                              Add Guests
+                            </p>
+                          )}
+                          {dropdownOpen && (
+                            <div>
+                              {/* Your dropdown logic here to set adults, children, rooms */}
+                              <input
+                                type="number"
+                                value={adults}
+                                onChange={(e) =>
+                                  setAdults(Number(e.target.value))
+                                }
+                                placeholder="Adults"
+                              />
+                              <input
+                                type="number"
+                                value={children}
+                                onChange={(e) =>
+                                  setChildren(Number(e.target.value))
+                                }
+                                placeholder="Children"
+                              />
+                              <input
+                                type="number"
+                                value={rooms}
+                                onChange={(e) =>
+                                  setRooms(Number(e.target.value))
+                                }
+                                placeholder="Rooms"
+                              />
+                            </div>
+                          )}
+                        </div>
                       )}
                     </div>
                     <button

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import home from "../../assets/svg/home.svg";
 import "./Home.css";
 import offersImg from "../../assets/svg/offersImg.svg";
@@ -12,16 +12,27 @@ import TopActivities from "../../Cards/TopActivities.jsx";
 import Bar from "../../Cards/Bar.jsx";
 import Shopping from "../../Cards/Shopping.jsx";
 import Trending from "../../Cards/Trending.jsx";
+import { DateContext } from "../../Context/DateContext.jsx";
+import { HotelContext } from "../../Context/hotelContext.jsx";
+import { GuestContext } from "../../Context/GuestContext.jsx";
+import { SearchContext } from "../../Context/SearchContext.jsx";
 
 const Home = () => {
   const [activeLink, setActiveLink] = useState("destination");
-  const handleLinkClick = (link) => {
-    setActiveLink(link);
-  };
+  const {setSelectedDates} = useContext(DateContext);
+  const {setGuest} = useContext(GuestContext);
+  const {setSelectedHotel} = useContext(HotelContext)
+  const {setSearchQuery} = useContext(SearchContext)
+  useEffect(()=> {
+    setSelectedDates(null);
+    setGuest(null);
+    setSelectedHotel(null);
+    setSearchQuery(null);
+  }, [])
 
   return (
     <section className="w-full flex justify-center font-montserrat">
-      <div className="w-full max-w-[954px] mt-28">
+      <div className="w-full max-w-[954px] mt-28 px-4 md:px-0">
         {/* Header Section */}
         <section
           style={{ backgroundImage: `url(${home})` }}
@@ -43,7 +54,7 @@ const Home = () => {
         </section>
 
         {/* Offers Section */}
-        <section className="flex flex-col md:flex-row bg-custom-gradient mt-16 rounded">
+        <section className="flex flex-col md:flex-row bg-custom-gradient mt-16 rounded px-4 md:px-0">
           <div className="w-full md:w-[693px] ml-5 mx-4 mt-5 overflow-auto">
             <p className="font-bold text-[#525B31]">Special offers await you</p>
             <p className="text-xs mt-2">
@@ -64,7 +75,7 @@ const Home = () => {
           </div>
           <img
             src={offersImg}
-            className="w-52 h-52 ml-6 hidden md:block justify-end"
+            className="w-52 h-52 ml-6 hidden md:block"
             alt="Offers"
           />
         </section>
@@ -77,50 +88,50 @@ const Home = () => {
           <TopAccomodation />
         </section>
 
-        {/* Top activites */}
+        {/* Top Activities */}
         <section>
           <p className="text-2xl font-extrabold mt-16">
             Top Activities To Do By Category
           </p>
-          <p className=" mb-4">Special offers for you</p>
+          <p className="mb-4">Special offers for you</p>
           <TopActivities />
         </section>
 
-        {/* Top bars */}
+        {/* Top Bars */}
         <section>
           <p className="text-2xl font-extrabold mt-16">Top Bar in Captown</p>
-          <p className=" mb-4">Big offer awaits</p>
+          <p className="mb-4">Big offer awaits</p>
           <Bar />
         </section>
 
-        {/* Shooping centers */}
+        {/* Shopping Centers */}
         <section>
           <p className="text-2xl font-extrabold mt-16 mb-8">Shopping Centers</p>
           <Shopping />
         </section>
 
-        {/* Traveling destination section */}
+        {/* Traveling Destination Section */}
         <section className="w-full mt-16">
           <p className="font-extrabold text-2xl">Trending Destinations</p>
           <p className="font-semibold">
             Most popular destinations for visitors from Pakistan
           </p>
-          <div className="flex flex-row w-full justify-between mt-16">
-            <div className="w-[467px] h-64 overflow-hidden">
+          <div className="flex flex-col md:flex-row md:justify-between mt-8 space-y-8 md:space-y-0">
+            <div className="md:w-[467px] h-64 overflow-hidden">
               <img src={fr} className="h-full w-full object-cover" />
             </div>
-            <div className="w-[467px] h-64 overflow-hidden">
+            <div className="md:w-[467px] h-64 overflow-hidden">
               <img src={it} className="h-full w-full object-cover" />
             </div>
           </div>
-          <div className="flex flex-row w-full justify-between mt-16">
-            <div className="w-72 h-[300px] overflow-hidden">
+          <div className="flex flex-col md:flex-row md:justify-between mt-8 space-y-8 md:space-y-0">
+            <div className="w-full md:w-72 h-[300px] overflow-hidden">
               <img src={uae} className="h-full w-full object-cover" />
             </div>
-            <div className="w-60 h-[300px] overflow-hidden">
+            <div className="w-full md:w-60 h-[300px] overflow-hidden">
               <img src={sa} className="h-full w-full object-cover" />
             </div>
-            <div className="w-[300px] h-[300px] overflow-hidden">
+            <div className="w-full md:w-[300px] h-[300px] overflow-hidden">
               <img src={mal} className="h-full w-full object-cover" />
             </div>
           </div>
