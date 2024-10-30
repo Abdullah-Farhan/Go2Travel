@@ -462,7 +462,7 @@ console.log(selectedHotel);
               <div className="flex flex-row mt-6 mb-3">
                 <img src={guests} className="mr-2" />
                 <p className="font-light text-xl text-custom-green">
-                  Guests | 2 adults
+                  Guests | {searchFilter.adults} adults | {searchFilter.children} childern | {searchFilter.rooms} rooms
                 </p>
               </div>
               <div className="flex">
