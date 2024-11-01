@@ -7,7 +7,8 @@ import Filter from "./components/Filter.jsx";
 import { FlightsContext } from "../../Context/FlightsContext.jsx";
 
 const Results = () => {
-  const {searchQuery} = useContext(FlightsContext);
+  const { searchQuery } = useContext(FlightsContext);
+  const { toQuery } = useContext(FlightsContext);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(hotels.length / itemsPerPage);
@@ -45,21 +46,18 @@ const Results = () => {
   };
 
   return (
-    <section className="w-full flex flex-row justify-center">
-      <div className="w-full max-w-[954px] mt-14 flex flex-row">
+    <section className="w-full flex flex-row justify-center mt-4">
+      <div className="w-full max-w-[954px] mt-32 flex flex-row">
         <p className="text-[#525B31] absolute">
           <span className="text-[#D2B57A]">Home</span> &gt;{" "}
-          <span className="text-[#D2B57A]">{searchQuery}</span> &gt; search
-          results{" "}
+          <span className="text-[#D2B57A]">{toQuery}</span> &gt; search results{" "}
         </p>
 
         {/* Filter Section */}
         <div className="relative">
           <div className="hidden md:block w-auto md:w-72 h-auto md:h-[2993px] border border-[#525B31] rounded-lg mt-8">
-            {/* Sidebar for medium screens and larger */}
             <Filter />
           </div>
-          {/* Button to show on small screens */}
           <div className="md:hidden">
             <button
               onClick={togglePopup}
@@ -69,7 +67,7 @@ const Results = () => {
             </button>
           </div>
         </div>
-        {/* Popup modal for small screens */}
+
         {isOpen && (
           <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="relative bg-white w-11/12 max-w-lg h-[90%] overflow-y-auto rounded-lg p-4">
@@ -80,7 +78,6 @@ const Results = () => {
                 </button>
               </div>
 
-              {/* Ensure props are passed to Filter if needed */}
               <Filter />
               <div className="flex flex-row justify-between">
                 <button
@@ -102,9 +99,16 @@ const Results = () => {
 
         {/* Card Components Section */}
         <div className="w-[680px] h-[2993px] mt-8 pl-5 flex flex-col">
-          <p className="text-custom-green text2xl font-bold">
-            {searchQuery}: {searchedResults} results found
-          </p>
+          {toQuery ? (
+            <p className="text-xl text-custom-green mb-3">
+              {searchQuery} - {toQuery}: {searchedResults} results found{" "}
+            </p>
+          ) : (
+            <p className="text-xl text-custom-green mb-3">
+              No Destination selected. Showing all {searchedResults} results
+              found{" "}
+            </p>
+          )}
           <div
             className="flex flex-row justify-center items-center w-96 h-16 rounded-[40px] shadow-result mt-2 mb-5"
             onClick={() => toggleDropdown()}
@@ -142,9 +146,16 @@ const Results = () => {
           <div className="flex-grow overflow-auto">
             <Hotel hotelData={currentItems} />
           </div>
-          <p className="text-xl text-custom-green mb-3">
-            {searchQuery}: {searchedResults} results found{" "}
-          </p>
+          {toQuery ? (
+            <p className="text-xl text-custom-green mb-3">
+              {searchQuery} - {toQuery}: {searchedResults} results found{" "}
+            </p>
+          ) : (
+            <p className="text-xl text-custom-green mb-3">
+              No Destination selected. Showing all {searchedResults} results
+              found{" "}
+            </p>
+          )}
 
           {/* Pagination controls */}
           <div className="flex justify-between mt-4 mb-5 border border-[#B5B2B2]">
@@ -191,7 +202,6 @@ const Results = () => {
                 </>
               )}
 
-              {/* Ellipsis around the current page when currentPage > 4 and not near the end */}
               {currentPage > 4 && currentPage < totalPages - 3 && (
                 <>
                   <span className="mx-1">...</span>
@@ -209,7 +219,6 @@ const Results = () => {
                 </>
               )}
 
-              {/* Last few pages (e.g., totalPages - 3 to totalPages - 1) */}
               {currentPage >= totalPages - 3 && totalPages > 4 && (
                 <>
                   {Array.from(
@@ -234,7 +243,6 @@ const Results = () => {
                 </>
               )}
 
-              {/* Last Page */}
               {totalPages > 1 && (
                 <button
                   onClick={() => handlePageChange(totalPages)}

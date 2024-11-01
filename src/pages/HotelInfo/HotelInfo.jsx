@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import search from "../../assets/svg/lens.svg";
-import schedule from "../../assets/svg/Schedule.svg";
 import guests from "../../assets/svg/guest.svg";
 import maps from "../../assets/svg/maps.svg";
 import star from "../../assets/svg/star.svg";
 import leafFilled from "../../assets/svg/leafFilled.svg";
 import leaf from "../../assets/svg/leaf.svg";
 import heart from "../../assets/svg/heart.svg";
+import heartFilled from "../../assets/png/heartFilled.png";
 import connect from "../../assets/svg/connect.svg";
 import checkbox from "../../assets/svg/checkbox.svg";
 import loc from "../../assets/svg/location.svg";
@@ -18,10 +18,9 @@ import smoking from "../../assets/svg/smoking.svg";
 import nosmoke from "../../assets/svg/nosmoke.svg";
 import hours from "../../assets/svg/hours.svg";
 import fitness from "../../assets/svg/fitness.svg";
-import uae from "../../assets/svg/uae.svg";
-import available from "../../assets/svg/available.svg";
+import pk from "../../assets/png/pk.png";
 import bell from "../../assets/svg/bell.svg";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TopAccomodation from "../../Cards/TopAccomodation";
 import { FlightsContext } from "../../Context/FlightsContext";
 import DatePicker from "react-multi-date-picker";
@@ -30,12 +29,12 @@ import "react-multi-date-picker/styles/layouts/prime.css";
 const HotelInfo = () => {
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState("overview");
-  const [searchedPlace, setSearchedPlace] = useState("Dubai");
-  const location = "United Arab Emirates";
   const { guest } = useContext(FlightsContext);
   const { selectedDates } = useContext(FlightsContext);
-  const { selectedHotel} = useContext(FlightsContext)
-  const { searchQuery } = useContext(FlightsContext)
+  const { selectedHotel } = useContext(FlightsContext);
+  const { searchQuery } = useContext(FlightsContext);
+  const { toQuery } = useContext(FlightsContext);
+  const [isHeartFilled, setIsHeartFilled] = useState(false);
   const [checkInDate, setCheckInDate] = useState(
     selectedDates ? selectedDates[0] : null
   );
@@ -48,10 +47,24 @@ const HotelInfo = () => {
     children: guest ? guest.children : 0,
     rooms: guest ? guest.rooms : 1,
   });
-  
+  const [questionsAndAnswers, setQuestionsAndAnswers] = useState([
+    { question: "What is the best time to visit?", answer: "Times Square" },
+    { question: "What attractions are a must-see?", answer: "Times Square" },
+    { question: "What are the best restaurants?", answer: "Times Square" },
+    { question: "How do I get around the city?", answer: "Times Square" },
+    { question: "What is the best time to visit?", answer: "Times Square" },
+    { question: "What attractions are a must-see?", answer: "Times Square" },
+    { question: "What are the best restaurants?", answer: "Times Square" },
+    { question: "How do I get around the city?", answer: "Times Square" },
+    { question: "How do I get around the city?", answer: "Times Square" },
+  ]);
+  const [expandedQuestionIndex, setExpandedQuestionIndex] = useState(null);
 
-  const questions = Array(9).fill("Where to park?");
-
+  const handleQuestionClick = (index) => {
+    setExpandedQuestionIndex((prevIndex) =>
+      prevIndex === index ? null : index
+    );
+  };
   const nearbyInfo = {
     "What's nearby": [
       { name: "Deira Clock Tower", distance: "600 m" },
@@ -92,11 +105,19 @@ const HotelInfo = () => {
   };
 
   console.log(selectedHotel);
-  
 
   const handleLinkClick = (link, event) => {
     event.preventDefault();
     setActiveLink(link);
+    const section = document.getElementById(link);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleHeartClick = () => {
+    setIsHeartFilled(!isHeartFilled);
+    // handle add to favorites
   };
 
   useEffect(() => {
@@ -122,9 +143,9 @@ const HotelInfo = () => {
     <div className="flex flex-col items-center">
       <div className="w-full md:w-[954px]">
         {/* Header */}
-        <div className="w-full flex justify-start flex-col md:flex-row">
+        <div className="w-full flex justify-start flex-col md:flex-row my-3">
           <p className="text-custom-gold">
-            Home &gt; {location} &gt; search results{" "}
+            Home &gt; {toQuery} &gt; search results{" "}
             <span className="text-custom-green">&gt; {selectedHotel.name}</span>
           </p>
         </div>
@@ -132,7 +153,10 @@ const HotelInfo = () => {
         <div className="">
           <ul className="flex flex-wrap">
             <li className="group mr-7">
-              <a href="" onClick={(event) => handleLinkClick("flight", event)}>
+              <a
+                href=""
+                onClick={(event) => handleLinkClick("overview", event)}
+              >
                 <p className="font-medium mb-1 text-custom-green">Overview</p>
                 <span
                   className={`block h-[2px] bg-[#4F5831] left-0 right-0 transition-all duration-200 w-0 group-hover:w-full ${
@@ -142,7 +166,10 @@ const HotelInfo = () => {
               </a>
             </li>
             <li className="group mr-7">
-              <a href="#info" onClick={(event) => handleLinkClick("info", event)}>
+              <a
+                href="#info"
+                onClick={(event) => handleLinkClick("info", event)}
+              >
                 <p className="font-medium mb-1 text-custom-green">
                   Info & Prices
                 </p>
@@ -312,10 +339,15 @@ const HotelInfo = () => {
                   </p>
                 </div>
                 <div className="flex flex-grow md:justify-end">
-                  <img src={heart} alt="" />
+                  <img
+                    src={isHeartFilled ? heartFilled : heart}
+                    alt="Heart"
+                    onClick={handleHeartClick}
+                    className="cursor-pointer w-8 h-8"
+                  />
                   <img src={connect} alt="" className="mx-2" />
                   <button
-                    className="font-medium text-white text-xl  rounded bg-custom-green px-4 py-1"
+                    className="font-medium text-white text-xl rounded bg-custom-green px-4 py-1"
                     onClick={() => navigate("/payment")}
                   >
                     Reserve
@@ -336,8 +368,60 @@ const HotelInfo = () => {
               </a>
             </div>
 
-            <div className="w-full h-80 md:h-96">
-              <img src={jood} className="w-full h-full object-contain" />
+            <div className="flex flex-col items-between w-full">
+              <div className="flex mb-2">
+                {/* Left Column */}
+                <div className="flex flex-col mr-2">
+                  <div className="w-56 h-[138px] mb-1">
+                    <img
+                      src={jood}
+                      alt="Image 1"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="w-56 h-[138px]">
+                    <img
+                      src={jood}
+                      alt="Image 2"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+
+                {/* Right Column */}
+                <div className="w-[480px] h-[280px]">
+                  <img
+                    src={jood}
+                    alt="Image 3"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+
+              {/* Bottom Row */}
+              <div className="flex gap-2">
+                {[...Array(4)].map((_, index) => (
+                  <div key={index} className="w-[140px] h-[80px]">
+                    <img
+                      src={jood}
+                      alt={`Image ${index + 4}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+
+                {/* Last image with overlay */}
+                <div className="relative w-[120px] h-[80px]">
+                  <img
+                    src={jood}
+                    alt="Image 8"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-xl font-bold">
+                    23+
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -538,7 +622,7 @@ const HotelInfo = () => {
                 review:
                   "“Exceptional specially staff behavior cleaning astonishing”",
                 initial: "B",
-                flag: "path-to-flag",
+                flag: pk,
               },
               {
                 name: "Muhammad",
@@ -592,27 +676,49 @@ const HotelInfo = () => {
 
         <span className="w-full h-0.5 bg-custom-green block mt-3"></span>
 
-        <div className="flex flex-col space-y-8 text-custom-green p-4">
-          {/* Top Section */}
-          <div className="flex flex-wrap gap-6 justify-center">
+        <div
+          className="flex flex-col space-y-8 text-custom-green p-4"
+          id="rules"
+        >
+          <div className="flex flex-wrap justify-between">
             {/* Left Column */}
             <div className="flex flex-col space-y-3 p-4 border border-gray-300 rounded-lg w-full md:w-1/3">
               <h2 className="font-semibold">Travelers are asking</h2>
-              {questions.map((question, index) => (
-                <div key={index} className="flex justify-between">
-                  <span>{question}</span>
-                  <span>&gt;</span>
+              {questionsAndAnswers.map((item, index) => (
+                <div key={index} className="flex flex-col">
+                  <div
+                    className="flex justify-between cursor-pointer"
+                    onClick={() => handleQuestionClick(index)}
+                  >
+                    <span className="text-black">{item.question}</span>
+                    <span>&gt;</span>
+                  </div>
+                  {expandedQuestionIndex === index && (
+                    <div className="mt-2 p-2 border border-gray-300 rounded-lg bg-gray-100">
+                      {item.answer}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
 
             {/* Middle Column */}
-            <div className="flex flex-col space-y-3 p-4 border border-gray-300 rounded-lg md:flex-grow">
+            <div className="flex flex-col space-y-3 p-4 border border-gray-300 rounded-lg w-[32%]">
               <h2 className="font-semibold">Travelers are asking</h2>
-              {questions.map((question, index) => (
-                <div key={index} className="flex justify-between">
-                  <span>{question}</span>
-                  <span>&gt;</span>
+              {questionsAndAnswers.map((item, index) => (
+                <div key={index} className="flex flex-col">
+                  <div
+                    className="flex justify-between cursor-pointer"
+                    onClick={() => handleQuestionClick(index)}
+                  >
+                    <span>{item.question}</span>
+                    <span>&gt;</span>
+                  </div>
+                  {expandedQuestionIndex === index && (
+                    <div className="mt-2 p-2 border border-gray-300 rounded-lg bg-gray-100">
+                      {item.answer}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

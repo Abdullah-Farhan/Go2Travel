@@ -6,7 +6,7 @@ import leaf from "../../assets/svg/leaf.svg";
 import lens from "../../assets/svg/lens.svg";
 import schedule from "../../assets/svg/Schedule.svg";
 import info from "../../assets/svg/info.svg";
-import guest from "../../assets/svg/guest.svg";
+import guests from "../../assets/svg/guest.svg";
 import card from "../../assets/svg/card.svg";
 import gpay from "../../assets/svg/gpay.svg";
 import StripeForm from "../../components/StripeForm/StripeForm";
@@ -16,6 +16,8 @@ import amex from "../../assets/svg/amex.svg";
 import lock from "../../assets/svg/lock.svg";
 import jood from "../../assets/svg/jood.svg";
 import { FlightsContext } from "../../Context/FlightsContext";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Checkout = () => {
   const { selectedDates } = useContext(FlightsContext);
@@ -23,6 +25,7 @@ const Checkout = () => {
   const [checkInDate, setCheckInDate] = useState(
     selectedDates ? selectedDates[0] : null
   );
+  const {guest} = useContext(FlightsContext)
   const [checkOutDate, setCheckOutDate] = useState(
     selectedDates ? selectedDates[1] : null
   );
@@ -44,6 +47,10 @@ const Checkout = () => {
   const toggleSwitch = () => {
     setIsOn(!isOn);
   };
+
+  const handleCompletion = () => {
+    toast.success("Booking Successful")
+  }
 
   useEffect(() => {
     if (checkInDate && checkOutDate) {
@@ -242,15 +249,15 @@ const Checkout = () => {
 
               <div className="flex mt-1">
                 <div>
-                  <img src={guest} width={20} height={20} />
+                  <img src={guests} width={20} height={20} />
                 </div>
                 <div className="flex flex-col ml-3">
                   <p className="text-custom-green text-[10px] font-semibold">
                     Total guests
                   </p>
                   <p className="text-custom-green text-[10px] font-medium my-4">
-                    {searchFilter.adult} adults | {searchFilter.children}{" "}
-                    children | {searchFilter.rooms} rooms
+                    {searchFilter.adults} adults | {searchFilter.children}{" "}
+                    childern | {searchFilter.rooms} rooms
                   </p>
                 </div>
               </div>
@@ -426,7 +433,7 @@ const Checkout = () => {
               </section>
             </div>
             <div className="flex justify-end mt-10">
-              <button className="flex justify-around items-center w-44 h-8 bg-custom-gold rounded text-[10px] font-semibold text-white">
+              <button className="flex justify-around items-center w-44 h-8 bg-custom-gold rounded text-[10px] font-semibold text-white" onClick={handleCompletion}>
                 <img src={lock} />
                 Complete Booking
                 <p>&gt;</p>
@@ -435,6 +442,7 @@ const Checkout = () => {
           </section>
         </section>
       </section>
+      <ToastContainer />
     </div>
   );
 };

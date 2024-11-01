@@ -11,7 +11,7 @@ const Hotel = ({ hotelData }) => {
   const navigate = useNavigate();
   const { guest } = useContext(FlightsContext);
   const { selectedDates } = useContext(FlightsContext);
-  const { setSelectedHotel } = useContext(FlightsContext); 
+  const { setSelectedHotel } = useContext(FlightsContext);
 
   const [searchFilter, setSearchFilter] = useState({
     adults: guest ? guest.adults : 1,
@@ -22,10 +22,16 @@ const Hotel = ({ hotelData }) => {
   const [nights, setNights] = useState(0);
 
   useEffect(() => {
-    if (selectedDates && Array.isArray(selectedDates) && selectedDates.length === 2) {
+    if (
+      selectedDates &&
+      Array.isArray(selectedDates) &&
+      selectedDates.length === 2
+    ) {
       const checkInDate = selectedDates[0];
       const checkOutDate = selectedDates[1];
-      const nightCount = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)); 
+      const nightCount = Math.ceil(
+        (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)
+      );
       setNights(nightCount);
     }
   }, [selectedDates]);
@@ -43,20 +49,21 @@ const Hotel = ({ hotelData }) => {
         <>
           {hotelData.map((hotel, index) => (
             <div
-              className="w-full md:w-[633px] h-60 rounded-md shadow-result flex flex-row mb-6 cursor-pointer"
+              className="w-full md:w-[633px] h-60 rounded-md shadow-result flex flex-row mb-6"
               key={index}
-              onClick={() => handleNavigation(hotel)}
             >
               <img src={hotel.image} className="py-2 pl-2" />
               <div className="w-full h-full flex flex-row">
                 <div className="w-72 h-full py-4 pl-4 flex flex-col">
                   <div className="flex flex-row w-full items-center">
-                    <p className="font-extrabold text-custom-green mr-2.5 text-[10px]">
+                    <p className="font-extrabold text-custom-green mr-2.5 text-base">
                       {hotel.name}
                     </p>
-                    {Array(hotel.rating).fill(0).map((_, index) => (
-                      <img src={star} alt="rating" className="w-2.5 h-2.5"  />
-                    ))}
+                    {Array(hotel.rating)
+                      .fill(0)
+                      .map((_, index) => (
+                        <img src={star} alt="rating" className="w-2.5 h-2.5" />
+                      ))}
                   </div>
                   <div className="flex flex-row relative items-center">
                     <a
@@ -80,21 +87,24 @@ const Hotel = ({ hotelData }) => {
                     </p>
                   </div>
                   <div className="flex flex-row mt-3 items-center">
-                    {Array(hotel.level).fill(0).map((_, index) => (
-                      <img
-                        src={leafFilled}
-                        alt="sustainability level"
-                        className="w-4 h-4"
-                      />
-                    ))}
-                    {Array(3 - hotel.level).fill(0).map((_, index) => (
-                      <img
-                        src={leaf}
-                        alt="sustainability level"
-                        className="w-4 h-4"
-
-                      />
-                    ))}
+                    {Array(hotel.level)
+                      .fill(0)
+                      .map((_, index) => (
+                        <img
+                          src={leafFilled}
+                          alt="sustainability level"
+                          className="w-4 h-4"
+                        />
+                      ))}
+                    {Array(3 - hotel.level)
+                      .fill(0)
+                      .map((_, index) => (
+                        <img
+                          src={leaf}
+                          alt="sustainability level"
+                          className="w-4 h-4"
+                        />
+                      ))}
                     <p className="text-custom-gold text-[10px] ml-2.5">
                       Travel sustainable level {hotel.level}
                     </p>
@@ -121,54 +131,57 @@ const Hotel = ({ hotelData }) => {
                   </p>
                 </div>
                 <div className="w-28 h-full flex flex-col justify-between">
-  <div className="flex flex-row justify-end text-[7px] text-custom-green font-semibold py-4 pr-5">
-    <div>
-      {hotel.reviews > 9 ? (
-        <p>Wonderful</p>
-      ) : hotel.reviews > 8 ? (
-        <p>Excellent</p>
-      ) : (
-        <p>Good</p>
-      )}
-      <p className="text-[7px] text-custom-green font-medium mr-1">
-        1432 reviews
-      </p>
-    </div>
-    <div className="flex justify-center items-center w-7 h-6 text-white rounded-sm bg-custom-gold font-bold text-base">
-      <p>{hotel.reviews}</p>
-    </div>
-  </div>
-  <div className="w-full h-24 justify-end text-[10px] text-custom-green pr-5">
-    <div className="w-full flex flex-row justify-end h-7">
-      <p>
-        {nights} Nights,{" "}
-        {searchFilter.children === 0 ? (
-          <>{searchFilter.adults} Adult</>
-        ) : (
-          <>{searchFilter.adults} Adult, {searchFilter.children} Children</>
-        )}
-      </p>
-    </div>
-    <div className="w-full flex flex-row justify-end">
-      <p className="font-bold mr-1">
-        Rs {hotel.costPerNight * nights}
-      </p>
-      <img src={info} alt="info" />
-    </div>
-    <div className="w-full flex flex-row justify-end">
-      <p className="text-custom-green text-[7px]">
-        +{hotel.tax * nights} taxes & charges
-      </p>
-    </div>
-    <div className="flex flex-row justify-end">
-      <button className="w-[88px] h-5 mt-2 bg-custom-gold rounded-sm flex justify-center items-center">
-        <p className="text-white text-[8px]">
-          See availability &gt;
-        </p>
-      </button>
-    </div>
-  </div>
-</div>  
+                  <div className="flex flex-row justify-end text-[7px] text-custom-green font-semibold py-4 pr-5">
+                    <div>
+                      {hotel.reviews > 9 ? (
+                        <p>Wonderful</p>
+                      ) : hotel.reviews > 8 ? (
+                        <p>Excellent</p>
+                      ) : (
+                        <p>Good</p>
+                      )}
+                      <p className="text-[7px] text-custom-green font-medium mr-1">
+                        1432 reviews
+                      </p>
+                    </div>
+                    <div className="flex justify-center items-center w-7 h-6 text-white rounded-sm bg-custom-gold font-bold text-base">
+                      <p>{hotel.reviews}</p>
+                    </div>
+                  </div>
+                  <div className="w-full h-24 justify-end text-[10px] text-custom-green pr-5">
+                    <div className="w-full flex flex-row justify-end h-7">
+                      <p>
+                        {nights} Nights,{" "}
+                        {searchFilter.children === 0 ? (
+                          <>{searchFilter.adults} Adult</>
+                        ) : (
+                          <>
+                            {searchFilter.adults} Adult, {searchFilter.children}{" "}
+                            Children
+                          </>
+                        )}
+                      </p>
+                    </div>
+                    <div className="w-full flex flex-row justify-end">
+                      <p className="font-bold mr-1">
+                        Rs {hotel.costPerNight * nights}
+                      </p>
+                      <img src={info} alt="info" />
+                    </div>
+                    <div className="w-full flex flex-row justify-end">
+                      <p className="text-custom-green text-[7px]">
+                        +{hotel.tax * nights} taxes & charges
+                      </p>
+                    </div>
+                    <div className="flex flex-row justify-end">
+                      <button className="w-[88px] h-5 mt-2 bg-custom-gold rounded-sm flex justify-center items-center" onClick={() => handleNavigation(hotel)}>
+                        <p className="text-white text-[8px]">
+                          See availability &gt;
+                        </p>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           ))}

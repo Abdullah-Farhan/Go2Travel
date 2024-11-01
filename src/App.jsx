@@ -1,8 +1,5 @@
-import { useState } from "react";
 import "./App.css";
 import AppLayout from "./layout/Applayout.jsx";
-import Navbar from "./components/Navbar/Navbar";
-import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home.jsx";
 import Results from "./pages/Results/Results.jsx";
 import Payment from "./pages/Payment/Payment.jsx";
@@ -10,11 +7,11 @@ import Checkout from "./pages/Checkout/Checkout.jsx";
 import StripeProvider from "./stripe/Provider/StripeProvider.jsx";
 import HotelInfo from "./pages/HotelInfo/HotelInfo.jsx";
 import {
-  Navigate,
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
 import { FlightsProvider } from "./Context/FlightsContext.jsx";
+import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +51,7 @@ function App() {
       <FlightsProvider>
         <RouterProvider router={router} />
       </FlightsProvider>
+      <ToastContainer />
     </>
   );
 }

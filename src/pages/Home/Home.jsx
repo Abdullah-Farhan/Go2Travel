@@ -29,7 +29,7 @@ const Home = () => {
 
   return (
     <section className="w-full flex justify-center font-montserrat">
-      <div className="w-full max-w-[954px] mt-28 px-4 md:px-0">
+      <div className="w-full max-w-[954px] mt-56 px-4 md:px-0">
         {/* Header Section */}
         <section
           style={{ backgroundImage: `url(${home})` }}

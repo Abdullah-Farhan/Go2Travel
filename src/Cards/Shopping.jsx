@@ -22,12 +22,12 @@ const Shopping = () => {
 
       <div
         ref={scrollRef}
-        className={`flex overflow-x-auto ml-0 md:ml-10 scroll-smooth w-full md:w-[93%] mr-0 md:mr-8 snap-x snap-mandatory hide-scrollbar relative`}
+        className={`flex overflow-x-auto mx-10 scroll-smooth w-full md:w-[92%] snap-mandatory hide-scrollbar relative`}
       >
         {shopping.map((place, index) => (
           <div
             key={index}
-            className="flex-none w-[430px] h-72 my-2 mx-2 snap-start shadow-md bg-cover bg-center flex flex-col" 
+            className="flex-none w-[420px] h-72 my-2 mx-2 snap-start shadow-md bg-cover bg-center flex flex-col" 
             style={{ backgroundImage: `url(${place.image})` }}
           >
             <p className="w-full items-center bg-opacity-75 my-5 mx-3 text-white text-2xl font-extrabold">

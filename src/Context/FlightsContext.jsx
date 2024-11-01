@@ -33,6 +33,12 @@ export const FlightsProvider = ({ children }) => {
     return storedQuery ? JSON.parse(storedQuery) : '';
   });
 
+  // State for to destination query
+  const [toQuery, setToQuery] = useState(() => {
+    const storedQuery = localStorage.getItem('toQuery');
+    return storedQuery ? JSON.parse(storedQuery) : '';
+  });
+
   // State for trip type
   const [tripType, setTripType] = useState(() => {
     const storedTripType = localStorage.getItem('tripType');
@@ -78,6 +84,15 @@ export const FlightsProvider = ({ children }) => {
     }
   }, [searchQuery]);
 
+  // Persist toQuery to localStorage
+  useEffect(() => {
+    if (toQuery) {
+      localStorage.setItem('toQuery', JSON.stringify(toQuery));
+    } else {
+      localStorage.removeItem('toQuery');
+    }
+  }, [toQuery]);
+
   // Persist tripType to localStorage
   useEffect(() => {
     localStorage.setItem('tripType', JSON.stringify(tripType));
@@ -101,6 +116,8 @@ export const FlightsProvider = ({ children }) => {
         setSelectedHotel,
         searchQuery,
         setSearchQuery,
+        toQuery,
+        setToQuery,
         tripType,
         setTripType
       }}

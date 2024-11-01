@@ -14,7 +14,7 @@ const TopAccomodation = () => {
   return (
     <div className="relative flex items-center justify-between">
       <button
-        className="absolute left-0 z-10 p-2 bg-white rounded-full w-10 h-10"
+        className="absolute left-0 z-10 p-2 bg-white rounded-full w-10 h-10 ml-2"
         onClick={scrollLeft}
       >
         &lt;
@@ -42,7 +42,7 @@ const TopAccomodation = () => {
       </div>
 
       <button
-        className="absolute right-0 z-10 p-2 bg-white rounded-full w-10 h-10"
+        className="absolute mr-3 right-0 z-10 p-2 bg-white rounded-full w-10 h-10"
         onClick={scrollRight}
       >
         &gt;
