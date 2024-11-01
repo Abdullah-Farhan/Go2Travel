@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import DatePicker from "../DatePicker/DatePicker";
 import headerBg from "../../assets/png/headerBg.png";
 import logo from "../../assets/png/logo.png";
@@ -11,6 +11,7 @@ import bed from "../../assets/svg/Bed.svg";
 import schedule from "../../assets/svg/Schedule.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { FlightsContext } from "../../Context/FlightsContext";
+import { toast, Toaster } from "react-hot-toast"
 
 const Navbar = () => {
   const [activeLink, setActiveLink] = useState("home");
@@ -18,15 +19,24 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
-  const [rooms, setRooms] = useState(1);
-  const { guest, setGuest } = useContext(FlightsContext);
+  const [rooms, setRooms] = useState(0);
   const [destination, setDestination] = useState();
-  const [toLocation, setToLocation] = useState()
+  const [toLocation, setToLocation] = useState();
   const navigate = useNavigate();
-  const { setSearchQuery } = useContext(FlightsContext);
-  const { setToQuery } = useContext(FlightsContext);
   const location = window.location.pathname;
-  const { tripType, setTripType } = useContext(FlightsContext);
+  const {
+    guest,
+    setToQuery,
+    setGuest,
+    setSearchQuery,
+    tripType,
+    setTripType,
+    setIsSearched,
+    isSearched,
+    toQuery,
+    selectedDates,
+    searchQuery,
+  } = useContext(FlightsContext);
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
@@ -44,16 +54,37 @@ const Navbar = () => {
     });
     setDropdownOpen(!dropdownOpen);
   };
+  const showToast = () => {
+    toast('Fill all required fields!', {
+      duration: 1500, // duration in milliseconds
+      position: 'bottom-right', 
+      style: {
+        // You can customize the toast style if needed
+        background: 'red',
+        color: '#fff',
+      },
+    });
+  };
 
   const handleSearchResults = () => {
-    setSearchQuery(destination);
-    setToQuery(toLocation)
-    navigate("/results");
+    console.log(searchQuery, toQuery, selectedDates, guest);
+    
+    if (!destination || !toLocation || !selectedDates || !guest) {
+      showToast()
+    } else {
+      setIsSearched(!isSearched);
+      setSearchQuery(destination);
+      setToQuery(toLocation);
+      navigate("/flights-offers");
+    }
   };
 
   const handleNavigation = () => {
     navigate("/");
   };
+
+  // console.log(tripType);
+  
 
   return (
     <>
@@ -260,8 +291,8 @@ const Navbar = () => {
           ) : (
             <>
               <div className="hidden md:flex w-full flex-col justify-end items-center">
-                <div className="w-[954px] bg-white rounded-[40px] bottom-0 shadow-search-container flex flex-row justify-center flex-wrap">
-                  <div className="w-1/3 h-20 rounded-[40px] shadow-search items-center px-2 py-3 flex flex-row">
+                <div className="w-[954px] bg-white rounded-[40px] bottom-0 shadow-search-container flex flex-row justify-center flex-wrap space-x-2">
+                  <div className="w-[32.5%] h-20 rounded-[40px] shadow-search items-center px-2 py-3 flex flex-row">
                     <div className="h-full mr-2 px-3 py-1">
                       <img src={schedule} className="w-8 h-8" />
                     </div>
@@ -273,7 +304,7 @@ const Navbar = () => {
                     </div>
                   </div>
 
-                  <div className="w-1/3 h-20 rounded-[40px] shadow-search flex flex-col items-center px-2 py-3">
+                  <div className="w-[32.5%] h-20 rounded-[40px] shadow-search flex flex-col items-center px-2 py-3">
                     <p className="text-[#525B31] font-bold text-base font-montserrat">
                       Flight Type?
                     </p>
@@ -283,17 +314,20 @@ const Navbar = () => {
                       className="outline-none rounded-md p-2"
                       defaultValue="One Way"
                     >
-                      <option value="roundTrip">One Way</option>
-                      <option value="oneWay">Return</option>
+                      <option value="oneWay">One Way</option>
+                      <option value="roundTrip">Return</option>
                       <option value="multiCity">Multi-Way</option>
                     </select>
                   </div>
 
-                  <div className="w-1/3 h-20 rounded-[40px] shadow-search flex flex-row items-center px-2 py-3">
+                  <div className="w-[32.5%] h-20 rounded-[40px] shadow-search flex flex-row items-center px-2 py-3">
                     <div className="h-full flex flex-col mr-1">
                       <img src={user} className="w-10 h-10 ml-1 " />
                     </div>
-                    <div onClick={() => toggleDropdown()} className="w-24 h-16 mt-2">
+                    <div
+                      onClick={() => toggleDropdown()}
+                      className="w-24 h-16 mt-2"
+                    >
                       <p className="text-[#525B31] font-bold text-base font-montserrat">
                         Who?
                       </p>
@@ -301,7 +335,7 @@ const Navbar = () => {
                         <div className="">
                           <p className="text-[10px]">
                             {adults} adults | {children} children | {rooms}{" "}
-                            rooms
+                            infants
                           </p>
                         </div>
                       ) : (
@@ -310,7 +344,7 @@ const Navbar = () => {
                             <>
                               <p>
                                 {guest.adults} adults | {guest.children}{" "}
-                                children | {guest.rooms} rooms
+                                children | {guest.rooms} infants
                               </p>
                             </>
                           ) : (
@@ -342,7 +376,7 @@ const Navbar = () => {
                                 onChange={(e) =>
                                   setRooms(Number(e.target.value))
                                 }
-                                placeholder="Rooms"
+                                placeholder="Infants"
                               />
                             </div>
                           )}
@@ -394,7 +428,7 @@ const Navbar = () => {
                               Children
                             </p>
                             <p className="text-custom-green text-[10px]">
-                              (Age 0 to 17)
+                              (Age 4 to 17)
                             </p>
                           </div>
                           <div className="flex flex-row justify-between w-20">
@@ -422,14 +456,16 @@ const Navbar = () => {
                         </section>
                         <section className="flex flex-row justify-between h-12 border-b border-b-[#D2B57A] pr-3">
                           <div className="pl-6 h-full flex flex-row items-center">
-                            <p className="font-bold text-custom-green">Rooms</p>
+                            <p className="font-bold text-custom-green">
+                              Infants
+                            </p>
                           </div>
                           <div className="flex flex-row justify-between w-20">
                             <div className="flex justify-center items-center">
                               <button
                                 className="w-4 h-4 rounded-full bg-custom-gold flex justify-center items-center"
                                 onClick={() => setRooms(rooms - 1)}
-                                disabled={rooms === 1}
+                                disabled={rooms === 0}
                               >
                                 -
                               </button>
@@ -459,7 +495,7 @@ const Navbar = () => {
                     )}
                   </div>
 
-                  <div className="w-1/3 h-20 rounded-[40px] shadow-search flex flex-row items-center mt-2 px-2 py-3">
+                  <div className="w-[32.5%] h-20 rounded-[40px] shadow-search flex flex-row items-center mt-3 px-2 py-3">
                     <div className="h-full mr-2 px-3 py-1">
                       <img src={bed} className="w-8 h-8" />
                     </div>
@@ -477,7 +513,7 @@ const Navbar = () => {
                     </div>
                   </div>
 
-                  <div className="w-1/3 h-20 rounded-[40px] shadow-search flex flex-row items-center mt-2 px-2 py-3">
+                  <div className="w-[32.5%]  h-20 rounded-[40px] shadow-search flex flex-row items-center mt-3 px-2 py-3">
                     <div className="h-full mr-2 px-3 py-1">
                       <img src={bed} className="w-8 h-8" />
                     </div>
@@ -500,6 +536,7 @@ const Navbar = () => {
           )}
         </div>
       )}
+      <Toaster />
     </>
   );
 };

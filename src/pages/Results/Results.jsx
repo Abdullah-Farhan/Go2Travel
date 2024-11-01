@@ -105,7 +105,7 @@ const Results = () => {
             </p>
           ) : (
             <p className="text-xl text-custom-green mb-3">
-              No Destination selected. Showing all {searchedResults} results
+              Showing all {searchedResults} results
               found{" "}
             </p>
           )}
@@ -152,7 +152,7 @@ const Results = () => {
             </p>
           ) : (
             <p className="text-xl text-custom-green mb-3">
-              No Destination selected. Showing all {searchedResults} results
+              Showing all {searchedResults} results
               found{" "}
             </p>
           )}

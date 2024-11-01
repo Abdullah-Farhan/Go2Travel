@@ -5,34 +5,50 @@ import "react-multi-date-picker/styles/layouts/prime.css";
 import { FlightsContext } from "../../Context/FlightsContext";
 
 const CustomCalendar = () => {
-  const { selectedDates, setSelectedDates } = useContext(FlightsContext);
-  
+  const { selectedDates, setSelectedDates, tripType } = useContext(FlightsContext);
   const today = new Date();
+  console.log(tripType);
+  
 
   const isValidDate = (date) => {
     return date >= today;
   };
 
+  const handleDateChange = (dates) => {
+    if (Array.isArray(dates)) {
+      const validDates = dates.filter(isValidDate).map(date => new Date(date)); // Ensure dates are Date objects
+      setSelectedDates(validDates.length > 0 ? validDates : null);
+    } else if (isValidDate(dates)) {
+      setSelectedDates([new Date(dates)]); // Ensure single date is a Date object
+    }
+  };
+
   return (
     <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "center" }} className="font-montserrat">
-      <DatePicker
-        placeholder="Add dates"
-        value={selectedDates}
-        onChange={(dates) => {
-          if (Array.isArray(dates)) {
-            const validDates = dates.filter(isValidDate).map(date => new Date(date)); // Ensure dates are Date objects
-            setSelectedDates(validDates.length > 0 ? validDates : null);
-          } else if (isValidDate(dates)) {
-            setSelectedDates(new Date(dates)); // Ensure single date is a Date object
-          }
-        }}
-        numberOfMonths={2}
-        weekDays={["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}
-        hideYear
-        className="custom-calendar"
-        range
-        minDate={today}
-      />
+      {tripType === "oneWay" ? (
+        <DatePicker
+          placeholder="Select date"
+          value={selectedDates}
+          onChange={handleDateChange}
+          numberOfMonths={1}
+          weekDays={["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}
+          hideYear
+          className="custom-calendar"
+          minDate={today}
+        />
+      ) : (
+        <DatePicker
+          placeholder="Add dates"
+          value={selectedDates}
+          onChange={handleDateChange}
+          numberOfMonths={2} // Show two months for round trips
+          weekDays={["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}
+          hideYear
+          className="custom-calendar"
+          range
+          minDate={today}
+        />
+      )}
       <div style={{
         width: '2px',
         backgroundColor: 'black',

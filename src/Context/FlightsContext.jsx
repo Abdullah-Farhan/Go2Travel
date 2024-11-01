@@ -1,106 +1,119 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from "react";
 
 export const FlightsContext = createContext();
 
 export const FlightsProvider = ({ children }) => {
+  const [isSearched, setIsSearched] = useState(false);
+
   // State for selected dates
   const [selectedDates, setSelectedDates] = useState(() => {
-    const storedDates = localStorage.getItem('selectedDates');
+    const storedDates = localStorage.getItem("selectedDates");
     if (storedDates) {
       const parsedDates = JSON.parse(storedDates);
+      // Ensure we correctly handle both single date and array of dates
       return Array.isArray(parsedDates)
-        ? parsedDates.map(dateStr => new Date(dateStr))
-        : new Date(parsedDates);
+        ? parsedDates.map((dateStr) => new Date(dateStr))
+        : [new Date(parsedDates)]; // Wrap in array for single date
     }
-    return null;
+    return null; // If no stored dates, return null
   });
 
   // State for guest information
-  const [guest, setGuest] = useState(() => {
-    const storedGuest = localStorage.getItem('guest');
-    return storedGuest ? JSON.parse(storedGuest) : null;
-  });
+  // const [guest, setGuest] = useState(() => {
+  //   const storedGuest = localStorage.getItem("guest");
+  //   return storedGuest ? JSON.parse(storedGuest) : { adults: 1, children: 0, rooms: 0 };
+  // });
+  const [guest, setGuest] = useState({ adults: 1, children: 0, rooms: 0 });
 
   // State for selected hotel
   const [selectedHotel, setSelectedHotel] = useState(() => {
-    const storedHotel = localStorage.getItem('selectedHotel');
+    const storedHotel = localStorage.getItem("selectedHotel");
     return storedHotel ? JSON.parse(storedHotel) : null;
   });
 
   // State for search query
   const [searchQuery, setSearchQuery] = useState(() => {
-    const storedQuery = localStorage.getItem('searchQuery');
-    return storedQuery ? JSON.parse(storedQuery) : '';
+    const storedQuery = localStorage.getItem("searchQuery");
+    return storedQuery ? JSON.parse(storedQuery) : "";
   });
 
   // State for to destination query
   const [toQuery, setToQuery] = useState(() => {
-    const storedQuery = localStorage.getItem('toQuery');
-    return storedQuery ? JSON.parse(storedQuery) : '';
+    const storedQuery = localStorage.getItem("toQuery");
+    return storedQuery ? JSON.parse(storedQuery) : "";
   });
 
   // State for trip type
-  const [tripType, setTripType] = useState(() => {
-    const storedTripType = localStorage.getItem('tripType');
-    return storedTripType ? JSON.parse(storedTripType) : 'roundTrip';
-  });
+  const [tripType, setTripType] = useState("oneWay");
 
   // Persist selectedDates to localStorage
   useEffect(() => {
     if (selectedDates) {
       const datesToStore = Array.isArray(selectedDates)
-        ? selectedDates.map(date => date.toISOString())
-        : selectedDates.toISOString();
-      localStorage.setItem('selectedDates', JSON.stringify(datesToStore));
+        ? selectedDates.map((date) => date.toISOString())
+        : [selectedDates.toISOString()]; // Wrap single date in an array
+      localStorage.setItem("selectedDates", JSON.stringify(datesToStore));
     } else {
-      localStorage.removeItem('selectedDates');
+      localStorage.removeItem("selectedDates");
     }
   }, [selectedDates]);
 
   // Persist guest information to localStorage
   useEffect(() => {
-    if (guest) {
-      localStorage.setItem('guest', JSON.stringify(guest));
+    console.log(guest);
+    if (guest && Object.keys(guest).length) {
+      localStorage.setItem("guest", JSON.stringify(guest));
     } else {
-      localStorage.removeItem('guest');
+      setGuest({ adults: 1, children: 0, rooms: 0 })
     }
   }, [guest]);
 
+  useEffect(() => {
+    const storedGuest = localStorage.getItem("guest");
+    // return storedGuest ? JSON.parse(storedGuest) : { adults: 1, children: 0, rooms: 0 };
+    setGuest(storedGuest)
+    console.log(guest);
+    if (guest && Object.keys(guest).length) {
+      localStorage.setItem("guest", JSON.stringify(guest));
+    } else {
+      setGuest({ adults: 1, children: 0, rooms: 0 })
+    }
+  }, []);
   // Persist selectedHotel to localStorage
   useEffect(() => {
     if (selectedHotel) {
-      localStorage.setItem('selectedHotel', JSON.stringify(selectedHotel));
+      localStorage.setItem("selectedHotel", JSON.stringify(selectedHotel));
     } else {
-      localStorage.removeItem('selectedHotel');
+      localStorage.removeItem("selectedHotel");
     }
   }, [selectedHotel]);
 
   // Persist searchQuery to localStorage
   useEffect(() => {
     if (searchQuery) {
-      localStorage.setItem('searchQuery', JSON.stringify(searchQuery));
+      localStorage.setItem("searchQuery", JSON.stringify(searchQuery));
     } else {
-      localStorage.removeItem('searchQuery');
+      localStorage.removeItem("searchQuery");
     }
   }, [searchQuery]);
 
   // Persist toQuery to localStorage
   useEffect(() => {
     if (toQuery) {
-      localStorage.setItem('toQuery', JSON.stringify(toQuery));
+      localStorage.setItem("toQuery", JSON.stringify(toQuery));
     } else {
-      localStorage.removeItem('toQuery');
+      localStorage.removeItem("toQuery");
     }
   }, [toQuery]);
 
   // Persist tripType to localStorage
-  useEffect(() => {
-    localStorage.setItem('tripType', JSON.stringify(tripType));
-  }, [tripType]);
+  // useEffect(() => {
+  //   localStorage.setItem("tripType", JSON.stringify(tripType));
+  // }, [tripType]);
 
   // Reset guest data when on the homepage
   useEffect(() => {
-    if (window.location.pathname === '/') {
+    if (window.location.pathname === "/") {
       setGuest(null);
     }
   }, []);
@@ -119,7 +132,9 @@ export const FlightsProvider = ({ children }) => {
         toQuery,
         setToQuery,
         tripType,
-        setTripType
+        setTripType,
+        setIsSearched,
+        isSearched,
       }}
     >
       {children}

@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import { FlightsProvider } from "./Context/FlightsContext.jsx";
 import { ToastContainer } from "react-toastify";
+import FlightOffersList from "./pages/Flights/Flights.jsx";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
         path: "hotel-info",
         element: <HotelInfo />,
       },
+      {
+        path: "flights-offers",
+        element: <FlightOffersList />
+      }
     ],
   },
 ]);
