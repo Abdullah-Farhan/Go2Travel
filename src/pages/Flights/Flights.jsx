@@ -11,7 +11,9 @@ const FlightOffersList = () => {
   const { selectedDates, guest, searchQuery, toQuery, isSearched, tripType } =
     useContext(FlightsContext);
   const [departureDate, setDepartureDate] = useState(selectedDates[0]);
-  const [returnDate, setReturnDate] = useState(selectedDates.length > 1 ? selectedDates[1]:null);
+  const [returnDate, setReturnDate] = useState(
+    selectedDates.length > 1 ? selectedDates[1] : null
+  );
 
   const passengers = [];
   const [flights, setFlights] = useState([]);
@@ -19,6 +21,7 @@ const FlightOffersList = () => {
   const itemsPerPage = 10; // Number of items to display per page
   const [loading, setLoading] = useState(false); // Loading state
   const [error, setError] = useState(null);
+  const [filterVisible, setFilterVisible] = useState(false); // State for filter visibility
 
   for (let i = 0; i < guest.adults; i++) {
     passengers.push({
@@ -54,21 +57,20 @@ const FlightOffersList = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // Effect to set the departure date from selectedDates
   useEffect(() => {
     if (selectedDates.length > 0) {
       const date = selectedDates[0]; // Ensure this is a Date object
       setDepartureDate(formatDate(date));
-      if(selectedDates.length>1){ 
-      setReturnDate(formatDate(selectedDates[1]));
+      if (selectedDates.length > 1) {
+        setReturnDate(formatDate(selectedDates[1]));
       }
     }
   }, [selectedDates]);
 
   useEffect(() => {
     const flightsApiRequest = async () => {
-        setLoading(true); // Set loading to true when starting the request
-        setError(null);
+      setLoading(true); // Set loading to true when starting the request
+      setError(null);
       try {
         console.log(departureDate, searchQuery, toQuery, tripType);
 
@@ -79,7 +81,7 @@ const FlightOffersList = () => {
                   {
                     origin: searchQuery,
                     destination: toQuery,
-                    departure_date: departureDate, // Ensure this is formatted as "YYYY-MM-DD"
+                    departure_date: departureDate,
                   },
                 ],
                 passengers: passengers,
@@ -89,30 +91,38 @@ const FlightOffersList = () => {
                   {
                     origin: searchQuery,
                     destination: toQuery,
-                    departure_date: departureDate, // Ensure this is formatted as "YYYY-MM-DD"
+                    departure_date: departureDate,
                   },
                   {
                     origin: toQuery,
                     destination: searchQuery,
-                    departure_date: returnDate, // Ensure this is formatted as "YYYY-MM-DD"
+                    departure_date: returnDate,
                   },
                 ],
                 passengers: passengers,
               };
 
-        console.log(requestData, tripType);
-
-        const res = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/api/flight-instances`,
-          requestData
-        );
-        console.log(res);
-
-        if (res) {
-          setResponse(res.data.data.data.offers);
-          setFlights(res?.data?.data?.data?.offers);
+        if (selectedDates.length > 1 && tripType === "roundTrip") {
+          const res = await axios.post(
+            `${import.meta.env.VITE_BASE_URL}/api/flight-instances`,
+            requestData
+          );
+          if (res) {
+            setResponse(res.data.data.data.offers);
+            setFlights(res?.data?.data?.data?.offers);
+          }
         }
-      }  catch (error) {
+        if (selectedDates.length <= 2 && selectedDates.length !== 0 && tripType === "oneWay") {
+          const res = await axios.post(
+            `${import.meta.env.VITE_BASE_URL}/api/flight-instances`,
+            requestData
+          );
+          if (res) {
+            setResponse(res.data.data.data.offers);
+            setFlights(res?.data?.data?.data?.offers);
+          }
+        }
+      } catch (error) {
         console.error("Error fetching flight offers:", error);
         if (error.response && error.response.status === 502) {
           setError("Error from server"); // Set specific error message for 502
@@ -132,18 +142,36 @@ const FlightOffersList = () => {
 
   // Calculate which offers to display for the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentOffers = flights?.slice(startIndex, startIndex + itemsPerPage) || [];
+  const currentOffers =
+    flights?.slice(startIndex, startIndex + itemsPerPage) || [];
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 mt-32 flex flex-row justify-between">
-      <div className="w-3/12 mx-2">
-        <Filter setFlights={setFlights} flights={response} />
+    <div className="max-w-4xl mx-auto p-4 mt-32 flex flex-col lg:flex-row justify-between">
+      <div className="w-full lg:w-3/12 mx-2">
+        {/* Button to show filter on mobile */}
+        <div className="block lg:hidden">
+          <button 
+            className="bg-custom-gradient text-white p-2 rounded" 
+            onClick={() => setFilterVisible(!filterVisible)}>
+            {filterVisible ? 'Hide Filters' : 'Show Filters'}
+          </button>
+        </div>
+        {/* Filter component shown as a card on mobile */}
+        {filterVisible && (
+          <div className="bg-white shadow-md rounded-lg p-4 lg:hidden">
+            <Filter setFlights={setFlights} flights={response} />
+          </div>
+        )}
+        {/* Always show the Filter component on larger screens */}
+        <div className="hidden lg:block">
+          <Filter setFlights={setFlights} flights={response} />
+        </div>
       </div>
-      <div className="w-8/12">
+      <div className="w-full lg:w-8/12">
         {loading ? (
           <div className="flex justify-center items-center h-full">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-yellow-500"></div>
@@ -152,20 +180,20 @@ const FlightOffersList = () => {
           <p className="text-red-600 text-center text-2xl">{error}</p> // Display error message
         ) : response && response.length > 0 ? (
           currentOffers.length > 0 ? (
-            currentOffers.map((offer) => (
+            currentOffers.map((offer) =>
               tripType === "roundTrip" ? (
                 <RoundTripFlightOfferCard key={offer.id} offer={offer} />
               ) : (
                 <FlightOfferCard key={offer.id} offer={offer} />
               )
-            ))
+            )
           ) : (
             <p className="text-center text-2xl">No results found</p>
           )
         ) : (
           <p className="text-center text-2xl">No results found</p>
         )}
-        {totalPages > 1 && !error && currentOffers?.length>0 && (
+        {totalPages > 1 && !error && currentOffers?.length > 0 && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
