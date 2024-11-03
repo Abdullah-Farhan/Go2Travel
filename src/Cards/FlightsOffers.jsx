@@ -29,6 +29,9 @@ const FlightOfferCard = ({ offer }) => {
     };
 
     const totalStops = slices.reduce((sum, slice) => sum + slice.segments.length - 1, 0);
+    
+    // Get the final destination for the main card
+    const finalDestination = totalStops > 0 ? slices[slices.length - 1].segments[slices[slices.length - 1].segments.length - 1].destination.iata_code : destination.iata_code;
 
     return (
         <div className="bg-white shadow-md rounded-lg p-4 mb-4 flex flex-col md:flex-row relative">
@@ -62,14 +65,14 @@ const FlightOfferCard = ({ offer }) => {
                                 onClick={() => setShowModal(true)}
                                 className="text-blue-500 text-xs mt-1"
                             >
-                                {totalStops} {totalStops > 1 ? 'stops' : 'stop'}
+                                {totalStops} stop{totalStops > 1 ? 's' : ''} ({slices[0].segments[1].origin.iata_code})
                             </button>
                         )}
                     </div>
 
                     <div className="text-center">
                         <p className="text-sm font-semibold">{formatDateTime(arriving_at)}</p>
-                        <p className="text-sm font-medium">{destination.iata_code}</p>
+                        <p className="text-sm font-medium">{finalDestination}</p>
                     </div>
                 </div>
 
@@ -102,14 +105,14 @@ const FlightOfferCard = ({ offer }) => {
             {showModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white rounded-lg p-6 w-11/12 md:w-1/2">
-                        <h2 className="text-lg font-bold text-custom-green">Flight Details</h2>
+                        <h2 className="text-3xl font-bold text-custom-green">Flight Details</h2>
                         {slices.map((slice, sliceIndex) => (
                             <div key={sliceIndex} className="mb-4">
-                                <h3 className="text-lg font-bold text-custom-green">
+                                <h3 className="text-xl font-bold text-custom-gold">
                                     {sliceIndex === 0 ? "Outbound Flight" : "Return Flight"}
                                 </h3>
                                 {slice.segments.map((segment, segmentIndex) => (
-                                    <div key={segmentIndex} className="mb-4">
+                                    <div key={segmentIndex} className="mb-4 border-b-black border-b-[2px] pb-2">
                                         <div className="flex justify-between items-center mb-2">
                                             <div>
                                                 <h2 className="text-lg font-bold text-custom-green">

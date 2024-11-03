@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import DatePicker from "react-multi-date-picker";
 import "./style.css";
 import "react-multi-date-picker/styles/layouts/prime.css";
@@ -8,6 +8,7 @@ const CustomCalendar = () => {
   const { selectedDates, setSelectedDates, tripType } = useContext(FlightsContext);
   const today = new Date();
   console.log(tripType);
+  const [selectedDate, setSelectedDate] = useState(today)
   
 
   const isValidDate = (date) => {
@@ -19,7 +20,8 @@ const CustomCalendar = () => {
       const validDates = dates.filter(isValidDate).map(date => new Date(date)); // Ensure dates are Date objects
       setSelectedDates(validDates.length > 0 ? validDates : null);
     } else if (isValidDate(dates)) {
-      setSelectedDates([new Date(dates)]); // Ensure single date is a Date object
+      setSelectedDates([new Date(dates)]);
+      setSelectedDate(new Date(dates)) // Ensure single date is a Date object
     }
     else {
       setSelectedDates([]);
@@ -31,7 +33,7 @@ const CustomCalendar = () => {
       {tripType === "oneWay" ? (
         <DatePicker
           placeholder="Select date"
-          value={selectedDates}
+          value={selectedDate}
           onChange={handleDateChange}
           numberOfMonths={1}
           weekDays={["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}

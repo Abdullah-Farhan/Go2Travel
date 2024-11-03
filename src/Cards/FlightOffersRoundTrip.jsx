@@ -21,22 +21,33 @@ const RoundTripFlightOfferCard = ({ offer }) => {
 
   // Format time in 24-hour format with date
   const formatDateTime = (date) => {
-    const data = 
-     new Date(date).toLocaleString("en-GB", {
+    const formattedDate = new Date(date).toUTCString();
+
+    const utcDate = new Date(formattedDate).toLocaleString("en-GB", {
       day: "2-digit",
       month: "short",
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
     });
-    console.log(data, date)
-    return data
+
+    console.log(utcDate, date);
+    return utcDate;
+  };
+
+  // Convert local time to UTC based on time zone offset
+  const convertToUTC = (date, timeZone) => {
+    const localDate = new Date(date);
+    const utcDate = new Date(localDate.toLocaleString("en-US", { timeZone }));
+    return utcDate;
   };
 
   // Calculate total duration
   const calculateTotalDuration = (firstSegment, lastSegment) => {
-    const departureTime = new Date(firstSegment.departing_at);
-    const arrivalTime = new Date(lastSegment.arriving_at);
+    console.log(firstSegment.departing_at, firstSegment.origin?.time_zone);
+    
+    const departureTime = convertToUTC(firstSegment.departing_at, firstSegment.origin?.time_zone);
+    const arrivalTime = convertToUTC(lastSegment.arriving_at, lastSegment.destination?.time_zone);
     const durationMs = arrivalTime - departureTime;
 
     const hours = Math.floor(durationMs / (1000 * 60 * 60));
@@ -69,7 +80,7 @@ const RoundTripFlightOfferCard = ({ offer }) => {
                   <div className="flex flex-col md:flex-row items-center justify-between text-gray-600 shadow-lg h-28 rounded-lg px-2 mt-2">
                     <div className="text-center">
                       <p className="text-sm font-semibold">
-                        {formatDateTime(firstSegment.departing_at)}
+                        {formatDateTime(convertToUTC(firstSegment.departing_at, firstSegment.origin?.time_zone))}
                       </p>
                       <p className="text-sm font-medium">
                         {firstSegment.origin?.iata_code}
@@ -87,7 +98,7 @@ const RoundTripFlightOfferCard = ({ offer }) => {
 
                     <div className="text-center">
                       <p className="text-sm font-semibold">
-                        {formatDateTime(lastSegment.arriving_at)}
+                        {formatDateTime(convertToUTC(lastSegment.arriving_at, lastSegment.destination?.time_zone))}
                       </p>
                       <p className="text-sm font-medium">
                         {lastSegment.destination?.iata_code}
@@ -148,14 +159,16 @@ const RoundTripFlightOfferCard = ({ offer }) => {
       {isPopupOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg p-6 w-11/12 md:w-1/2">
-            <h2 className="text-lg font-bold text-custom-green">Flight Details</h2>
+            <h2 className="text-3xl font-bold text-custom-green">
+              Flight Details
+            </h2>
             {slices.map((slice, sliceIndex) => (
               <div key={sliceIndex} className="mb-4">
-                <h3 className="text-lg font-bold text-custom-green">
+                <h3 className="text-xl font-bold text-custom-gold">
                   {sliceIndex === 0 ? "Outbound Flight" : "Return Flight"}
                 </h3>
                 {slice.segments.map((segment, segmentIndex) => (
-                  <div key={segmentIndex} className="mb-4">
+                  <div key={segmentIndex} className="mb-4 border-b-[2px] border-b-black pb-2">
                     <div className="flex justify-between items-center mb-2">
                       <div>
                         <h2 className="text-lg font-bold text-custom-green">
@@ -170,7 +183,7 @@ const RoundTripFlightOfferCard = ({ offer }) => {
                     <div className="flex flex-col md:flex-row items-center justify-between text-gray-600">
                       <div className="text-center">
                         <p className="text-sm font-semibold">
-                          {formatDateTime(segment.departing_at)}
+                          {formatDateTime(convertToUTC(segment.departing_at, segment.origin?.time_zone))}
                         </p>
                         <p className="text-sm font-medium">
                           {segment.origin?.iata_code}
@@ -188,7 +201,7 @@ const RoundTripFlightOfferCard = ({ offer }) => {
 
                       <div className="text-center">
                         <p className="text-sm font-semibold">
-                          {formatDateTime(segment.arriving_at)}
+                          {formatDateTime(convertToUTC(segment.arriving_at, segment.destination?.time_zone))}
                         </p>
                         <p className="text-sm font-medium">
                           {segment.destination?.iata_code}

@@ -3,6 +3,8 @@ import React, { createContext, useState, useEffect } from "react";
 export const FlightsContext = createContext();
 
 export const FlightsProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false); // Loading state
+  const [error, setError] = useState(null);
   const [isSearched, setIsSearched] = useState(false);
 
   // State for selected dates
@@ -135,6 +137,10 @@ export const FlightsProvider = ({ children }) => {
         setTripType,
         setIsSearched,
         isSearched,
+        loading, 
+        setLoading,
+        error, 
+        setError
       }}
     >
       {children}

@@ -37,6 +37,7 @@ const Navbar = () => {
     toQuery,
     selectedDates,
     searchQuery,
+    loading,
   } = useContext(FlightsContext);
 
   const handleLinkClick = (link) => {
@@ -292,9 +293,15 @@ const Navbar = () => {
                       <img src={schedule} className="w-8 h-8" />
                     </div>
                     <div className="h-full">
-                      <p className="text-[#525B31] font-bold text-base font-montserrat">
-                        Check-in _ Check-out
-                      </p>
+                      {tripType === "oneWay" ? (
+                        <p className="text-[#525B31] font-bold text-base font-montserrat">
+                          Departure Flight
+                        </p>
+                      ) : (
+                        <p className="text-[#525B31] font-bold text-base font-montserrat">
+                          Outbound - Return Flight
+                        </p>
+                      )}
                       <DatePicker />
                     </div>
                   </div>
@@ -311,7 +318,7 @@ const Navbar = () => {
                     >
                       <option value="oneWay">One Way</option>
                       <option value="roundTrip">Return</option>
-                      <option value="multiCity">Multi-Way</option>
+                      <option value="multiCity">Multi-City</option>
                     </select>
                   </div>
 
@@ -496,7 +503,7 @@ const Navbar = () => {
                     </div>
                     <div className="ml-4 h-full">
                       <p className="text-[#525B31] font-bold text-base font-montserrat">
-                        Where?
+                        From?
                       </p>
                       <input
                         type="search"
@@ -540,9 +547,15 @@ const Navbar = () => {
                 <img src={schedule} className="w-8 h-8" />
               </div>
               <div className="h-full">
-                <p className="text-[#525B31] font-bold text-base font-montserrat">
-                  Check-in _ Check-out
-                </p>
+                {tripType === "oneWay" ? (
+                  <p className="text-[#525B31] font-bold text-base font-montserrat">
+                    Departure Flight
+                  </p>
+                ) : (
+                  <p className="text-[#525B31] font-bold text-base font-montserrat">
+                    Outbound - Return Flight
+                  </p>
+                )}
                 <DatePicker />
               </div>
             </div>
@@ -554,12 +567,13 @@ const Navbar = () => {
               <select
                 id="tripType"
                 onChange={(value) => setTripType(value.target.value)}
+                onSelect={(value) => setTripType(value.target.value)}
                 className="outline-none rounded-md p-2"
                 defaultValue="One Way"
               >
                 <option value="oneWay">One Way</option>
                 <option value="roundTrip">Return</option>
-                <option value="multiCity">Multi-Way</option>
+                <option value="multiCity">Multi-City</option>
               </select>
             </div>
 
@@ -730,7 +744,7 @@ const Navbar = () => {
               </div>
               <div className="ml-4 h-full">
                 <p className="text-[#525B31] font-bold text-base font-montserrat">
-                  Where?
+                  From?
                 </p>
                 <input
                   type="search"

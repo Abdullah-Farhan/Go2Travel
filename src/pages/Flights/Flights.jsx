@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast";
 
 const FlightOffersList = () => {
   const [response, setResponse] = useState(null);
-  const { selectedDates, guest, searchQuery, toQuery, isSearched, tripType } =
+  const { selectedDates, guest, searchQuery, toQuery, isSearched, tripType, loading, setLoading, error, setError } =
     useContext(FlightsContext);
   const [departureDate, setDepartureDate] = useState(selectedDates[0]);
   const [returnDate, setReturnDate] = useState(
@@ -20,8 +20,6 @@ const FlightOffersList = () => {
   const [flights, setFlights] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // Number of items to display per page
-  const [loading, setLoading] = useState(false); // Loading state
-  const [error, setError] = useState(null);
   const [filterVisible, setFilterVisible] = useState(false); // State for filter visibility
   let newPassengers = [];
 
