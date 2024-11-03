@@ -5,6 +5,7 @@ import axios from "axios";
 import Filter from "./components/Filters";
 import RoundTripFlightOfferCard from "../../Cards/FlightOffersRoundTrip";
 import Pagination from "../../components/Pagination/Pagination"; // Ensure you have this component
+import { toast } from "react-hot-toast";
 
 const FlightOffersList = () => {
   const [response, setResponse] = useState(null);
@@ -15,35 +16,38 @@ const FlightOffersList = () => {
     selectedDates.length > 1 ? selectedDates[1] : null
   );
 
-  const passengers = [];
+  const [passengers, setPassengers] = useState([]); // Passengers as state
   const [flights, setFlights] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // Number of items to display per page
   const [loading, setLoading] = useState(false); // Loading state
   const [error, setError] = useState(null);
   const [filterVisible, setFilterVisible] = useState(false); // State for filter visibility
+  let newPassengers = [];
 
-  for (let i = 0; i < guest.adults; i++) {
-    passengers.push({
-      type: "adult",
-    });
-  }
+  // Populate passengers whenever the guest context changes
+  useEffect(() => {
+    console.log(guest);
+    
+    for (let i = 0; i < guest.adults; i++) {
+      newPassengers.push({ type: "adult" });
+    }
 
-  if (guest.children > 0) {
     for (let i = 0; i < guest.children; i++) {
-      passengers.push({
-        type: "child",
-      });
+      newPassengers.push({ type: "child" });
     }
-  }
 
-  if (guest.rooms > 0) {
     for (let i = 0; i < guest.rooms; i++) {
-      passengers.push({
-        type: "infant_without_seat",
-      });
+      newPassengers.push({ type: "infant_without_seat" });
     }
-  }
+
+    setPassengers(newPassengers);
+    setTimeout(()=> {
+
+    }, 1000)
+    console.log(newPassengers);
+     // Update the passengers state
+  }, [isSearched]); 
 
   const formatDate = (date) => {
     if (!(date instanceof Date)) {
@@ -102,6 +106,8 @@ const FlightOffersList = () => {
                 passengers: passengers,
               };
 
+        console.log(requestData);
+
         if (selectedDates.length > 1 && tripType === "roundTrip") {
           const res = await axios.post(
             `${import.meta.env.VITE_BASE_URL}/api/flight-instances`,
@@ -111,16 +117,25 @@ const FlightOffersList = () => {
             setResponse(res.data.data.data.offers);
             setFlights(res?.data?.data?.data?.offers);
           }
+        } else if (tripType === "roundTrip") {
+          toast.error("Please select Complete Date and Both Locations");
         }
-        if (selectedDates.length <= 2 && selectedDates.length !== 0 && tripType === "oneWay") {
+        if (
+          selectedDates.length <= 2 &&
+          selectedDates.length !== 0 &&
+          tripType === "oneWay"
+        ) {
           const res = await axios.post(
             `${import.meta.env.VITE_BASE_URL}/api/flight-instances`,
             requestData
           );
           if (res) {
-            setResponse(res.data.data.data.offers);
+            console.log(res);
+            setResponse(res?.data?.data?.data?.offers);
             setFlights(res?.data?.data?.data?.offers);
           }
+        } else if (tripType === "oneWay" && selectedDates.length > 1) {
+          toast.error("Please select Complete Departure date only");
         }
       } catch (error) {
         console.error("Error fetching flight offers:", error);
@@ -135,7 +150,7 @@ const FlightOffersList = () => {
     };
 
     flightsApiRequest(); // Call the API request when dependencies change
-  }, [isSearched]);
+  }, [isSearched, passengers]); // Add passengers as a dependency
 
   // Calculate total pages
   const totalPages = Math.ceil((flights?.length || 0) / itemsPerPage);
@@ -154,10 +169,11 @@ const FlightOffersList = () => {
       <div className="w-full lg:w-3/12 mx-2">
         {/* Button to show filter on mobile */}
         <div className="block lg:hidden">
-          <button 
-            className="bg-custom-gradient text-white p-2 rounded" 
-            onClick={() => setFilterVisible(!filterVisible)}>
-            {filterVisible ? 'Hide Filters' : 'Show Filters'}
+          <button
+            className="bg-custom-gradient text-white p-2 rounded"
+            onClick={() => setFilterVisible(!filterVisible)}
+          >
+            {filterVisible ? "Hide Filters" : "Show Filters"}
           </button>
         </div>
         {/* Filter component shown as a card on mobile */}
@@ -181,7 +197,7 @@ const FlightOffersList = () => {
         ) : response && response.length > 0 ? (
           currentOffers.length > 0 ? (
             currentOffers.map((offer) =>
-              tripType === "roundTrip" ? (
+              tripType === "roundTrip" && selectedDates.length === 2 ? (
                 <RoundTripFlightOfferCard key={offer.id} offer={offer} />
               ) : (
                 <FlightOfferCard key={offer.id} offer={offer} />

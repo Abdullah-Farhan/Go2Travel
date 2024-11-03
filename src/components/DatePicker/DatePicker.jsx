@@ -21,6 +21,9 @@ const CustomCalendar = () => {
     } else if (isValidDate(dates)) {
       setSelectedDates([new Date(dates)]); // Ensure single date is a Date object
     }
+    else {
+      setSelectedDates([]);
+    }
   };
 
   return (

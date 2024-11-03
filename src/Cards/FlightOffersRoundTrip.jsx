@@ -21,13 +21,16 @@ const RoundTripFlightOfferCard = ({ offer }) => {
 
   // Format time in 24-hour format with date
   const formatDateTime = (date) => {
-    return new Date(date).toLocaleString("en-GB", {
+    const data = 
+     new Date(date).toLocaleString("en-GB", {
       day: "2-digit",
       month: "short",
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
     });
+    console.log(data, date)
+    return data
   };
 
   // Calculate total duration
@@ -133,7 +136,7 @@ const RoundTripFlightOfferCard = ({ offer }) => {
             {total_amount} {total_currency}
           </p>
           <p className="text-gray-500 text-sm">
-            Base: {base_amount} {total_currency} (Tax: {tax_amount} {total_currency})
+            {base_amount} {total_currency} (Tax: {tax_amount} {total_currency})
           </p>
           <button className="mt-2 bg-custom-gold text-white text-xs px-3 py-1 rounded hover:bg-yellow-600">
             Book Now

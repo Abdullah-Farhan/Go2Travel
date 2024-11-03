@@ -50,7 +50,7 @@ const FlightOfferCard = ({ offer }) => {
                 <div className="flex items-center justify-between text-gray-600 shadow-lg h-28 rounded-lg px-2 mt-2">
                     <div className="text-center">
                         <p className="text-sm font-semibold">{formatDateTime(departing_at)}</p>
-                        <p className="text-sm font-medium">{origin.iata_city_code}</p>
+                        <p className="text-sm font-medium">{origin.iata_code}</p>
                     </div>
 
                     {/* Duration and Flight Class */}
@@ -69,7 +69,7 @@ const FlightOfferCard = ({ offer }) => {
 
                     <div className="text-center">
                         <p className="text-sm font-semibold">{formatDateTime(arriving_at)}</p>
-                        <p className="text-sm font-medium">{destination.iata_city_code}</p>
+                        <p className="text-sm font-medium">{destination.iata_code}</p>
                     </div>
                 </div>
 
@@ -90,7 +90,7 @@ const FlightOfferCard = ({ offer }) => {
                         {total_amount} {total_currency}
                     </p>
                     <p className="text-gray-500 text-sm">
-                        Base: {base_amount} {total_currency} (Tax: {tax_amount} {total_currency})
+                        {base_amount} {total_currency} (Tax: {tax_amount} {total_currency})
                     </p>
                     <button className="mt-2 bg-yellow-500 text-white text-xs px-3 py-1 rounded hover:bg-yellow-600">
                         Book Now

@@ -11,10 +11,11 @@ import bed from "../../assets/svg/Bed.svg";
 import schedule from "../../assets/svg/Schedule.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { FlightsContext } from "../../Context/FlightsContext";
-import { toast, Toaster } from "react-hot-toast"
+import { toast, Toaster } from "react-hot-toast";
 
 const Navbar = () => {
   const [activeLink, setActiveLink] = useState("home");
+  const [isDropDownOpenForMobile, setIsDropDownOpenForMobile] = useState(false);
   const [subActiveLink, setSubActiveLink] = useState("null");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [adults, setAdults] = useState(1);
@@ -55,22 +56,17 @@ const Navbar = () => {
     setDropdownOpen(!dropdownOpen);
   };
   const showToast = () => {
-    toast('Fill all required fields!', {
+    toast.error("Fill all required fields!", {
       duration: 1500, // duration in milliseconds
-      position: 'bottom-right', 
-      style: {
-        // You can customize the toast style if needed
-        background: 'red',
-        color: '#fff',
-      },
+      position: "center-top",
     });
   };
 
   const handleSearchResults = () => {
-    console.log(searchQuery, toQuery, selectedDates, guest);
-    
+    console.log(destination, toLocation, selectedDates, guest);
+
     if (!destination || !toLocation || !selectedDates || !guest) {
-      showToast()
+      showToast();
     } else {
       setIsSearched(!isSearched);
       setSearchQuery(destination);
@@ -84,10 +80,9 @@ const Navbar = () => {
   };
 
   // console.log(tripType);
-  
 
   return (
-    <>
+    <div className="relative">
       {location === "/payment" || location === "/checkout" ? (
         <>
           <div className="hidden md:flex w-full flex-row justify-center py-[25px] items-center bg-[linear-gradient(to_right,_#525B31_0%,_#BED206_50%,_#525B31_100%)]">
@@ -536,8 +531,249 @@ const Navbar = () => {
           )}
         </div>
       )}
+
+      {isDropDownOpenForMobile && (
+        <div className="flex w-full flex-col justify-end items-center md:hidden">
+          <div className=" bg-white rounded-[40px] bottom-0 shadow-search-container flex flex-row justify-center flex-wrap space-x-2">
+            <div className="w-full h-20 rounded-[40px] shadow-search items-center px-2 py-3 flex flex-row">
+              <div className="h-full mr-2 px-3 py-1">
+                <img src={schedule} className="w-8 h-8" />
+              </div>
+              <div className="h-full">
+                <p className="text-[#525B31] font-bold text-base font-montserrat">
+                  Check-in _ Check-out
+                </p>
+                <DatePicker />
+              </div>
+            </div>
+
+            <div className="w-full h-20 rounded-[40px] shadow-search flex flex-col items-center px-2 py-3">
+              <p className="text-[#525B31] font-bold text-base font-montserrat">
+                Flight Type?
+              </p>
+              <select
+                id="tripType"
+                onChange={(value) => setTripType(value.target.value)}
+                className="outline-none rounded-md p-2"
+                defaultValue="One Way"
+              >
+                <option value="oneWay">One Way</option>
+                <option value="roundTrip">Return</option>
+                <option value="multiCity">Multi-Way</option>
+              </select>
+            </div>
+
+            <div className="w-full h-20 rounded-[40px] shadow-search flex flex-row items-center px-2 py-3">
+              <div className="h-full flex flex-col mr-1">
+                <img src={user} className="w-10 h-10 ml-1 " />
+              </div>
+              <div onClick={() => toggleDropdown()} className="w-24 h-16 mt-2">
+                <p className="text-[#525B31] font-bold text-base font-montserrat">
+                  Who?
+                </p>
+                {guest ? (
+                  <div className="">
+                    <p className="text-[10px]">
+                      {adults} adults | {children} children | {rooms} infants
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    {guest ? (
+                      <>
+                        <p>
+                          {guest.adults} adults | {guest.children} children |{" "}
+                          {guest.rooms} infants
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-[#525B31] text-[15px] font-montserrat">
+                        Add Guests
+                      </p>
+                    )}
+                    {dropdownOpen && (
+                      <div>
+                        <input
+                          type="number"
+                          value={adults}
+                          onChange={(e) => setAdults(Number(e.target.value))}
+                          placeholder="Adults"
+                        />
+                        <input
+                          type="number"
+                          value={children}
+                          onChange={(e) => setChildren(Number(e.target.value))}
+                          placeholder="Children"
+                        />
+                        <input
+                          type="number"
+                          value={rooms}
+                          onChange={(e) => setRooms(Number(e.target.value))}
+                          placeholder="Infants"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              <button
+                className="flex flex-row w-[140px] h-14 items-center px-4 py-2 bg-[#D2B57A] text-white transition rounded-[40px] ml-auto"
+                onClick={() => handleSearchResults()}
+              >
+                <img src={search} />
+                <p className="ml-auto text-[20px]">Search</p>
+              </button>
+              {dropdownOpen && (
+                <div className="absolute z-10 mt-80 w-60 h-56 bg-white rounded-lg shadow-lg">
+                  <section className="flex flex-row justify-between h-16 border-b border-b-[#D2B57A] pr-3">
+                    <div className="pt-4 pl-6">
+                      <p className="font-bold text-custom-green">Adult</p>
+                      <p className="text-custom-green text-[10px]">
+                        (Age 17 or above)
+                      </p>
+                    </div>
+                    <div className="flex flex-row justify-between w-20">
+                      <div className="flex justify-center items-center">
+                        <button
+                          className="w-4 h-4 rounded-full bg-custom-gold flex justify-center items-center"
+                          onClick={() => setAdults(adults - 1)}
+                          disabled={adults === 1}
+                        >
+                          -
+                        </button>
+                      </div>
+                      <div className="flex justify-center items-center">
+                        <p className="mx-2">{adults}</p>
+                      </div>
+                      <div className="flex justify-center items-center">
+                        <button
+                          className="w-4 h-4 rounded-full bg-custom-gold flex justify-center items-center"
+                          onClick={() => setAdults(adults + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </section>
+                  <section className="flex flex-row justify-between h-16 border-b border-b-[#D2B57A] pr-3">
+                    <div className="pt-4 pl-6">
+                      <p className="font-bold text-custom-green">Children</p>
+                      <p className="text-custom-green text-[10px]">
+                        (Age 4 to 17)
+                      </p>
+                    </div>
+                    <div className="flex flex-row justify-between w-20">
+                      <div className="flex justify-center items-center">
+                        <button
+                          className="w-4 h-4 rounded-full bg-custom-gold flex justify-center items-center"
+                          onClick={() => setChildren(children - 1)}
+                          disabled={children === 0}
+                        >
+                          -
+                        </button>
+                      </div>
+                      <div className="flex justify-center items-center">
+                        <p className="mx-2">{children}</p>
+                      </div>
+                      <div className="flex justify-center items-center">
+                        <button
+                          className="w-4 h-4 rounded-full bg-custom-gold flex justify-center items-center"
+                          onClick={() => setChildren(children + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </section>
+                  <section className="flex flex-row justify-between h-12 border-b border-b-[#D2B57A] pr-3">
+                    <div className="pl-6 h-full flex flex-row items-center">
+                      <p className="font-bold text-custom-green">Infants</p>
+                    </div>
+                    <div className="flex flex-row justify-between w-20">
+                      <div className="flex justify-center items-center">
+                        <button
+                          className="w-4 h-4 rounded-full bg-custom-gold flex justify-center items-center"
+                          onClick={() => setRooms(rooms - 1)}
+                          disabled={rooms === 0}
+                        >
+                          -
+                        </button>
+                      </div>
+                      <div className="flex justify-center items-center">
+                        <p className="mx-2">{rooms}</p>
+                      </div>
+                      <div className="flex justify-center items-center">
+                        <button
+                          className="w-4 h-4 rounded-full bg-custom-gold flex justify-center items-center"
+                          onClick={() => setRooms(rooms + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </section>
+                  <section className="flex flex-row justify-center items-center h-12 ">
+                    <button
+                      className="w-32 h-7 bg-custom-gold rounded-md text-white font-semibold text-[10px]"
+                      onClick={() => toggleDropdown()}
+                    >
+                      Done
+                    </button>
+                  </section>
+                </div>
+              )}
+            </div>
+
+            <div className="w-full h-20 rounded-[40px] shadow-search flex flex-row items-center mt-3 px-2 py-3">
+              <div className="h-full mr-2 px-3 py-1">
+                <img src={bed} className="w-8 h-8" />
+              </div>
+              <div className="ml-4 h-full">
+                <p className="text-[#525B31] font-bold text-base font-montserrat">
+                  Where?
+                </p>
+                <input
+                  type="search"
+                  placeholder="Search Destination"
+                  className="text-[#525B31] text-base font-montserrat outline-none w-full"
+                  value={destination}
+                  onChange={(text) => setDestination(text.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="w-full  h-20 rounded-[40px] shadow-search flex flex-row items-center mt-3 px-2 py-3">
+              <div className="h-full mr-2 px-3 py-1">
+                <img src={bed} className="w-8 h-8" />
+              </div>
+              <div className="ml-4 h-full">
+                <p className="text-[#525B31] font-bold text-base font-montserrat">
+                  To?
+                </p>
+                <input
+                  type="search"
+                  placeholder="Search Destination"
+                  className="text-[#525B31] text-base font-montserrat outline-none w-full"
+                  value={toLocation}
+                  onChange={(text) => setToLocation(text.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      <button
+        className="flex md:hidden bg-custom-gradient ml-4 mt-4 p-2 rounded text-white"
+        onClick={() => setIsDropDownOpenForMobile(!isDropDownOpenForMobile)}
+      >
+        {isDropDownOpenForMobile ? (
+          <p>Close Search DropDown</p>
+        ) : (
+          <p>Open Search DropDown</p>
+        )}
+      </button>
       <Toaster />
-    </>
+    </div>
   );
 };
 
