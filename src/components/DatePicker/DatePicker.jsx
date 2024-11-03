@@ -7,7 +7,6 @@ import { FlightsContext } from "../../Context/FlightsContext";
 const CustomCalendar = () => {
   const { selectedDates, setSelectedDates, tripType } = useContext(FlightsContext);
   const today = new Date();
-  console.log(tripType);
   const [selectedDate, setSelectedDate] = useState(today)
   
 

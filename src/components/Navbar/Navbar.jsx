@@ -38,6 +38,8 @@ const Navbar = () => {
     selectedDates,
     searchQuery,
     loading,
+    isSearchClicked,
+    setIsSearchClicked
   } = useContext(FlightsContext);
 
   const handleLinkClick = (link) => {
@@ -69,6 +71,12 @@ const Navbar = () => {
     if (!destination || !toLocation || !selectedDates || !guest) {
       showToast();
     } else {
+      if(tripType === "oneWay"){
+        setIsSearchClicked(false);
+      }
+      else if (tripType === "roundTrip"){
+        setIsSearchClicked(true);
+      }
       setIsSearched(!isSearched);
       setSearchQuery(destination);
       setToQuery(toLocation);

@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast";
 
 const FlightOffersList = () => {
   const [response, setResponse] = useState(null);
-  const { selectedDates, guest, searchQuery, toQuery, isSearched, tripType, loading, setLoading, error, setError } =
+  const { selectedDates, guest, searchQuery, toQuery, isSearched, tripType, loading, setLoading, error, setError, isSearchClicked } =
     useContext(FlightsContext);
   const [departureDate, setDepartureDate] = useState(selectedDates[0]);
   const [returnDate, setReturnDate] = useState(
@@ -28,6 +28,8 @@ const FlightOffersList = () => {
     console.log(guest);
     
     for (let i = 0; i < guest.adults; i++) {
+      console.log("ran");
+      
       newPassengers.push({ type: "adult" });
     }
 
@@ -45,7 +47,7 @@ const FlightOffersList = () => {
     }, 1000)
     console.log(newPassengers);
      // Update the passengers state
-  }, [isSearched]); 
+  }, [guest]); 
 
   const formatDate = (date) => {
     if (!(date instanceof Date)) {
@@ -112,6 +114,7 @@ const FlightOffersList = () => {
             requestData
           );
           if (res) {
+            console.log(res)
             setResponse(res.data.data.data.offers);
             setFlights(res?.data?.data?.data?.offers);
           }
@@ -143,7 +146,7 @@ const FlightOffersList = () => {
           setError("An unexpected error occurred."); // General error message
         }
       } finally {
-        setLoading(false); // Set loading to false when request is done
+        setTimeout(()=>setLoading(false), 1000)
       }
     };
 
@@ -195,7 +198,7 @@ const FlightOffersList = () => {
         ) : response && response.length > 0 ? (
           currentOffers.length > 0 ? (
             currentOffers.map((offer) =>
-              tripType === "roundTrip" && selectedDates.length === 2 ? (
+              tripType === "roundTrip" && selectedDates.length === 2 && isSearchClicked ? (
                 <RoundTripFlightOfferCard key={offer.id} offer={offer} />
               ) : (
                 <FlightOfferCard key={offer.id} offer={offer} />

@@ -6,6 +6,7 @@ export const FlightsProvider = ({ children }) => {
   const [loading, setLoading] = useState(false); // Loading state
   const [error, setError] = useState(null);
   const [isSearched, setIsSearched] = useState(false);
+  const [isSearchClicked, setIsSearchClicked] = useState(false);
 
   // State for selected dates
   const [selectedDates, setSelectedDates] = useState(() => {
@@ -140,7 +141,9 @@ export const FlightsProvider = ({ children }) => {
         loading, 
         setLoading,
         error, 
-        setError
+        setError,
+        isSearchClicked,
+        setIsSearchClicked
       }}
     >
       {children}

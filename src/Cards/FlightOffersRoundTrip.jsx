@@ -77,7 +77,7 @@ const RoundTripFlightOfferCard = ({ offer }) => {
                   {sliceIndex === 0 ? "Outbound Flight" : "Return Flight"}
                 </h3>
                 <div className="mb-4">
-                  <div className="flex flex-col md:flex-row items-center justify-between text-gray-600 shadow-lg h-28 rounded-lg px-2 mt-2">
+                  <div className="flex flex-row items-center justify-between text-gray-600 shadow-lg h-28 rounded-lg px-2 mt-2">
                     <div className="text-center">
                       <p className="text-sm font-semibold">
                         {formatDateTime(convertToUTC(firstSegment.departing_at, firstSegment.origin?.time_zone))}
@@ -129,7 +129,7 @@ const RoundTripFlightOfferCard = ({ offer }) => {
           </div>
           <div className="mt-6">
             <p
-              className={`text-sm ${
+              className={`text-xs md:text-sm ${
                 payment_requirements?.requires_instant_payment
                   ? "text-red-600"
                   : "text-green-600"
@@ -146,7 +146,7 @@ const RoundTripFlightOfferCard = ({ offer }) => {
           <p className="text-xl font-semibold">
             {total_amount} {total_currency}
           </p>
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 text-xs md:text-sm">
             {base_amount} {total_currency} (Tax: {tax_amount} {total_currency})
           </p>
           <button className="mt-2 bg-custom-gold text-white text-xs px-3 py-1 rounded hover:bg-yellow-600">
