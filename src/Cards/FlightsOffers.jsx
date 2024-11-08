@@ -13,6 +13,8 @@ const FlightOfferCard = ({ offer }) => {
     payment_requirements,
   } = offer;
 
+  //console.log(slices);
+  
   const firstSlice = slices[0];
   const segment = firstSlice.segments[0];
   const {
@@ -34,6 +36,9 @@ const FlightOfferCard = ({ offer }) => {
     const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
     return `${hours}h ${minutes}m`;
   };
+
+  //console.log(new Date(arriving_at).toUTCString(), new Date(departing_at).toUTCString());
+  
 
   const totalStops = slices.reduce(
     (sum, slice) => sum + slice.segments.length - 1,

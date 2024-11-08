@@ -1,225 +1,348 @@
-import React, { useContext, useEffect, useState } from "react";
-import FlightOfferCard from "../../Cards/FlightsOffers";
-import { FlightsContext } from "../../Context/FlightsContext";
-import axios from "axios";
-import Filter from "./components/Filters";
-import RoundTripFlightOfferCard from "../../Cards/FlightOffersRoundTrip";
-import Pagination from "../../components/Pagination/Pagination"; // Ensure you have this component
-import { toast } from "react-hot-toast";
+  import React, { useContext, useEffect, useState } from "react";
+  import FlightOfferCard from "../../Cards/FlightsOffers";
+  import { FlightsContext } from "../../Context/FlightsContext";
+  import axios from "axios";
+  import Filter from "./components/Filters";
+  import RoundTripFlightOfferCard from "../../Cards/FlightOffersRoundTrip";
+  import Pagination from "../../components/Pagination/Pagination"; // Ensure you have this component
+  import { toast } from "react-hot-toast";
+import { da } from "date-fns/locale";
 
-const FlightOffersList = () => {
-  const [response, setResponse] = useState(null);
-  const { selectedDates, guest, searchQuery, toQuery, isSearched, tripType, loading, setLoading, error, setError, isSearchClicked } =
-    useContext(FlightsContext);
-  const [departureDate, setDepartureDate] = useState(selectedDates[0]);
-  const [returnDate, setReturnDate] = useState(
-    selectedDates.length > 1 ? selectedDates[1] : null
-  );
+  const FlightOffersList = () => {
+    const [response, setResponse] = useState(null);
+    const [id, setId] = useState();
+    const [limit, setLimit] = useState(20);
+    const [page, setPage] = useState(null);
+    const [minPrice, setMinPrice] = useState();
+    const [maxPrice, setMaxPrice] = useState()
+    const {
+      selectedDates,
+      guest,
+      searchQuery,
+      toQuery,
+      isSearched,
+      tripType,
+      loading,
+      setLoading,
+      error,
+      setError,
+      isSearchClicked,
+    } = useContext(FlightsContext);
+    const [departureDate, setDepartureDate] = useState(selectedDates[0]);
+    const [returnDate, setReturnDate] = useState(
+      selectedDates.length > 1 ? selectedDates[1] : null
+    );
+    const [data, setFilteredData] = useState();
+    const [totalPages, setTotalPages] = useState();
 
-  const [passengers, setPassengers] = useState([]); // Passengers as state
-  const [flights, setFlights] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Number of items to display per page
-  const [filterVisible, setFilterVisible] = useState(false); // State for filter visibility
-  let newPassengers = [];
+    const [passengers, setPassengers] = useState([]); 
+    const [flights, setFlights] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20; // Number of items to display per page
+    const [filterVisible, setFilterVisible] = useState(false); 
+    const [applyFilter, setApplyFilter] = useState(false)
+    const [pg, setPg] = useState(1);
 
-  // Populate passengers whenever the guest context changes
-  useEffect(() => {
-    console.log(guest);
-    
-    for (let i = 0; i < guest.adults; i++) {
-      console.log("ran");
+
+    useEffect(()=> {
+      console.log(data);
+      console.log(pg);   
+      fetchPaginatedData()   
       
-      newPassengers.push({ type: "adult" });
-    }
+    }, [applyFilter])
+    
 
-    for (let i = 0; i < guest.children; i++) {
-      newPassengers.push({ type: "child" });
-    }
+    useEffect(() => {
+      console.log(guest);
+      let newPassengers = [];
 
-    for (let i = 0; i < guest.rooms; i++) {
-      newPassengers.push({ type: "infant_without_seat" });
-    }
+      for (let i = 0; i < guest.adults; i++) {
+        console.log("ran");
 
-    setPassengers(newPassengers);
-    setTimeout(()=> {
-
-    }, 1000)
-    console.log(newPassengers);
-     // Update the passengers state
-  }, [guest]); 
-
-  const formatDate = (date) => {
-    if (!(date instanceof Date)) {
-      console.error("Invalid date object");
-      return null; // Return null if the date is invalid
-    }
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  };
-
-  useEffect(() => {
-    if (selectedDates.length > 0) {
-      const date = selectedDates[0]; // Ensure this is a Date object
-      setDepartureDate(formatDate(date));
-      if (selectedDates.length > 1) {
-        setReturnDate(formatDate(selectedDates[1]));
+        newPassengers.push({ type: "adult" });
       }
-    }
-  }, [selectedDates]);
 
-  useEffect(() => {
-    const flightsApiRequest = async () => {
-      setLoading(true); // Set loading to true when starting the request
-      setError(null);
-      try {
-        console.log(departureDate, searchQuery, toQuery, tripType);
+      for (let i = 0; i < guest.children; i++) {
+        newPassengers.push({ type: "child" });
+      }
 
-        const requestData =
-          tripType === "oneWay"
-            ? {
-                slices: [
-                  {
-                    origin: searchQuery,
-                    destination: toQuery,
-                    departure_date: departureDate,
-                  },
-                ],
-                passengers: passengers,
+      for (let i = 0; i < guest.rooms; i++) {
+        newPassengers.push({ type: "infant_without_seat" });
+      }
+
+      setPassengers(newPassengers? newPassengers: [{
+        "type": "adult"
+      }]);
+      setTimeout(() => {}, 1000);
+      console.log(newPassengers);
+    }, [guest]);
+
+    const fetchPaginatedData = async () => {
+      setLoading(true); 
+        setError(null);
+        try {
+          console.log(departureDate, searchQuery, toQuery, tripType);
+          const obj = {data}
+          console.log(obj);
+          
+          if (selectedDates.length > 1 && tripType === "roundTrip") {
+            const res = await axios.post(
+              `${import.meta.env.VITE_BASE_URL}flights/list`,
+              obj,
+              {
+                params: {
+                  id: id,
+                  ...(limit && { limit: limit }),
+                  ...(page && { page: pg })
+                }
               }
-            : {
-                slices: [
-                  {
-                    origin: searchQuery,
-                    destination: toQuery,
-                    departure_date: departureDate,
-                  },
-                  {
-                    origin: toQuery,
-                    destination: searchQuery,
-                    departure_date: returnDate,
-                  },
-                ],
-                passengers: passengers,
-              };
-
-        console.log(requestData);
-
-        if (selectedDates.length > 1 && tripType === "roundTrip") {
-          const res = await axios.post(
-            `${import.meta.env.VITE_BASE_URL}/api/flight-instances`,
-            requestData
-          );
-          if (res) {
-            console.log(res)
-            setResponse(res.data.data.data.offers);
-            setFlights(res?.data?.data?.data?.offers);
+            );
+            if (res) {
+              console.log(res);
+              setResponse(res.data.data.data);
+              setFlights(res?.data?.data?.data);
+              setMinPrice(res?.data?.data?.meta.minPrice)
+              setMaxPrice(res?.data?.data?.meta.maxPrice)
+            }
+          } else if (tripType === "roundTrip") {
+            toast.error("Please select Complete Date and Both Locations");
           }
-        } else if (tripType === "roundTrip") {
-          toast.error("Please select Complete Date and Both Locations");
-        }
-        if (
-          selectedDates.length <= 2 &&
-          selectedDates.length !== 0 &&
-          tripType === "oneWay"
-        ) {
-          const res = await axios.post(
-            `${import.meta.env.VITE_BASE_URL}/api/flight-instances`,
-            requestData
-          );
-          if (res) {
-            console.log(res);
-            setResponse(res?.data?.data?.data?.offers);
-            setFlights(res?.data?.data?.data?.offers);
+          if (
+            selectedDates.length <= 2 &&
+            selectedDates.length !== 0 &&
+            tripType === "oneWay"
+          ) {
+            console.log(id,limit, page)
+          setResponse(null)
+            const res = await axios.post(
+              `${import.meta.env.VITE_BASE_URL}flights/list`,
+              obj,
+              {
+                params: {
+                  id: id,
+                  ...(limit && { limit: limit }),
+                  ...(page && { page: pg })
+                }
+              }
+            );
+            if (res) {
+              console.log(res);
+              
+              console.log(res.data.data.data);
+              setResponse(res.data.data.data)
+              setFlights(res?.data?.data?.data);  
+              setMinPrice(res?.data?.data?.meta.minPrice)
+              setMaxPrice(res?.data?.data?.meta.maxPrice)          
+            }
+          } else if (tripType === "oneWay" && selectedDates.length > 1) {
+            toast.error("Please select Complete Departure date only");
           }
-        } else if (tripType === "oneWay" && selectedDates.length > 1) {
-          toast.error("Please select Complete Departure date only");
+        } catch (error) {
+          console.error("Error fetching flight offers:", error);
+          // if (error.response && error.response.status === 502) {
+          //   setError("Error from server"); // Set specific error message for 502
+          // } else {
+          //   setError("An unexpected error occurred."); // General error message
+          // }
+        } finally {
+          setTimeout(() => setLoading(false), 2000);
         }
-      } catch (error) {
-        console.error("Error fetching flight offers:", error);
-        if (error.response && error.response.status === 502) {
-          setError("Error from server"); // Set specific error message for 502
-        } else {
-          setError("An unexpected error occurred."); // General error message
-        }
-      } finally {
-        setTimeout(()=>setLoading(false), 2000)
+    }
+
+    const formatDate = (date) => {
+      if (!(date instanceof Date)) {
+        console.error("Invalid date object");
+        return null; // Return null if the date is invalid
       }
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+      const day = String(date.getDate()).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
     };
 
-    flightsApiRequest(); // Call the API request when dependencies change
-  }, [isSearched, passengers]); // Add passengers as a dependency
+    useEffect(() => {
+      if (selectedDates.length > 0) {
+        const date = selectedDates[0]; // Ensure this is a Date object
+        setDepartureDate(formatDate(date));
+        if (selectedDates.length > 1) {
+          setReturnDate(formatDate(selectedDates[1]));
+        }
+      }
+    }, [selectedDates]);
 
-  // Calculate total pages
-  const totalPages = Math.ceil((flights?.length || 0) / itemsPerPage);
+    useEffect(() => {
+      const flightsApiRequest = async () => {
+        setLoading(true); // Set loading to true when starting the request
+        setError(null);
+        try {
+          console.log(departureDate, searchQuery, toQuery, tripType);
 
-  // Calculate which offers to display for the current page
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentOffers =
-    flights?.slice(startIndex, startIndex + itemsPerPage) || [];
+          const requestData =
+            tripType === "oneWay"
+              ? {
+                  data: {
+                    slices: [
+                      {
+                        origin: searchQuery,
+                        destination: toQuery,
+                        departure_date: departureDate,
+                      },
+                    ],
+                    passengers: passengers,
+                  },
+                }
+              : {
+                data: {
+                  slices: [
+                    {
+                      origin: searchQuery,
+                      destination: toQuery,
+                      departure_date: departureDate,
+                    },
+                    {
+                      origin: toQuery,
+                      destination: searchQuery,
+                      departure_date: returnDate,
+                    },
+                  ],
+                  passengers: passengers,
+                }
+              };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+          console.log(requestData);
 
-  return (
-    <div className="max-w-4xl mx-auto p-4 mt-32 flex flex-col lg:flex-row justify-between">
-      <div className="w-full lg:w-3/12 mx-2">
-        {/* Button to show filter on mobile */}
-        <div className="block lg:hidden">
-          <button
-            className="bg-custom-gradient text-white p-2 rounded"
-            onClick={() => setFilterVisible(!filterVisible)}
-          >
-            {filterVisible ? "Hide Filters" : "Show Filters"}
-          </button>
-        </div>
-        {/* Filter component shown as a card on mobile */}
-        {filterVisible && (
-          <div className="bg-white shadow-md rounded-lg p-4 lg:hidden">
-            <Filter setFlights={setFlights} flights={response} />
+          if (selectedDates.length > 1 && tripType === "roundTrip") {
+            const res = await axios.post(
+              `${import.meta.env.VITE_BASE_URL}flights/createOfferRequest`,
+              requestData
+            );
+            if (res) {
+              console.log(res);
+              setResponse(res.data.data.data);
+              setFlights(res?.data?.data?.data);
+              setMinPrice(res?.data?.data?.meta.minPrice)
+              setMaxPrice(res?.data?.data?.meta.maxPrice)
+            }
+          } else if (tripType === "roundTrip") {
+            toast.error("Please select Complete Date and Both Locations");
+          }
+          if (
+            selectedDates.length <= 2 &&
+            selectedDates.length !== 0 &&
+            tripType === "oneWay"
+          ) {
+            const res = await axios.post(
+              `${import.meta.env.VITE_BASE_URL}flights/createOfferRequest`,
+              requestData
+            );
+            if (res) {
+              console.log(res);
+              setTotalPages(res.data?.data?.meta?.totalPages)
+              setId(res.data.data.meta.id)
+              setLimit(res.data.data.meta.limit)
+              console.log(res.data.data.data);
+              setResponse(res?.data?.data?.data);
+              setFlights(res?.data?.data?.data);
+              console.log(totalPages);
+              setMinPrice(res.data.data.meta.minPrice)
+              setMaxPrice(res.data.data.meta.maxPrice)
+              console.log(res.data.data.meta.minPrice, res.data.data.meta.maxPrice);
+              
+              
+            }
+          } else if (tripType === "oneWay" && selectedDates.length > 1) {
+            toast.error("Please select Complete Departure date only");
+          }
+        } catch (error) {
+          console.error("Error fetching flight offers:", error);
+          if (error.response && error.response.status === 502) {
+            setError("Error from server"); // Set specific error message for 502
+          } else {
+            setError("An unexpected error occurred."); // General error message
+          }
+        } finally {
+          setTimeout(() => setLoading(false), 2000);
+        }
+      };
+
+      flightsApiRequest(); // Call the API request when dependencies change
+    }, [isSearched]); 
+
+    const handlePageChange = (pages) => {
+      setCurrentPage(pages);
+      setPage(pages);
+      fetchPaginatedData(); 
+      setPg(pages)
+      
+    };
+
+    const setFilters = (data) => {
+      setFilteredData(data)
+    }
+
+    return (
+      <div className="max-w-4xl mx-auto p-4 mt-32 flex flex-col lg:flex-row justify-between">
+        <div className="w-full lg:w-3/12 mx-2">
+          {/* Button to show filter on mobile */}
+          <div className="block lg:hidden">
+            <button
+              className="bg-custom-gradient text-white p-2 rounded"
+              onClick={() => setFilterVisible(!filterVisible)}
+            >
+              {filterVisible ? "Hide Filters" : "Show Filters"}
+            </button>
           </div>
-        )}
-        {/* Always show the Filter component on larger screens */}
-        <div className="hidden lg:block">
-          <Filter setFlights={setFlights} flights={response} />
-        </div>
-      </div>
-      <div className="w-full lg:w-8/12">
-        {loading ? (
-          <div className="flex justify-center items-center h-full">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-yellow-500"></div>
+          {/* Filter component shown as a card on mobile */}
+          {filterVisible && (
+            <div className="bg-white shadow-md rounded-lg p-4 lg:hidden">
+              <Filter setFlights={setFlights} flights={response} filteredData={data}
+              setFilteredData={setFilters} applyFilter={applyFilter} setApplyFilter={setApplyFilter}/>
+            </div>
+          )}
+          {/* Always show the Filter component on larger screens */}
+          <div className="hidden lg:block">
+            <Filter setFlights={setFlights} flights={response} filteredData={data}
+              setFilteredData={setFilters} applyFilter={applyFilter} setApplyFilter={setApplyFilter} minPrice={minPrice} maxPrice={maxPrice}/>
           </div>
-        ) : error ? (
-          <p className="text-red-600 text-center text-2xl">{error}</p> // Display error message
-        ) : response && response.length > 0 ? (
-          currentOffers.length > 0 ? (
-            currentOffers.map((offer) =>
-              tripType === "roundTrip" && selectedDates.length === 2 && isSearchClicked ? (
-                <RoundTripFlightOfferCard key={offer.id} offer={offer} />
-              ) : (
-                <FlightOfferCard key={offer.id} offer={offer} />
+        </div>
+        <div className="w-full lg:w-8/12">
+          {loading ? (
+            <div className="flex justify-center items-center h-full">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-yellow-500"></div>
+            </div>
+          ) : error ? (
+            <p className="text-red-600 text-center text-2xl">{error}</p> // Display error message
+          ) : response && response.length > 0 ? (
+            response.length > 0 ? (
+              response.map((offer) =>
+                tripType === "roundTrip" &&
+                selectedDates.length === 2 &&
+                isSearchClicked ? (
+                  <RoundTripFlightOfferCard key={offer.id} offer={offer} />
+                ) : (
+                  <FlightOfferCard key={offer.id} offer={offer} />
+                )
               )
+            ) : (
+              <p className="text-center text-2xl">No results found</p>
             )
           ) : (
             <p className="text-center text-2xl">No results found</p>
-          )
-        ) : (
-          <p className="text-center text-2xl">No results found</p>
-        )}
-        {totalPages > 1 && !error && currentOffers?.length > 0 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        )}
+          )}
+          {totalPages > 1 && !error && response?.length > 0 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              id={id}
+              limit={limit}
+              page={page}
+            />
+          )}
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
-export default FlightOffersList;
+  export default FlightOffersList;

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-const Filter = ({ flights, setFlights }) => {
+const Filter = ({ flights, filteredData, setFilteredData, applyFilter, setApplyFilter }) => {
   const getMinMaxPrice = () => {
     if (!flights || flights.length === 0) return [0, 1000];
-    const prices = flights.map(flight => parseFloat(flight.total_amount));
+    const prices = flights.map((flight) => parseFloat(flight.total_amount));
     return [Math.min(...prices), Math.max(...prices)];
   };
 
@@ -17,11 +17,11 @@ const Filter = ({ flights, setFlights }) => {
   });
 
   const [minPrice, maxPrice] = getMinMaxPrice();
-  const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
+  const [priceRange, setPriceRange] = useState([0, 15000]);
 
   useEffect(() => {
     const [newMin, newMax] = getMinMaxPrice();
-    setPriceRange([newMin, newMax]);
+    setPriceRange([0, 10000]);
   }, [flights]);
 
   const airlinesList = [
@@ -73,32 +73,25 @@ const Filter = ({ flights, setFlights }) => {
   };
 
   useEffect(() => {
-    const filteredFlights = flights?.filter((flight) => {
-      const stopsCount = flight.slices[0].segments.length - 1;
-      const stopCondition =
-        (stops[0] && stopsCount === 0) ||
-        (stops[1] && stopsCount === 1) ||
-        (stops[2] && stopsCount >= 2) ||
-        (!stops.includes(true));
+    // Initialize the stopsArray to be empty
+    let stopsArray = [];
 
-      const airlineCondition =
-        selectedAirlines.length === 0 ||
-        selectedAirlines.includes(flight.owner.name);
+    if (stops[0]) stopsArray.push(0);
+    if (stops[1]) stopsArray.push(1);
+    if (stops[2]) stopsArray.push(2);
 
-      const price = parseFloat(flight.total_amount);
-      const priceCondition = price >= priceRange[0] && price <= priceRange[1];
+    if (stopsArray.length === 0) stopsArray = [];
 
-      const cabinClass = flight.slices[0].segments[0].passengers[0].cabin_class;
-      const cabinCondition =
-        (cabinClass === "economy" && selectedCabins.economy) ||
-        (cabinClass === "premium_economy" && selectedCabins.premium_economy) ||
-        (cabinClass === "business" && selectedCabins.business) ||
-        (cabinClass === "first" && selectedCabins.first);
+    const data = {
+      cabin_class: Object.keys(selectedCabins).filter(
+        (cabin) => selectedCabins[cabin]
+      ),
+      base_amount: [priceRange[0], priceRange[1]],
+      stops: stopsArray, 
+      airlines: selectedAirlines,
+    };
 
-      return stopCondition && airlineCondition && priceCondition && cabinCondition;
-    });
-
-    setFlights(filteredFlights);
+    setFilteredData(data);
   }, [stops, selectedAirlines, priceRange, selectedCabins]);
 
   return (
@@ -106,6 +99,8 @@ const Filter = ({ flights, setFlights }) => {
       <section className="flex justify-center items-center text-custom-green text-xl font-bold h-12 border-b border-b-[#525B31]">
         <p>Filter By</p>
       </section>
+
+      <button onClick={()=>{setApplyFilter(!applyFilter)}} className="px-10 py-4 rounded-lg mt-2 bg-custom-gradient text-white ">Apply Filters</button>
 
       <section className="text-custom-green py-3 border-b border-b-[#525B31] px-2 mt-2">
         <p className="font-semibold">Stops</p>
@@ -148,7 +143,10 @@ const Filter = ({ flights, setFlights }) => {
         <p className="font-semibold">Airlines</p>
         <div className="flex flex-col">
           {airlinesList.map((airline) => (
-            <div key={airline} className="flex justify-between items-center mt-1">
+            <div
+              key={airline}
+              className="flex justify-between items-center mt-1"
+            >
               <input
                 type="checkbox"
                 className="w-5 h-5 mr-2"
@@ -161,7 +159,6 @@ const Filter = ({ flights, setFlights }) => {
         </div>
       </section>
 
-      {/* Price Range Filter Section */}
       <section className="text-custom-green py-2 border-b border-b-[#525B31] px-2 mt-2">
         <p className="font-semibold">Price Range (AUD)</p>
         <div className="flex flex-col mt-4">
