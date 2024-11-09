@@ -35,13 +35,14 @@ import { da } from "date-fns/locale";
     const [data, setFilteredData] = useState();
     const [totalPages, setTotalPages] = useState();
 
-    const [passengers, setPassengers] = useState([]); 
+    const [passengers, setPassengers] = useState([{type:"adult"}]); 
     const [flights, setFlights] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20; // Number of items to display per page
     const [filterVisible, setFilterVisible] = useState(false); 
     const [applyFilter, setApplyFilter] = useState(false)
     const [pg, setPg] = useState(1);
+    let newPassengers = [];
 
 
     useEffect(()=> {
@@ -54,12 +55,13 @@ import { da } from "date-fns/locale";
 
     useEffect(() => {
       console.log(guest);
-      let newPassengers = [];
 
-      for (let i = 0; i < guest.adults; i++) {
-        console.log("ran");
-
-        newPassengers.push({ type: "adult" });
+      if(guest.adults > 1){
+        for (let i = 0; i < guest.adults-1; i++) {
+          console.log("ran");
+  
+          newPassengers.push({ type: "adult" });
+        }
       }
 
       for (let i = 0; i < guest.children; i++) {
@@ -70,9 +72,11 @@ import { da } from "date-fns/locale";
         newPassengers.push({ type: "infant_without_seat" });
       }
 
-      setPassengers(newPassengers? newPassengers: [{
-        "type": "adult"
-      }]);
+      if (newPassengers.length > 0){
+        setPassengers(newPassengers)
+      }
+      console.log(newPassengers);
+      
       setTimeout(() => {}, 1000);
       console.log(newPassengers);
     }, [guest]);
