@@ -14,7 +14,8 @@ import { da } from "date-fns/locale";
     const [limit, setLimit] = useState(20);
     const [page, setPage] = useState(null);
     const [minPrice, setMinPrice] = useState();
-    const [maxPrice, setMaxPrice] = useState()
+    const [maxPrice, setMaxPrice] = useState();
+    const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
     const {
       selectedDates,
       guest,
@@ -107,6 +108,7 @@ import { da } from "date-fns/locale";
               setFlights(res?.data?.data?.data);
               setMinPrice(res?.data?.data?.meta.minPrice)
               setMaxPrice(res?.data?.data?.meta.maxPrice)
+              setPriceRange(res?.data?.data?.meta.minPrice, res?.data?.data?.meta.maxPrice)
             }
           } else if (tripType === "roundTrip") {
             toast.error("Please select Complete Date and Both Locations");
@@ -136,7 +138,8 @@ import { da } from "date-fns/locale";
               setResponse(res.data.data.data)
               setFlights(res?.data?.data?.data);  
               setMinPrice(res?.data?.data?.meta.minPrice)
-              setMaxPrice(res?.data?.data?.meta.maxPrice)          
+              setMaxPrice(res?.data?.data?.meta.maxPrice)       
+              setPriceRange(res?.data?.data?.meta.minPrice, res?.data?.data?.meta.maxPrice)   
             }
           } else if (tripType === "oneWay" && selectedDates.length > 1) {
             toast.error("Please select Complete Departure date only");
@@ -227,6 +230,7 @@ import { da } from "date-fns/locale";
               setFlights(res?.data?.data?.data);
               setMinPrice(res?.data?.data?.meta.minPrice)
               setMaxPrice(res?.data?.data?.meta.maxPrice)
+              setPriceRange(res?.data?.data?.meta.minPrice, res?.data?.data?.meta.maxPrice)
             }
           } else if (tripType === "roundTrip") {
             toast.error("Please select Complete Date and Both Locations");
@@ -252,8 +256,7 @@ import { da } from "date-fns/locale";
               setMinPrice(res.data.data.meta.minPrice)
               setMaxPrice(res.data.data.meta.maxPrice)
               console.log(res.data.data.meta.minPrice, res.data.data.meta.maxPrice);
-              
-              
+              setPriceRange(res?.data?.data?.meta.minPrice, res?.data?.data?.meta.maxPrice)
             }
           } else if (tripType === "oneWay" && selectedDates.length > 1) {
             toast.error("Please select Complete Departure date only");
@@ -301,13 +304,13 @@ import { da } from "date-fns/locale";
           {filterVisible && (
             <div className="bg-white shadow-md rounded-lg p-4 lg:hidden">
               <Filter setFlights={setFlights} flights={response} filteredData={data}
-              setFilteredData={setFilters} applyFilter={applyFilter} setApplyFilter={setApplyFilter}/>
+              setFilteredData={setFilters} applyFilter={applyFilter} setApplyFilter={setApplyFilter} minPrice={minPrice} maxPrice={maxPrice} priceRange={priceRange} setPriceRange={setPriceRange}/>
             </div>
           )}
           {/* Always show the Filter component on larger screens */}
           <div className="hidden lg:block">
             <Filter setFlights={setFlights} flights={response} filteredData={data}
-              setFilteredData={setFilters} applyFilter={applyFilter} setApplyFilter={setApplyFilter} minPrice={minPrice} maxPrice={maxPrice}/>
+              setFilteredData={setFilters} applyFilter={applyFilter} setApplyFilter={setApplyFilter} minPrice={minPrice} maxPrice={maxPrice} priceRange={priceRange} setPriceRange={setPriceRange}/>
           </div>
         </div>
         <div className="w-full lg:w-8/12">

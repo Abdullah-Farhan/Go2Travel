@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const Filter = ({ flights, filteredData, setFilteredData, applyFilter, setApplyFilter }) => {
+const Filter = ({ flights, filteredData, setFilteredData, applyFilter, setApplyFilter, minPrice, maxPrice }) => {
   const getMinMaxPrice = () => {
     if (!flights || flights.length === 0) return [0, 1000];
     const prices = flights.map((flight) => parseFloat(flight.total_amount));
@@ -16,12 +16,11 @@ const Filter = ({ flights, filteredData, setFilteredData, applyFilter, setApplyF
     first: true,
   });
 
-  const [minPrice, maxPrice] = getMinMaxPrice();
-  const [priceRange, setPriceRange] = useState([0, 15000]);
+  const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
 
   useEffect(() => {
-    const [newMin, newMax] = getMinMaxPrice();
-    setPriceRange([0, 10000]);
+    //const [newMin, newMax] = getMinMaxPrice();
+    setPriceRange([minPrice, maxPrice]);
   }, [flights]);
 
   const airlinesList = [
@@ -166,7 +165,7 @@ const Filter = ({ flights, filteredData, setFilteredData, applyFilter, setApplyF
             type="range"
             name="min"
             min={minPrice}
-            max={priceRange[1]}
+            max={maxPrice}
             value={priceRange[0]}
             onChange={handlePriceChange}
             className="w-full"
@@ -174,7 +173,7 @@ const Filter = ({ flights, filteredData, setFilteredData, applyFilter, setApplyF
           <input
             type="range"
             name="max"
-            min={priceRange[0]}
+            min={minPrice}
             max={maxPrice}
             value={priceRange[1]}
             onChange={handlePriceChange}
