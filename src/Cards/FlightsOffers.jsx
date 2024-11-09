@@ -28,10 +28,35 @@ const FlightOfferCard = ({ offer }) => {
 
   const formatDateTime = (date) => format(parseISO(date), "eee, MMM dd, HH:mm");
 
-  const calculateDuration = (departure, arrival) => {
-    const departureDate = new Date(departure);
-    const arrivalDate = new Date(arrival);
-    const durationMs = arrivalDate - departureDate;
+ // Utility function to convert time between timezones
+function convertTimeBetweenTimezones(isoTime, originTimeZone, targetTimeZone) {
+  // Create a Date object in the origin timezone
+  const date = new Date(new Intl.DateTimeFormat('en-US', {
+    timeZone: originTimeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).format(new Date(isoTime)));
+
+  // Format the date in the target timezone
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: targetTimeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).format(date);
+}
+
+  const calculateDuration = (departure, arrival, dest_timezone, origin_timezone) => {
+    const departureDate = new Date(convertTimeBetweenTimezones(departure, origin_timezone,"Asia/Dubai"))
+    const arrivalDate = new Date(convertTimeBetweenTimezones(arrival, dest_timezone, "Asia/Dubai"));
+    const durationMs = (arrivalDate > departureDate ? arrivalDate - departureDate : departureDate - arrivalDate);
     const hours = Math.floor(durationMs / (1000 * 60 * 60));
     const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
     return `${hours}h ${minutes}m`;
@@ -89,7 +114,7 @@ const FlightOfferCard = ({ offer }) => {
           {/* Duration and Flight Class */}
           <div className="flex flex-col items-center">
             <span className="text-gray-400 text-sm">
-              {calculateDuration(departing_at, arriving_at)}
+              {calculateDuration(departing_at, arriving_at, destination.time_zone)}
             </span>
             <span className="text-sm font-semibold text-gray-600">
               {passengers[0]?.cabin_class}
