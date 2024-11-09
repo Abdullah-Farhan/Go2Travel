@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { format, parseISO } from "date-fns";
+import { DateTime } from "luxon";
 
 const FlightOfferCard = ({ offer }) => {
   const [showModal, setShowModal] = useState(false);
@@ -13,8 +13,6 @@ const FlightOfferCard = ({ offer }) => {
     payment_requirements,
   } = offer;
 
-  //console.log(slices);
-  
   const firstSlice = slices[0];
   const segment = firstSlice.segments[0];
   const {
@@ -26,57 +24,34 @@ const FlightOfferCard = ({ offer }) => {
     passengers,
   } = segment;
 
-  const formatDateTime = (date) => format(parseISO(date), "eee, MMM dd, HH:mm");
-
- // Utility function to convert time between timezones
-function convertTimeBetweenTimezones(isoTime, originTimeZone, targetTimeZone) {
-  // Create a Date object in the origin timezone
-  const date = new Date(new Intl.DateTimeFormat('en-US', {
-    timeZone: originTimeZone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(new Date(isoTime)));
-
-  // Format the date in the target timezone
-  return new Intl.DateTimeFormat('en-US', {
-    timeZone: targetTimeZone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(date);
-}
-
-  const calculateDuration = (departure, arrival, dest_timezone, origin_timezone) => {
-    const departureDate = new Date(convertTimeBetweenTimezones(departure, origin_timezone,"Asia/Dubai"))
-    const arrivalDate = new Date(convertTimeBetweenTimezones(arrival, dest_timezone, "Asia/Dubai"));
-    const durationMs = (arrivalDate > departureDate ? arrivalDate - departureDate : departureDate - arrivalDate);
-    const hours = Math.floor(durationMs / (1000 * 60 * 60));
-    const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
-    return `${hours}h ${minutes}m`;
+  // Convert and format dates in the specified timezone
+  const convertTimeBetweenTimezones = (isoTime, originTimeZone, targetTimeZone) => {
+    return DateTime.fromISO(isoTime, { zone: originTimeZone })
+      .setZone(targetTimeZone)
+      .toFormat("EEE, MMM dd, HH:mm");
   };
 
-  //console.log(new Date(arriving_at).toUTCString(), new Date(departing_at).toUTCString());
-  
+  // Calculate duration between departure and arrival times
+  const calculateDuration = (departure, arrival, originTimeZone, destinationTimeZone) => {
+    const departureDate = DateTime.fromISO(departure, { zone: originTimeZone });
+    const arrivalDate = DateTime.fromISO(arrival, { zone: destinationTimeZone });
+    const duration = arrivalDate.diff(departureDate, ["hours", "minutes"]);
+    return `${duration.hours}h ${duration.minutes}m`;
+  };
 
-  const totalStops = slices.reduce(
-    (sum, slice) => sum + slice.segments.length - 1,
-    0
-  );
+  const totalStops = slices.reduce((sum, slice) => sum + slice.segments.length - 1, 0);
 
   // Get the final destination for the main card
-  const finalDestination =
-    totalStops > 0
-      ? slices[slices.length - 1].segments[
-          slices[slices.length - 1].segments.length - 1
-        ].destination.iata_code
-      : destination.iata_code;
+  const finalDestination = totalStops > 0
+    ? slices[slices.length - 1].segments[slices[slices.length - 1].segments.length - 1].destination.iata_code
+    : destination.iata_code;
+
+  // Calculate total duration for the main card considering multiple segments
+  const calculateTotalDuration = () => {
+    const departure = slices[0].segments[0].departing_at;
+    const arrival = slices[slices.length - 1].segments[slices[slices.length - 1].segments.length - 1].arriving_at;
+    return calculateDuration(departure, arrival, origin.time_zone, destination.time_zone);
+  };
 
   return (
     <div className="bg-white shadow-md rounded-lg p-4 mb-4 flex flex-col md:flex-row relative">
@@ -106,7 +81,7 @@ function convertTimeBetweenTimezones(isoTime, originTimeZone, targetTimeZone) {
         <div className="flex items-center justify-between text-gray-600 shadow-lg h-28 rounded-lg px-2 mt-2">
           <div className="text-center">
             <p className="text-sm font-semibold">
-              {formatDateTime(departing_at)}
+              {convertTimeBetweenTimezones(departing_at, origin.time_zone, "Asia/Dubai")}
             </p>
             <p className="text-sm font-medium">{origin.iata_code}</p>
           </div>
@@ -114,7 +89,7 @@ function convertTimeBetweenTimezones(isoTime, originTimeZone, targetTimeZone) {
           {/* Duration and Flight Class */}
           <div className="flex flex-col items-center">
             <span className="text-gray-400 text-sm">
-              {calculateDuration(departing_at, arriving_at, destination.time_zone)}
+              {calculateTotalDuration()}
             </span>
             <span className="text-sm font-semibold text-gray-600">
               {passengers[0]?.cabin_class}
@@ -132,7 +107,7 @@ function convertTimeBetweenTimezones(isoTime, originTimeZone, targetTimeZone) {
 
           <div className="text-center">
             <p className="text-sm font-semibold">
-              {formatDateTime(arriving_at)}
+              {convertTimeBetweenTimezones(arriving_at, destination.time_zone, "Asia/Dubai")}
             </p>
             <p className="text-sm font-medium">{finalDestination}</p>
           </div>
@@ -180,9 +155,7 @@ function convertTimeBetweenTimezones(isoTime, originTimeZone, targetTimeZone) {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg p-6 w-11/12 md:w-1/2">
-            <h2 className="text-3xl font-bold text-custom-green">
-              Flight Details
-            </h2>
+            <h2 className="text-3xl font-bold text-custom-green">Flight Details</h2>
             {slices.map((slice, sliceIndex) => (
               <div key={sliceIndex} className="mb-4">
                 <h3 className="text-xl font-bold text-custom-gold">
@@ -207,7 +180,7 @@ function convertTimeBetweenTimezones(isoTime, originTimeZone, targetTimeZone) {
                     <div className="flex items-center justify-between text-gray-600">
                       <div className="text-center">
                         <p className="text-sm font-semibold">
-                          {formatDateTime(segment.departing_at)}
+                          {convertTimeBetweenTimezones(segment.departing_at, segment.origin.time_zone, "Asia/Dubai")}
                         </p>
                         <p className="text-sm font-medium">
                           {segment.origin?.iata_code}
@@ -216,10 +189,7 @@ function convertTimeBetweenTimezones(isoTime, originTimeZone, targetTimeZone) {
 
                       <div className="flex flex-col items-center">
                         <span className="text-gray-400 text-sm">
-                          {calculateDuration(
-                            segment.departing_at,
-                            segment.arriving_at
-                          )}
+                          {calculateDuration(segment.departing_at, segment.arriving_at, segment.origin.time_zone, segment.destination.time_zone)}
                         </span>
                         <span className="text-sm font-semibold text-gray-600">
                           {segment.passengers[0]?.cabin_class}
@@ -228,7 +198,7 @@ function convertTimeBetweenTimezones(isoTime, originTimeZone, targetTimeZone) {
 
                       <div className="text-center">
                         <p className="text-sm font-semibold">
-                          {formatDateTime(segment.arriving_at)}
+                          {convertTimeBetweenTimezones(segment.arriving_at, segment.destination.time_zone, "Asia/Dubai")}
                         </p>
                         <p className="text-sm font-medium">
                           {segment.destination?.iata_code}

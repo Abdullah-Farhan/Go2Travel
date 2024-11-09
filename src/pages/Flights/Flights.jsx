@@ -105,6 +105,7 @@ import { da } from "date-fns/locale";
             if (res) {
               console.log(res);
               setResponse(res.data.data.data);
+              setTimeout(() => setLoading(false), 2500);
               setFlights(res?.data?.data?.data);
               setMinPrice(res?.data?.data?.meta.minPrice)
               setMaxPrice(res?.data?.data?.meta.maxPrice)
@@ -136,6 +137,7 @@ import { da } from "date-fns/locale";
               
               console.log(res.data.data.data);
               setResponse(res.data.data.data)
+              setTimeout(() => setLoading(false), 2500);
               setFlights(res?.data?.data?.data);  
               setMinPrice(res?.data?.data?.meta.minPrice)
               setMaxPrice(res?.data?.data?.meta.maxPrice)       
@@ -152,7 +154,7 @@ import { da } from "date-fns/locale";
           //   setError("An unexpected error occurred."); // General error message
           // }
         } finally {
-          setTimeout(() => setLoading(false), 2000);
+          setTimeout(() => setLoading(false), 2500);
         }
     }
 
@@ -227,6 +229,7 @@ import { da } from "date-fns/locale";
             if (res) {
               console.log(res);
               setResponse(res.data.data.data);
+              setTimeout(() => setLoading(false), 2500);
               setFlights(res?.data?.data?.data);
               setMinPrice(res?.data?.data?.meta.minPrice)
               setMaxPrice(res?.data?.data?.meta.maxPrice)
@@ -251,6 +254,7 @@ import { da } from "date-fns/locale";
               setLimit(res.data.data.meta.limit)
               console.log(res.data.data.data);
               setResponse(res?.data?.data?.data);
+              setTimeout(() => setLoading(false), 2500);
               setFlights(res?.data?.data?.data);
               console.log(totalPages);
               setMinPrice(res.data.data.meta.minPrice)
@@ -269,7 +273,7 @@ import { da } from "date-fns/locale";
             setError("An unexpected error occurred."); // General error message
           }
         } finally {
-          setTimeout(() => setLoading(false), 2000);
+          setTimeout(() => setLoading(false), 2500);
         }
       };
 

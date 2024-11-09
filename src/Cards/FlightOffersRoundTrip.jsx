@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { DateTime } from "luxon";
 
-const RoundTripFlightOfferCard = ({ offer }) => {
+const FlightOfferCard = ({ offer }) => {
+  const [showModal, setShowModal] = useState(false);
   const {
     total_amount,
     total_currency,
@@ -12,207 +13,205 @@ const RoundTripFlightOfferCard = ({ offer }) => {
     payment_requirements,
   } = offer;
 
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const firstSlice = slices[0];
+  const segment = firstSlice.segments[0];
+  const {
+    origin,
+    destination,
+    departing_at,
+    arriving_at,
+    operating_carrier,
+    passengers,
+  } = segment;
 
-  const totalStops = slices.reduce(
-    (total, slice) => total + (slice.segments.length - 1),
-    0
-  );
+  // Convert and format dates in the specified timezone
+  const convertTimeBetweenTimezones = (isoTime, originTimeZone, targetTimeZone) => {
+    return DateTime.fromISO(isoTime, { zone: originTimeZone })
+      .setZone(targetTimeZone)
+      .toFormat("EEE, MMM dd, HH:mm");
+  };
 
-  // Convert dates to UTC using their time zones
-  const toUTC = (dateStr, timezone) =>
-    DateTime.fromISO(dateStr, { zone: timezone }).toUTC();
-
-  // Calculate duration in hours and minutes between two UTC DateTime objects
-  const calculateDuration = (startUTC, endUTC) => {
-    const duration = endUTC.diff(startUTC, ["hours", "minutes"]);
+  // Calculate duration between departure and arrival times
+  const calculateDuration = (departure, arrival, originTimeZone, destinationTimeZone) => {
+    const departureDate = DateTime.fromISO(departure, { zone: originTimeZone });
+    const arrivalDate = arrival;
+    const duration = arrivalDate.diff(departureDate, ["hours", "minutes"]);
     return `${duration.hours}h ${duration.minutes}m`;
   };
 
+  const totalStops = slices.reduce((sum, slice) => sum + slice.segments.length - 1, 0);
+
+  // Get the final destination for the main card
+  const finalDestination = totalStops > 0
+    ? slices[slices.length - 1].segments[slices[slices.length - 1].segments.length - 1].destination.iata_code
+    : destination.iata_code;
+
+  // Calculate total duration for the main card considering multiple segments
+  const calculateTotalDuration = () => {
+    const departure = slices[0].segments[0].departing_at;
+    const arrival = slices[slices.length - 1].segments[slices[slices.length - 1].segments.length - 1].arriving_at;
+    return calculateDuration(departure, arrival, origin.time_zone, destination.time_zone);
+  };
+
   return (
-    <div className="relative">
-      <div className="bg-white shadow-lg rounded-xl p-4 mb-4 flex flex-col md:flex-row w-full">
-        <div className="flex-shrink-0 flex justify-center items-center mb-4 md:mb-0 md:mr-4">
-          <img
-            src={slices[0].segments[0].operating_carrier?.logo_symbol_url}
-            alt={`${slices[0].segments[0].operating_carrier?.logo_symbol_url} logo`}
-            className="w-24 h-24 rounded"
-          />
+    <div className="bg-white shadow-md rounded-lg p-4 mb-4 flex flex-col md:flex-row relative">
+      {/* Carrier Image */}
+      <div className="flex-shrink-0 flex justify-center items-center mb-4 md:mb-0 md:mr-4">
+        <img
+          src={operating_carrier.logo_symbol_url}
+          alt={`${operating_carrier.name} logo`}
+          className="w-24 h-24 rounded"
+        />
+      </div>
+
+      {/* Flight Information */}
+      <div className="flex-grow relative">
+        <div className="flex justify-between items-center mb-2">
+          <div>
+            <h2 className="text-lg font-bold text-custom-green">
+              {operating_carrier.name}
+            </h2>
+            <p className="text-custom-green">
+              {segment.marketing_carrier_flight_number}
+            </p>
+          </div>
         </div>
 
-        <div className="flex-grow">
-          {slices.map((slice, sliceIndex) => {
-            const firstSegment = slice.segments[0];
-            const lastSegment = slice.segments[slice.segments.length - 1];
+        {/* Flight Details */}
+        <div className="flex items-center justify-between text-gray-600 shadow-lg h-28 rounded-lg px-2 mt-2">
+          <div className="text-center">
+            <p className="text-sm font-semibold">
+              {convertTimeBetweenTimezones(departing_at, origin.time_zone, "Asia/Dubai")}
+            </p>
+            <p className="text-sm font-medium">{origin.iata_code}</p>
+          </div>
 
-            return (
-              <div key={sliceIndex} className="mb-6">
-                <h3 className="text-lg font-bold text-custom-green">
-                  {sliceIndex === 0 ? "Outbound Flight" : "Return Flight"}
-                </h3>
-                <div className="mb-4">
-                  <div className="flex flex-row items-center justify-between text-gray-600 shadow-lg h-28 rounded-lg px-2 mt-2">
-                    <div className="text-center">
-                      <p className="text-sm font-semibold">
-                        {firstSegment.departing_at}
-                      </p>
-                      <p className="text-sm font-medium">
-                        {firstSegment.origin?.iata_code}
-                      </p>
-                    </div>
+          {/* Duration and Flight Class */}
+          <div className="flex flex-col items-center">
+            <span className="text-gray-400 text-sm">
+              {calculateTotalDuration()}
+            </span>
+            <span className="text-sm font-semibold text-gray-600">
+              {passengers[0]?.cabin_class}
+            </span>
+            {totalStops > 0 && (
+              <button
+                onClick={() => setShowModal(true)}
+                className="text-blue-500 text-xs mt-1"
+              >
+                {totalStops} stop{totalStops > 1 ? "s" : ""} (
+                {slices[0].segments[1].origin.iata_code})
+              </button>
+            )}
+          </div>
 
-                    <div className="flex flex-col items-center">
-                      <span className="text-gray-400 text-sm">
-                        {calculateDuration(
-                          toUTC(firstSegment.departing_at, firstSegment.origin?.timezone),
-                          toUTC(lastSegment.arriving_at, lastSegment.destination?.timezone)
-                        )}
-                      </span>
-                      <span className="text-sm font-semibold text-gray-600">
-                        {firstSegment.passengers[0]?.cabin_class}
-                      </span>
-                    </div>
+          <div className="text-center">
+            <p className="text-sm font-semibold">
+              {convertTimeBetweenTimezones(arriving_at, destination.time_zone, "Asia/Dubai")}
+            </p>
+            <p className="text-sm font-medium">{finalDestination}</p>
+          </div>
+        </div>
 
-                    <div className="text-center">
-                      <p className="text-sm font-semibold">
-                        {lastSegment.arriving_at}
-                      </p>
-                      <p className="text-sm font-medium">
-                        {lastSegment.destination?.iata_code}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-
-          {totalStops > 0 && (
-            <button
-              onClick={() => setIsPopupOpen(true)}
-              className="mt-4 bg-custom-gradient text-white text-sm px-3 py-1 rounded"
-            >
-              {totalStops} Stop{totalStops > 1 ? "s" : ""}
-            </button>
-          )}
-
-          <div className="mt-6 text-gray-600">
+        {/* Additional Info - Emissions and Refundability */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-3 text-gray-600 space-y-2 sm:space-y-0">
+          <div>
             <p>Emissions: {total_emissions_kg} kg</p>
             <p>
               Refundable:{" "}
-              {payment_requirements?.requires_instant_payment ? "Yes" : "No"}
+              {payment_requirements.requires_instant_payment ? "Yes" : "No"}
             </p>
           </div>
-          <div className="mt-6">
+          <div>
             <p
-              className={`text-xs md:text-sm ${
-                payment_requirements?.requires_instant_payment
+              className={`text-sm ${
+                payment_requirements.requires_instant_payment
                   ? "text-red-600"
                   : "text-green-600"
               }`}
             >
-              {payment_requirements?.requires_instant_payment
+              {payment_requirements.requires_instant_payment
                 ? "Requires Instant Payment"
                 : "Payment not required immediately"}
             </p>
           </div>
         </div>
 
-        <div className="absolute bottom-4 right-4 text-right mb-2">
+        {/* Price and Book Now Button */}
+        <div className="flex flex-col items-start sm:items-end sm:mt-0 mt-3 text-right sm:text-left">
           <p className="text-xl font-semibold">
             {total_amount} {total_currency}
           </p>
-          <p className="text-gray-500 text-xs md:text-sm">
+          <p className="text-gray-500 text-sm">
             {base_amount} {total_currency} (Tax: {tax_amount} {total_currency})
           </p>
-          <button className="mt-2 bg-custom-gold text-white text-xs px-3 py-1 rounded hover:bg-yellow-600">
+          <button className="mt-2 bg-yellow-500 text-white text-xs px-3 py-1 rounded hover:bg-yellow-600">
             Book Now
           </button>
         </div>
       </div>
 
-      {isPopupOpen && (
+      {/* Stops Popup */}
+      {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg p-6 w-11/12 md:w-1/2">
-            <h2 className="text-3xl font-bold text-custom-green">
-              Flight Details
-            </h2>
+            <h2 className="text-3xl font-bold text-custom-green">Flight Details</h2>
             {slices.map((slice, sliceIndex) => (
               <div key={sliceIndex} className="mb-4">
                 <h3 className="text-xl font-bold text-custom-gold">
                   {sliceIndex === 0 ? "Outbound Flight" : "Return Flight"}
                 </h3>
-                {slice.segments.map((segment, segmentIndex) => {
-                  const isLastSegment =
-                    segmentIndex === slice.segments.length - 1;
-                  const nextSegment = isLastSegment
-                    ? null
-                    : slice.segments[segmentIndex + 1];
-
-                  return (
-                    <div key={segmentIndex} className="mb-4 border-b-[2px] border-b-black pb-2">
-                      <div className="flex justify-between items-center mb-2">
-                        <div>
-                          <h2 className="text-lg font-bold text-custom-green">
-                            {segment.operating_carrier?.name}
-                          </h2>
-                          <p className="text-custom-green">
-                            Flight {segment.marketing_carrier_flight_number}
-                          </p>
-                        </div>
+                {slice.segments.map((segment, segmentIndex) => (
+                  <div
+                    key={segmentIndex}
+                    className="mb-4 border-b-black border-b-[2px] pb-2"
+                  >
+                    <div className="flex justify-between items-center mb-2">
+                      <div>
+                        <h2 className="text-lg font-bold text-custom-green">
+                          {segment.operating_carrier?.name}
+                        </h2>
+                        <p className="text-custom-green">
+                          Flight {segment.marketing_carrier_flight_number}
+                        </p>
                       </div>
-
-                      <div className="flex flex-col md:flex-row items-center justify-between text-gray-600">
-                        <div className="text-center">
-                          <p className="text-sm font-semibold">
-                            {segment.departing_at}
-                          </p>
-                          <p className="text-sm font-medium">
-                            {segment.origin?.iata_code}
-                          </p>
-                        </div>
-
-                        <div className="flex flex-col items-center">
-                          <span className="text-gray-400 text-sm">
-                            {calculateDuration(
-                              toUTC(segment.departing_at, segment.origin?.timezone),
-                              toUTC(segment.arriving_at, segment.destination?.timezone)
-                            )}
-                          </span>
-                          <span className="text-sm font-semibold text-gray-600">
-                            {segment.passengers[0]?.cabin_class}
-                          </span>
-                        </div>
-
-                        <div className="text-center">
-                          <p className="text-sm font-semibold">
-                            {segment.arriving_at}
-                          </p>
-                          <p className="text-sm font-medium">
-                            {segment.destination?.iata_code}
-                          </p>
-                        </div>
-                      </div>
-
-                      {!isLastSegment && nextSegment && (
-                        <div className="text-center mt-2 text-gray-500">
-                          <p>
-                            Layover:{" "}
-                            {calculateDuration(
-                              toUTC(segment.arriving_at, segment.destination?.timezone),
-                              toUTC(nextSegment.departing_at, nextSegment.origin?.timezone)
-                            )}
-                          </p>
-                        </div>
-                      )}
                     </div>
-                  );
-                })}
+
+                    <div className="flex items-center justify-between text-gray-600">
+                      <div className="text-center">
+                        <p className="text-sm font-semibold">
+                          {convertTimeBetweenTimezones(segment.departing_at, segment.origin.time_zone, "Asia/Dubai")}
+                        </p>
+                        <p className="text-sm font-medium">
+                          {segment.origin?.iata_code}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col items-center">
+                        <span className="text-gray-400 text-sm">
+                          {calculateDuration(segment.departing_at, segment.arriving_at, segment.origin.time_zone, segment.destination.time_zone)}
+                        </span>
+                        <span className="text-sm font-semibold text-gray-600">
+                          {segment.passengers[0]?.cabin_class}
+                        </span>
+                      </div>
+
+                      <div className="text-center">
+                        <p className="text-sm font-semibold">
+                          {convertTimeBetweenTimezones(segment.arriving_at, segment.destination.time_zone, "Asia/Dubai")}
+                        </p>
+                        <p className="text-sm font-medium">
+                          {segment.destination?.iata_code}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             ))}
             <button
-              onClick={() => setIsPopupOpen(false)}
-              className="mt-4 bg-custom-gradient text-white px-4 py-2 rounded"
+              onClick={() => setShowModal(false)}
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
             >
               Close
             </button>
@@ -223,4 +222,4 @@ const RoundTripFlightOfferCard = ({ offer }) => {
   );
 };
 
-export default RoundTripFlightOfferCard;
+export default FlightOfferCard;
