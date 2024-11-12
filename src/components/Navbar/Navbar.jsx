@@ -12,6 +12,9 @@ import schedule from "../../assets/svg/Schedule.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { FlightsContext } from "../../Context/FlightsContext";
 import { toast, Toaster } from "react-hot-toast";
+import airplane from "../../assets/png/takeoff.png";
+import landing from "../../assets/png/landing.png";
+import flighttype from "../../assets/png/flight.png";
 
 const Navbar = () => {
   const [activeLink, setActiveLink] = useState("home");
@@ -39,7 +42,7 @@ const Navbar = () => {
     searchQuery,
     loading,
     isSearchClicked,
-    setIsSearchClicked
+    setIsSearchClicked,
   } = useContext(FlightsContext);
 
   const handleLinkClick = (link) => {
@@ -71,10 +74,9 @@ const Navbar = () => {
     if (!destination || !toLocation || !selectedDates || !guest) {
       showToast();
     } else {
-      if(tripType === "oneWay"){
+      if (tripType === "oneWay") {
         setIsSearchClicked(false);
-      }
-      else if (tripType === "roundTrip"){
+      } else if (tripType === "roundTrip") {
         setIsSearchClicked(true);
       }
       setIsSearched(!isSearched);
@@ -314,20 +316,28 @@ const Navbar = () => {
                     </div>
                   </div>
 
-                  <div className="w-[32.5%] h-20 rounded-[40px] shadow-search flex flex-col items-center px-2 py-3">
-                    <p className="text-[#525B31] font-bold text-base font-montserrat">
-                      Flight Type?
-                    </p>
-                    <select
-                      id="tripType"
-                      onChange={(value) => setTripType(value.target.value)}
-                      className="outline-none rounded-md p-2"
-                      defaultValue="One Way"
-                    >
-                      <option value="oneWay">One Way</option>
-                      <option value="roundTrip">Return</option>
-                      <option value="multiCity">Multi-City</option>
-                    </select>
+                  <div className="w-[32.5%] h-20 rounded-[40px] shadow-search flex flex-row items-center px-2 py-3">
+                    <div className="h-full flex flex-col mr-1">
+                      <img
+                        src={flighttype}
+                        className="w-10 h-10 mr-2 ml-4 my-1"
+                      />
+                    </div>
+                    <div className="flex flex-col w-full ml-8 justify-center">
+                      <p className="text-[#525B31] font-bold text-base font-montserrat">
+                        Flight Type?
+                      </p>
+                      <select
+                        id="tripType"
+                        onChange={(value) => setTripType(value.target.value)}
+                        className="outline-none rounded-md p-2 w-28"
+                        defaultValue="One Way"
+                      >
+                        <option value="oneWay">One Way</option>
+                        <option value="roundTrip">Return</option>
+                        <option value="multiCity">Multi-City</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div className="w-[32.5%] h-20 rounded-[40px] shadow-search flex flex-row items-center px-2 py-3">
@@ -506,8 +516,8 @@ const Navbar = () => {
                   </div>
 
                   <div className="w-[32.5%] h-20 rounded-[40px] shadow-search flex flex-row items-center mt-3 px-2 py-3">
-                    <div className="h-full mr-2 px-3 py-1">
-                      <img src={bed} className="w-8 h-8" />
+                    <div className="h-full px-3 py-1">
+                      <img src={airplane} className="w-10 h-10" />
                     </div>
                     <div className="ml-4 h-full">
                       <p className="text-[#525B31] font-bold text-base font-montserrat">
@@ -515,7 +525,7 @@ const Navbar = () => {
                       </p>
                       <input
                         type="search"
-                        placeholder="Search Destination"
+                        placeholder="From Where"
                         className="text-[#525B31] text-base font-montserrat outline-none w-full"
                         value={destination}
                         onChange={(text) => setDestination(text.target.value)}
@@ -525,7 +535,7 @@ const Navbar = () => {
 
                   <div className="w-[32.5%]  h-20 rounded-[40px] shadow-search flex flex-row items-center mt-3 px-2 py-3">
                     <div className="h-full mr-2 px-3 py-1">
-                      <img src={bed} className="w-8 h-8" />
+                      <img src={landing} className="w-10 h-10" />
                     </div>
                     <div className="ml-4 h-full">
                       <p className="text-[#525B31] font-bold text-base font-montserrat">
@@ -533,7 +543,7 @@ const Navbar = () => {
                       </p>
                       <input
                         type="search"
-                        placeholder="Search Destination"
+                        placeholder="To Where"
                         className="text-[#525B31] text-base font-montserrat outline-none w-full"
                         value={toLocation}
                         onChange={(text) => setToLocation(text.target.value)}
@@ -568,21 +578,25 @@ const Navbar = () => {
               </div>
             </div>
 
-            <div className="w-full h-20 rounded-[40px] shadow-search flex flex-col items-center px-2 py-3">
-              <p className="text-[#525B31] font-bold text-base font-montserrat">
-                Flight Type?
-              </p>
-              <select
-                id="tripType"
-                onChange={(value) => setTripType(value.target.value)}
-                onSelect={(value) => setTripType(value.target.value)}
-                className="outline-none rounded-md p-2"
-                defaultValue="One Way"
-              >
-                <option value="oneWay">One Way</option>
-                <option value="roundTrip">Return</option>
-                <option value="multiCity">Multi-City</option>
-              </select>
+            <div className="w-full h-20 rounded-[40px] shadow-search flex flex-row items-center px-2 py-3 my-3">
+              <div className="h-full flex flex-col mr-1">
+                <img src={flighttype} className="w-10 h-10 mr-2 ml-4 my-1" />
+              </div>
+              <div className="flex flex-col w-full ml-8 justify-center">
+                <p className="text-[#525B31] font-bold text-base font-montserrat">
+                  Flight Type?
+                </p>
+                <select
+                  id="tripType"
+                  onChange={(value) => setTripType(value.target.value)}
+                  className="outline-none rounded-md p-2 w-28"
+                  defaultValue="One Way"
+                >
+                  <option value="oneWay">One Way</option>
+                  <option value="roundTrip">Return</option>
+                  <option value="multiCity">Multi-City</option>
+                </select>
+              </div>
             </div>
 
             <div className="w-full h-20 rounded-[40px] shadow-search flex flex-row items-center px-2 py-3">
@@ -748,7 +762,7 @@ const Navbar = () => {
 
             <div className="w-full h-20 rounded-[40px] shadow-search flex flex-row items-center mt-3 px-2 py-3">
               <div className="h-full mr-2 px-3 py-1">
-                <img src={bed} className="w-8 h-8" />
+                <img src={airplane} className="w-8 h-8" />
               </div>
               <div className="ml-4 h-full">
                 <p className="text-[#525B31] font-bold text-base font-montserrat">
@@ -756,7 +770,7 @@ const Navbar = () => {
                 </p>
                 <input
                   type="search"
-                  placeholder="Search Destination"
+                  placeholder="From Where"
                   className="text-[#525B31] text-base font-montserrat outline-none w-full"
                   value={destination}
                   onChange={(text) => setDestination(text.target.value)}
@@ -766,7 +780,7 @@ const Navbar = () => {
 
             <div className="w-full  h-20 rounded-[40px] shadow-search flex flex-row items-center mt-3 px-2 py-3">
               <div className="h-full mr-2 px-3 py-1">
-                <img src={bed} className="w-8 h-8" />
+                <img src={landing} className="w-8 h-8" />
               </div>
               <div className="ml-4 h-full">
                 <p className="text-[#525B31] font-bold text-base font-montserrat">
@@ -774,7 +788,7 @@ const Navbar = () => {
                 </p>
                 <input
                   type="search"
-                  placeholder="Search Destination"
+                  placeholder="To Where"
                   className="text-[#525B31] text-base font-montserrat outline-none w-full"
                   value={toLocation}
                   onChange={(text) => setToLocation(text.target.value)}

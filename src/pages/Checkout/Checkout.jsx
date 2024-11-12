@@ -9,7 +9,7 @@ import info from "../../assets/svg/info.svg";
 import guests from "../../assets/svg/guest.svg";
 import card from "../../assets/svg/card.svg";
 import gpay from "../../assets/svg/gpay.svg";
-import StripeForm from "../../components/StripeForm/StripeForm";
+//import StripeForm from "../../components/StripeForm/StripeForm";
 import visa from "../../assets/svg/visa.svg";
 import master from "../../assets/svg/master.svg";
 import amex from "../../assets/svg/amex.svg";
@@ -429,7 +429,7 @@ const Checkout = () => {
                   <img src={master} className="mx-2.5" />
                   <img src={amex} />
                 </div>
-                <StripeForm />
+                {/* <StripeForm /> */}
               </section>
             </div>
             <div className="flex justify-end mt-10">

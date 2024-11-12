@@ -4,7 +4,7 @@ import Home from "./pages/Home/Home.jsx";
 import Results from "./pages/Results/Results.jsx";
 import Payment from "./pages/Payment/Payment.jsx";
 import Checkout from "./pages/Checkout/Checkout.jsx";
-import StripeProvider from "./stripe/Provider/StripeProvider.jsx";
+//import StripeProvider from "./stripe/Provider/StripeProvider.jsx";
 import HotelInfo from "./pages/HotelInfo/HotelInfo.jsx";
 import {
   RouterProvider,
@@ -33,9 +33,9 @@ const router = createBrowserRouter([
       {
         path: "checkout",
         element: (
-          <StripeProvider>
-            <Checkout />
-          </StripeProvider>
+          // <StripeProvider>
+             <Checkout />
+          // </StripeProvider>
         ),
       },
       {
