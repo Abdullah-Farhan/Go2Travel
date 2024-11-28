@@ -24,20 +24,6 @@ const FlightOfferCard = ({ offer }) => {
     passengers,
   } = segment;
 
-  const formatDuration = (isoDuration) => {
-    const match = isoDuration.match(/PT(\d+H)?(\d+M)?/);
-    if (!match) return "Invalid duration";
-  
-    const hours = match[1] ? match[1].replace("H", "") : "0";
-    const minutes = match[2] ? match[2].replace("M", "") : "00";
-  
-    // Format hours and minutes
-    const formattedHours = `${parseInt(hours)}h`;
-    const formattedMinutes = `${minutes.padStart(2, "0")}m`;
-  
-    return `${formattedHours} ${formattedMinutes}`;
-  };
-
   // Convert and format dates in the specified timezone
   const convertTimeBetweenTimezones = (isoTime, originTimeZone, targetTimeZone) => {
     return DateTime.fromISO(isoTime, { zone: originTimeZone })
@@ -103,7 +89,7 @@ const FlightOfferCard = ({ offer }) => {
           {/* Duration and Flight Class */}
           <div className="flex flex-col items-center">
             <span className="text-gray-400 text-sm">
-              {formatDuration(slices.duration)}
+              {calculateTotalDuration()}
             </span>
             <span className="text-sm font-semibold text-gray-600">
               {passengers[0]?.cabin_class}
