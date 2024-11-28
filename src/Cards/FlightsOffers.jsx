@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { DateTime } from "luxon";
+import { isDuration } from "moment-timezone";
 
 const FlightOfferCard = ({ offer }) => {
   const [showModal, setShowModal] = useState(false);
@@ -19,10 +20,38 @@ const FlightOfferCard = ({ offer }) => {
     origin,
     destination,
     departing_at,
-    arriving_at,
     operating_carrier,
     passengers,
   } = segment;
+  const finalSegment = firstSlice.segments[firstSlice.segments.length - 1]
+  const { arriving_at } = finalSegment
+
+  const formatDuration = (isoDuration) => {
+    const match = isoDuration.match(/P(\d+D)?T?(\d+H)?(\d+M)?/);
+    if (!match) return "Invalid duration";
+  
+    // Extract the day, hour, and minute components from the match
+    const days = match[1] ? match[1].toLowerCase() : null;
+    const hours = match[2] ? match[2].toLowerCase() : "0h";
+    const minutes = match[3] ? match[3].toLowerCase() : "0m";
+  
+    // Only include the day part if days is not null (i.e., not 0)
+    return `${days ? days : ""} ${hours} ${minutes}`.trim();
+  };
+
+  const formatCustomDate = (dateString) => {
+    const options = { 
+      weekday: 'short', 
+      month: 'short', 
+      day: '2-digit', 
+      hour: '2-digit', 
+      minute: '2-digit', 
+      hour12: false 
+    };
+    
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', options).replace(',', '');
+  };
 
   // Convert and format dates in the specified timezone
   const convertTimeBetweenTimezones = (isoTime, originTimeZone, targetTimeZone) => {
@@ -81,7 +110,7 @@ const FlightOfferCard = ({ offer }) => {
         <div className="flex items-center justify-between text-gray-600 shadow-lg h-28 rounded-lg px-2 mt-2">
           <div className="text-center">
             <p className="text-sm font-semibold">
-              {convertTimeBetweenTimezones(departing_at, origin.time_zone, "Asia/Dubai")}
+              {formatCustomDate(departing_at)}
             </p>
             <p className="text-sm font-medium">{origin.iata_code}</p>
           </div>
@@ -89,10 +118,10 @@ const FlightOfferCard = ({ offer }) => {
           {/* Duration and Flight Class */}
           <div className="flex flex-col items-center">
             <span className="text-gray-400 text-sm">
-              {calculateTotalDuration()}
+              {formatDuration(slices[0].duration)}
             </span>
             <span className="text-sm font-semibold text-gray-600">
-              {passengers[0]?.cabin_class}
+              {passengers[0]?.cabin_class_marketing_name}
             </span>
             {totalStops > 0 && (
               <button
@@ -107,7 +136,7 @@ const FlightOfferCard = ({ offer }) => {
 
           <div className="text-center">
             <p className="text-sm font-semibold">
-              {convertTimeBetweenTimezones(arriving_at, destination.time_zone, "Asia/Dubai")}
+              {formatCustomDate(arriving_at)}
             </p>
             <p className="text-sm font-medium">{finalDestination}</p>
           </div>

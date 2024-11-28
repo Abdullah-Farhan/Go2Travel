@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
+import Slider from "@mui/material/Slider";
+import { Typography } from "@mui/material";
 
-const Filter = ({ flights, filteredData, setFilteredData, applyFilter, setApplyFilter, minPrice, maxPrice }) => {
+const Filter = ({
+  flights,
+  filteredData,
+  setFilteredData,
+  applyFilter,
+  setApplyFilter,
+  minPrice,
+  maxPrice,
+}) => {
   const getMinMaxPrice = () => {
     if (!flights || flights.length === 0) return [0, 1000];
     const prices = flights.map((flight) => parseFloat(flight.total_amount));
@@ -62,14 +72,24 @@ const Filter = ({ flights, filteredData, setFilteredData, applyFilter, setApplyF
     }));
   };
 
-  const handlePriceChange = (event) => {
-    const { name, value } = event.target;
-    setPriceRange((prevRange) => {
-      const newRange = [...prevRange];
-      newRange[name === "min" ? 0 : 1] = Number(value);
-      return newRange;
-    });
+  // const handlePriceChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setPriceRange((prevRange) => {
+  //     const newRange = [...prevRange];
+  //     newRange[name === "min" ? 0 : 1] = Number(value);
+  //     return newRange;
+  //   });
+  // };
+
+  const handlePriceChange = (event, newValue) => {
+    setPriceRange(newValue);
   };
+
+  useEffect(() => {
+    if (minPrice && maxPrice) {
+      setPriceRange([minPrice, maxPrice]);
+    }
+  }, [minPrice, maxPrice]);
 
   useEffect(() => {
     // Initialize the stopsArray to be empty
@@ -86,7 +106,7 @@ const Filter = ({ flights, filteredData, setFilteredData, applyFilter, setApplyF
         (cabin) => selectedCabins[cabin]
       ),
       base_amount: [priceRange[0], priceRange[1]],
-      stops: stopsArray, 
+      stops: stopsArray,
       airlines: selectedAirlines,
     };
 
@@ -99,7 +119,14 @@ const Filter = ({ flights, filteredData, setFilteredData, applyFilter, setApplyF
         <p>Filter By</p>
       </section>
 
-      <button onClick={()=>{setApplyFilter(!applyFilter)}} className="px-10 py-4 rounded-lg mt-2 bg-custom-gradient text-white ">Apply Filters</button>
+      <button
+        onClick={() => {
+          setApplyFilter(!applyFilter);
+        }}
+        className="px-10 py-4 rounded-lg mt-2 bg-custom-gradient text-white "
+      >
+        Apply Filters
+      </button>
 
       <section className="text-custom-green py-3 border-b border-b-[#525B31] px-2 mt-2">
         <p className="font-semibold">Stops</p>
@@ -161,7 +188,7 @@ const Filter = ({ flights, filteredData, setFilteredData, applyFilter, setApplyF
       <section className="text-custom-green py-2 border-b border-b-[#525B31] px-2 mt-2">
         <p className="font-semibold">Price Range (AUD)</p>
         <div className="flex flex-col mt-4">
-          <input
+          {/* <input
             type="range"
             name="min"
             min={minPrice}
@@ -178,11 +205,31 @@ const Filter = ({ flights, filteredData, setFilteredData, applyFilter, setApplyF
             value={priceRange[1]}
             onChange={handlePriceChange}
             className="w-full mt-2"
+          /> */}
+          <Slider
+            value={priceRange}
+            onChange={handlePriceChange}
+            getAriaLabel={() => "Price range"}
+            min={minPrice || 0} // Fallback to 0 if minPrice is undefined
+            max={maxPrice || 10000} // Maximum price from props
+            step={1}
+            sx={{
+              color: "#525B31", // Sets the slider's primary color
+              "& .MuiSlider-thumb": {
+                backgroundColor: "#525B31", // Color for the thumb
+                border: "2px solid #ffffff", // Optional: white border for contrast
+              },
+              "& .MuiSlider-rail": {
+                backgroundColor: "#D9D9D9", // Optional: lighter gray for the unselected range
+              },
+            }}
           />
         </div>
         <div className="flex justify-between mt-2">
-          <span>{priceRange[0]?.toFixed(2)} AUD</span>
-          <span>{priceRange[1]?.toFixed(2)} AUD</span>
+          <span>
+            {priceRange[0]?.toFixed(2)} - {priceRange[1]?.toFixed(2)}
+          </span>
+          <span>AUD</span>
         </div>
       </section>
 
@@ -197,7 +244,12 @@ const Filter = ({ flights, filteredData, setFilteredData, applyFilter, setApplyF
                 onChange={() => handleCabinChange(cabin)}
                 checked={selectedCabins[cabin]}
               />
-              <span>{cabin.charAt(0).toUpperCase() + cabin.slice(1)}</span>
+              <span>
+                {cabin
+                  .replace(/_/g, " ") // Replace underscores with spaces
+                  .replace(/\b\w/g, (char) => char.toUpperCase())}{" "}
+                {/* Capitalize first letter of each word */}
+              </span>
             </div>
           ))}
         </div>
