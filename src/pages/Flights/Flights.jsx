@@ -35,6 +35,7 @@ const FlightOffersList = () => {
   );
   const [data, setFilteredData] = useState();
   const [totalPages, setTotalPages] = useState();
+  const [selectedSortValue, setSelectedSortValue] = useState("")
 
   const [passengers, setPassengers] = useState([{ type: "adult" }]);
   const [flights, setFlights] = useState([]);
@@ -100,7 +101,7 @@ const FlightOffersList = () => {
           }
         );
         if (res) {
-          console.log(res);
+          console.log("1:",res);
           setResponse(res.data.data.data);
           setTimeout(() => setLoading(false), 2500);
           setFlights(res?.data?.data?.data);
@@ -135,7 +136,7 @@ const FlightOffersList = () => {
         if (res) {
           console.log(res);
 
-          console.log(res.data.data.data);
+          console.log("2:", res.data.data.data);
           setResponse(res.data.data.data);
           setTimeout(() => setLoading(false), 2500);
           setFlights(res?.data?.data?.data);
@@ -231,7 +232,7 @@ const FlightOffersList = () => {
           );
           if (res) {
             console.log(res);
-            setResponse(res.data.data.data);
+            setResponse("3:", res.data.data.data);
             setTimeout(() => setLoading(false), 2500);
             setFlights(res?.data?.data?.data);
             setMinPrice(res?.data?.data?.meta.minPrice);
@@ -258,7 +259,7 @@ const FlightOffersList = () => {
             setTotalPages(res.data?.data?.meta?.totalPages);
             setId(res.data.data.meta.id);
             setLimit(res.data.data.meta.limit);
-            console.log(res.data.data.data);
+            console.log("4:", res.data.data.data);
             setResponse(res?.data?.data?.data);
             setTimeout(() => setLoading(false), 2500);
             setFlights(res?.data?.data?.data);
@@ -303,6 +304,43 @@ const FlightOffersList = () => {
     setFilteredData(data);
   };
 
+  const handleOrderByFlights = async (sortBy) => {
+    setSelectedSortValue(sortBy)
+    
+    if (response.length > 0) {
+      setLoading(true); 
+      setError(null); 
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}flights/orderBy`,
+          {
+            params: {
+              id,
+              sortBy,
+            },
+          }
+        );
+
+        console.log(res);
+        
+        if (res) {
+          const results = Object.values(res.data.data);
+          setResponse(results)
+          
+        } else {
+          setError("No sorted flights found");
+        }
+      } catch (error) {
+        console.error("Error fetching sorted flights:", error);
+        setError("Failed to fetch sorted flights."); 
+      } finally {
+        setTimeout(() => {
+          console.log(response);
+          setLoading(false);
+        }, 2500);
+      }
+    }
+  };
   return (
     <div className="max-w-4xl mx-auto p-4 mt-32 flex flex-col lg:flex-row justify-between">
       <div className="w-full lg:w-3/12 mx-2">
@@ -350,13 +388,22 @@ const FlightOffersList = () => {
       </div>
       <div className="w-full lg:w-8/12">
         <div className="w-full h-auto flex justify-between mb-4">
-          <button className="h-12 shadow-lg w-3/12 bg-custom-gradient text-custom-green flex items-center justify-center rounded-lg">
+          <button
+            className={`h-24 shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${selectedSortValue === "best"? "border-2 border-custom-gold": ""}`}
+            onClick={() => handleOrderByFlights("best")}
+          >
             Best
           </button>
-          <button className="h-12 shadow-lg w-3/12 bg-custom-gradient text-custom-green flex items-center justify-center rounded-lg">
+          <button
+            className={`h-24 shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${selectedSortValue === "cheapest"? "border-2 border-custom-gold": ""}`}
+            onClick={() => handleOrderByFlights("cheapest")}
+          >
             Cheapest
           </button>
-          <button className="h-12 shadow-lg w-3/12 bg-custom-gradient text-custom-green flex items-center justify-center rounded-lg">
+          <button
+            className={`h-24 shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${selectedSortValue === "quickest"? "border-2 border-custom-gold": ""}`}
+            onClick={() => handleOrderByFlights("quickest")}
+          >
             Quickest
           </button>
         </div>
