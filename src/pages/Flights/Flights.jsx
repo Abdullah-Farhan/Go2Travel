@@ -387,25 +387,28 @@ const FlightOffersList = () => {
         </div>
       </div>
       <div className="w-full lg:w-8/12">
-        <div className="w-full h-auto flex justify-between mb-4">
-          <button
+        <div className="w-full h-auto flex justify-center space-x-2 mb-4">
+          <div
             className={`h-24 shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${selectedSortValue === "best"? "border-2 border-custom-gold": ""}`}
             onClick={() => handleOrderByFlights("best")}
           >
             Best
-          </button>
-          <button
+            <img src={"/images/premium-quality.png"} alt="best offer image" className="w-8 h-8 mx-2"/>
+          </div>
+          <div
             className={`h-24 shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${selectedSortValue === "cheapest"? "border-2 border-custom-gold": ""}`}
             onClick={() => handleOrderByFlights("cheapest")}
           >
             Cheapest
-          </button>
-          <button
+            <img src={"/images/cheapest.png"} alt="best offer image" className="w-8 h-8 mx-2"/>
+          </div>
+          <div
             className={`h-24 shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${selectedSortValue === "quickest"? "border-2 border-custom-gold": ""}`}
             onClick={() => handleOrderByFlights("quickest")}
           >
             Quickest
-          </button>
+            <img src={"/images/fast-response.png"} alt="best offer image" className="w-8 h-8 mx-2"/>
+          </div>
         </div>
         {loading ? (
           <div className="flex justify-center items-center h-full">
