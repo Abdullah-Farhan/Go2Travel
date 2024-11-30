@@ -35,7 +35,7 @@ const FlightOffersList = () => {
   );
   const [data, setFilteredData] = useState();
   const [totalPages, setTotalPages] = useState();
-  const [selectedSortValue, setSelectedSortValue] = useState("")
+  const [selectedSortValue, setSelectedSortValue] = useState("");
 
   const [passengers, setPassengers] = useState([{ type: "adult" }]);
   const [flights, setFlights] = useState([]);
@@ -101,7 +101,7 @@ const FlightOffersList = () => {
           }
         );
         if (res) {
-          console.log("1:",res);
+          console.log("1:", res);
           setResponse(res.data.data.data);
           setTimeout(() => setLoading(false), 2500);
           setFlights(res?.data?.data?.data);
@@ -157,10 +157,12 @@ const FlightOffersList = () => {
       // } else {
       //   setError("An unexpected error occurred."); // General error message
       // }
-    } finally {
-      setTimeout(() => setLoading(false), 2500);
     }
   };
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 2500);
+  }, [response]);
 
   const formatDate = (date) => {
     if (!(date instanceof Date)) {
@@ -305,11 +307,11 @@ const FlightOffersList = () => {
   };
 
   const handleOrderByFlights = async (sortBy) => {
-    setSelectedSortValue(sortBy)
-    
+    setSelectedSortValue(sortBy);
+
     if (response.length > 0) {
-      setLoading(true); 
-      setError(null); 
+      setLoading(true);
+      setError(null);
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_BASE_URL}flights/orderBy`,
@@ -322,17 +324,16 @@ const FlightOffersList = () => {
         );
 
         console.log(res);
-        
+
         if (res) {
           const results = Object.values(res.data.data);
-          setResponse(results)
-          
+          setResponse(results);
         } else {
           setError("No sorted flights found");
         }
       } catch (error) {
         console.error("Error fetching sorted flights:", error);
-        setError("Failed to fetch sorted flights."); 
+        setError("Failed to fetch sorted flights.");
       } finally {
         setTimeout(() => {
           console.log(response);
@@ -389,25 +390,47 @@ const FlightOffersList = () => {
       <div className="w-full lg:w-8/12">
         <div className="w-full h-auto flex justify-center space-x-2 mb-4">
           <div
-            className={`h-24 shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${selectedSortValue === "best"? "border-2 border-custom-gold": ""}`}
+            className={`h-24 cursor-pointer shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${
+              selectedSortValue === "best" ? "border-2 border-custom-gold" : ""
+            }`}
             onClick={() => handleOrderByFlights("best")}
           >
             Best
-            <img src={"/images/premium-quality.png"} alt="best offer image" className="w-8 h-8 mx-2"/>
+            <img
+              src={"/images/premium-quality.png"}
+              alt="best offer image"
+              className="w-8 h-8 mx-2"
+            />
           </div>
           <div
-            className={`h-24 shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${selectedSortValue === "cheapest"? "border-2 border-custom-gold": ""}`}
+            className={`h-24 cursor-pointer shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${
+              selectedSortValue === "cheapest"
+                ? "border-2 border-custom-gold"
+                : ""
+            }`}
             onClick={() => handleOrderByFlights("cheapest")}
           >
             Cheapest
-            <img src={"/images/cheapest.png"} alt="best offer image" className="w-8 h-8 mx-2"/>
+            <img
+              src={"/images/cheapest.png"}
+              alt="best offer image"
+              className="w-8 h-8 mx-2"
+            />
           </div>
           <div
-            className={`h-24 shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${selectedSortValue === "quickest"? "border-2 border-custom-gold": ""}`}
+            className={`h-24 cursor-pointer shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${
+              selectedSortValue === "quickest"
+                ? "border-2 border-custom-gold"
+                : ""
+            }`}
             onClick={() => handleOrderByFlights("quickest")}
           >
             Quickest
-            <img src={"/images/fast-response.png"} alt="best offer image" className="w-8 h-8 mx-2"/>
+            <img
+              src={"/images/fast-response.png"}
+              alt="best offer image"
+              className="w-8 h-8 mx-2"
+            />
           </div>
         </div>
         {loading ? (
