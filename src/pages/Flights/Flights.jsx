@@ -6,7 +6,6 @@ import Filter from "./components/Filters";
 import RoundTripFlightOfferCard from "../../Cards/FlightOffersRoundTrip";
 import Pagination from "../../components/Pagination/Pagination"; // Ensure you have this component
 import { toast } from "react-hot-toast";
-import { da } from "date-fns/locale";
 
 const FlightOffersList = () => {
   const [response, setResponse] = useState(null);
@@ -121,7 +120,7 @@ const FlightOffersList = () => {
         tripType === "oneWay"
       ) {
         console.log(id, limit, page);
-        setResponse(null);
+        //setResponse(null);
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}flights/list`,
           obj,
@@ -160,9 +159,11 @@ const FlightOffersList = () => {
     }
   };
 
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 2500);
-  }, [response]);
+  // useEffect(() => {
+  //   console.log("initial");
+    
+  //   setTimeout(() => setLoading(false), 2500);
+  // }, [response]);
 
   const formatDate = (date) => {
     if (!(date instanceof Date)) {
@@ -261,16 +262,10 @@ const FlightOffersList = () => {
             setTotalPages(res.data?.data?.meta?.totalPages);
             setId(res.data.data.meta.id);
             setLimit(res.data.data.meta.limit);
-            console.log("4:", res.data.data.data);
             setResponse(res?.data?.data?.data);
             setFlights(res?.data?.data?.data);
-            console.log(totalPages);
             setMinPrice(res.data.data.meta.minPrice);
             setMaxPrice(res.data.data.meta.maxPrice);
-            console.log(
-              res.data.data.meta.minPrice,
-              res.data.data.meta.maxPrice
-            );
             setPriceRange(
               res?.data?.data?.meta.minPrice,
               res?.data?.data?.meta.maxPrice
