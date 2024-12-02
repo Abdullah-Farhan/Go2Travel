@@ -227,7 +227,7 @@ const Filter = ({
         </div>
         <div className="flex justify-between mt-2">
           <span>
-            {priceRange[0]?.toFixed(2)} - {priceRange[1]?.toFixed(2)}
+            {priceRange[0]} - {priceRange[1]}
           </span>
           <span>AUD</span>
         </div>

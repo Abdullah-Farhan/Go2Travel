@@ -39,15 +39,13 @@ const FlightOffersList = () => {
   const [passengers, setPassengers] = useState([{ type: "adult" }]);
   const [flights, setFlights] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20; // Number of items to display per page
   const [filterVisible, setFilterVisible] = useState(false);
   const [applyFilter, setApplyFilter] = useState(false);
   const [pg, setPg] = useState(1);
   let newPassengers = [];
 
   useEffect(() => {
-    console.log(data);
-    console.log(pg);
+    setSelectedSortValue("best")
     fetchPaginatedData();
   }, [applyFilter]);
 
@@ -139,11 +137,17 @@ const FlightOffersList = () => {
           setResponse(res.data.data.data);
           setTimeout(() => setLoading(false), 2500);
           setFlights(res?.data?.data?.data);
-          setMinPrice(res?.data?.data?.meta.minPrice);
-          setMaxPrice(res?.data?.data?.meta.maxPrice);
+          setMinPrice(
+            Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100
+          );
+          setMaxPrice(
+            Number(Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0)) + 100
+          );
+          console.log(res?.data?.data?.meta.maxPrice);
+          
           setPriceRange(
-            res?.data?.data?.meta.minPrice,
-            res?.data?.data?.meta.maxPrice
+            Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100,
+            Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0) + 100
           );
         }
       } else if (tripType === "oneWay" && selectedDates.length > 1) {
@@ -161,7 +165,7 @@ const FlightOffersList = () => {
 
   // useEffect(() => {
   //   console.log("initial");
-    
+
   //   setTimeout(() => setLoading(false), 2500);
   // }, [response]);
 
@@ -189,11 +193,10 @@ const FlightOffersList = () => {
 
   useEffect(() => {
     const flightsApiRequest = async () => {
-      setLoading(true); // Set loading to true when starting the request
+      setLoading(true);
       setError(null);
+      setSelectedSortValue("best")
       try {
-        console.log(departureDate, searchQuery, toQuery, tripType);
-
         const requestData =
           tripType === "oneWay"
             ? {
@@ -225,8 +228,6 @@ const FlightOffersList = () => {
                   passengers: passengers,
                 },
               };
-
-        console.log(requestData);
 
         if (selectedDates.length > 1 && tripType === "roundTrip") {
           const res = await axios.post(
@@ -264,11 +265,17 @@ const FlightOffersList = () => {
             setLimit(res.data.data.meta.limit);
             setResponse(res?.data?.data?.data);
             setFlights(res?.data?.data?.data);
-            setMinPrice(res.data.data.meta.minPrice);
-            setMaxPrice(res.data.data.meta.maxPrice);
+            setMinPrice(
+              Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100
+            );
+            setMaxPrice(
+              Number(Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0)) + 100
+            );
+            console.log(res?.data?.data?.meta.maxPrice);
+            
             setPriceRange(
-              res?.data?.data?.meta.minPrice,
-              res?.data?.data?.meta.maxPrice
+              Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100,
+              Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0) + 100
             );
           }
         } else if (tripType === "oneWay" && selectedDates.length > 1) {
@@ -313,6 +320,7 @@ const FlightOffersList = () => {
             params: {
               id,
               sortBy,
+              selectedSortValue,
             },
           }
         );
@@ -384,51 +392,57 @@ const FlightOffersList = () => {
       <div className="w-full lg:w-8/12">
         <div className="w-full h-auto flex justify-center space-x-2 mb-4">
           <div
-            className={`h-24 cursor-pointer shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${
-              selectedSortValue === "best" ? "border-2 border-custom-gold" : ""
-            }`}
+            className={`cursor-pointer shadow-lg flex items-center justify-center rounded-lg hover:border hover:border-custom-gold
+    h-20 sm:h-24 lg:h-28
+    w-full sm:w-1/2 md:w-1/3 lg:w-3/12
+    text-sm sm:text-base lg:text-lg
+    ${selectedSortValue === "best" ? "border-[3px] border-custom-gold" : ""}`}
             onClick={() => handleOrderByFlights("best")}
           >
             Best
             <img
               src={"/images/premium-quality.png"}
               alt="best offer image"
-              className="w-8 h-8 mx-2"
+              className="w-6 h-6 sm:w-8 sm:h-8 mx-1 sm:mx-2"
             />
           </div>
+
           <div
-            className={`h-24 cursor-pointer shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${
-              selectedSortValue === "cheapest"
-                ? "border-2 border-custom-gold"
-                : ""
-            }`}
+            className={`cursor-pointer shadow-lg flex items-center justify-center rounded-lg hover:border border-custom-gold
+    h-20 sm:h-24 lg:h-28
+    w-full sm:w-1/2 md:w-1/3 lg:w-3/12
+    text-sm sm:text-base lg:text-lg
+    ${
+      selectedSortValue === "cheapest" ? "border-[3px] border-custom-gold" : ""
+    }`}
             onClick={() => handleOrderByFlights("cheapest")}
           >
             Cheapest
             <img
               src={"/images/cheapest.png"}
-              alt="best offer image"
-              className="w-8 h-8 mx-2"
+              alt="cheapest offer image"
+              className="w-6 h-6 sm:w-8 sm:h-8 mx-1 sm:mx-2"
             />
           </div>
+
           <div
-            className={`h-24 cursor-pointer shadow-lg w-3/12 text-custom-green flex items-center justify-center rounded-lg hover:border border-custom-gold border-opacity-50 ${
-              selectedSortValue === "quickest"
-                ? "border-2 border-custom-gold"
-                : ""
-            }`}
+            className={`cursor-pointer shadow-lg flex items-center justify-center rounded-lg hover:border hover:border-custom-gold
+    h-20 sm:h-24 lg:h-28
+    w-full sm:w-1/2 md:w-1/3 lg:w-3/12
+    text-sm sm:text-base lg:text-lg
+    ${selectedSortValue === "quickest" ? "border-[3px] border-custom-gold" : ""}`}
             onClick={() => handleOrderByFlights("quickest")}
           >
             Quickest
             <img
               src={"/images/fast-response.png"}
               alt="best offer image"
-              className="w-8 h-8 mx-2"
+              className="w-6 h-6 sm:w-8 sm:h-8 mx-1 sm:mx-2"
             />
           </div>
         </div>
         {loading ? (
-          <div className="flex justify-center items-center h-full">
+          <div className="flex justify-center items-center min-h-[70vh]">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-yellow-500"></div>
           </div>
         ) : error ? (
@@ -441,7 +455,7 @@ const FlightOffersList = () => {
               isSearchClicked ? (
                 <RoundTripFlightOfferCard key={offer.id} offer={offer} />
               ) : (
-                <FlightOfferCard key={offer.id} offer={offer} />
+                <FlightOfferCard key={offer.id} offer={offer} data={data}/>
               )
             )
           ) : (
