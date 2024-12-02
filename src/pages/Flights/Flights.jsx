@@ -263,7 +263,6 @@ const FlightOffersList = () => {
             setLimit(res.data.data.meta.limit);
             console.log("4:", res.data.data.data);
             setResponse(res?.data?.data?.data);
-            setTimeout(() => setLoading(false), 2500);
             setFlights(res?.data?.data?.data);
             console.log(totalPages);
             setMinPrice(res.data.data.meta.minPrice);
@@ -288,7 +287,7 @@ const FlightOffersList = () => {
           setError("An unexpected error occurred."); // General error message
         }
       } finally {
-        setTimeout(() => setLoading(false), 2500);
+        setLoading(false);
       }
     };
 
