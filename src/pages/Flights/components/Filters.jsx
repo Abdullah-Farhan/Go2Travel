@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Slider from "@mui/material/Slider";
-import { Typography } from "@mui/material";
 
 const Filter = ({
   flights,
-  filteredData,
   setFilteredData,
   applyFilter,
   setApplyFilter,

@@ -41,12 +41,16 @@ const FlightOffersList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filterVisible, setFilterVisible] = useState(false);
   const [applyFilter, setApplyFilter] = useState(false);
-  const [pg, setPg] = useState(1);
   let newPassengers = [];
 
+  useEffect(()=> {
+    setLoading(false)
+  }, [response])
+  
   useEffect(() => {
-    setSelectedSortValue("best")
+    setPage(1);
     fetchPaginatedData();
+    setCurrentPage(1);
   }, [applyFilter]);
 
   useEffect(() => {
@@ -81,9 +85,7 @@ const FlightOffersList = () => {
     setLoading(true);
     setError(null);
     try {
-      console.log(departureDate, searchQuery, toQuery, tripType);
       const obj = { data };
-      console.log(obj);
 
       if (selectedDates.length > 1 && tripType === "roundTrip") {
         const res = await axios.post(
@@ -93,7 +95,8 @@ const FlightOffersList = () => {
             params: {
               id: id,
               ...(limit && { limit: limit }),
-              ...(page && { page: pg }),
+              ...(page && { page: page }),
+              sortBy: selectedSortValue
             },
           }
         );
@@ -126,16 +129,15 @@ const FlightOffersList = () => {
             params: {
               id: id,
               ...(limit && { limit: limit }),
-              ...(page && { page: pg }),
+              ...(page && { page: page }),
+              sortBy: selectedSortValue
             },
           }
         );
         if (res) {
-          console.log(res);
 
           console.log("2:", res.data.data.data);
           setResponse(res.data.data.data);
-          setTimeout(() => setLoading(false), 2500);
           setFlights(res?.data?.data?.data);
           setMinPrice(
             Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100
@@ -143,7 +145,6 @@ const FlightOffersList = () => {
           setMaxPrice(
             Number(Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0)) + 100
           );
-          console.log(res?.data?.data?.meta.maxPrice);
           
           setPriceRange(
             Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100,
@@ -155,19 +156,10 @@ const FlightOffersList = () => {
       }
     } catch (error) {
       console.error("Error fetching flight offers:", error);
-      // if (error.response && error.response.status === 502) {
-      //   setError("Error from server"); // Set specific error message for 502
-      // } else {
-      //   setError("An unexpected error occurred."); // General error message
-      // }
-    }
+    } 
   };
 
-  // useEffect(() => {
-  //   console.log("initial");
 
-  //   setTimeout(() => setLoading(false), 2500);
-  // }, [response]);
 
   const formatDate = (date) => {
     if (!(date instanceof Date)) {
@@ -195,7 +187,6 @@ const FlightOffersList = () => {
     const flightsApiRequest = async () => {
       setLoading(true);
       setError(null);
-      setSelectedSortValue("best")
       try {
         const requestData =
           tripType === "oneWay"
@@ -237,7 +228,6 @@ const FlightOffersList = () => {
           if (res) {
             console.log(res);
             setResponse("3:", res.data.data.data);
-            setTimeout(() => setLoading(false), 2500);
             setFlights(res?.data?.data?.data);
             setMinPrice(res?.data?.data?.meta.minPrice);
             setMaxPrice(res?.data?.data?.meta.maxPrice);
@@ -262,7 +252,6 @@ const FlightOffersList = () => {
             console.log(res);
             setTotalPages(res.data?.data?.meta?.totalPages);
             setId(res.data.data.meta.id);
-            setLimit(res.data.data.meta.limit);
             setResponse(res?.data?.data?.data);
             setFlights(res?.data?.data?.data);
             setMinPrice(
@@ -288,19 +277,17 @@ const FlightOffersList = () => {
         } else {
           setError("An unexpected error occurred."); // General error message
         }
-      } finally {
-        setLoading(false);
       }
     };
 
     flightsApiRequest(); // Call the API request when dependencies change
+    setCurrentPage(1);
+    setSelectedSortValue("best")
   }, [isSearched]);
 
   const handlePageChange = (pages) => {
     setCurrentPage(pages);
     setPage(pages);
-    fetchPaginatedData();
-    setPg(pages);
   };
 
   const setFilters = (data) => {
@@ -309,41 +296,14 @@ const FlightOffersList = () => {
 
   const handleOrderByFlights = async (sortBy) => {
     setSelectedSortValue(sortBy);
-
-    if (response.length > 0) {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}flights/orderBy`,
-          {
-            params: {
-              id,
-              sortBy,
-              selectedSortValue,
-            },
-          }
-        );
-
-        console.log(res);
-
-        if (res) {
-          const results = Object.values(res.data.data);
-          setResponse(results);
-        } else {
-          setError("No sorted flights found");
-        }
-      } catch (error) {
-        console.error("Error fetching sorted flights:", error);
-        setError("Failed to fetch sorted flights.");
-      } finally {
-        setTimeout(() => {
-          console.log(response);
-          setLoading(false);
-        }, 2500);
-      }
-    }
   };
+
+  useEffect(() => {
+    if (selectedSortValue) {
+      fetchPaginatedData();
+    }
+  }, [selectedSortValue, page]);
+
   return (
     <div className="max-w-4xl mx-auto p-4 mt-32 flex flex-col lg:flex-row justify-between">
       <div className="w-full lg:w-3/12 mx-2">
