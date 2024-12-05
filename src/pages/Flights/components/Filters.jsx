@@ -29,6 +29,12 @@ const Filter = ({
   useEffect(() => {
     setPriceRange([minPrice, maxPrice]);
 
+    if (!flights || !Array.isArray(flights)) {
+      setAirlinesList(["Multiple airlines"]); // Default value if flights is invalid
+      return;
+    }
+    
+
     // Extract unique airlines from flights data
     const uniqueAirlines = new Set();
 
@@ -56,6 +62,18 @@ const Filter = ({
       newStops[index] = !newStops[index];
       return newStops;
     });
+  };
+
+  const resetAirlines = () => {
+    setSelectedAirlines([]); 
+  
+    // Update filtered data with an empty airlines list
+    setFilteredData((prevData) => ({
+      ...prevData,
+      airlines: [],
+    }));
+
+    setApplyFilter(!applyFilter);
   };
 
   const handleAirlineChange = (airline) => {
@@ -169,6 +187,14 @@ const Filter = ({
       <section className="text-custom-green py-2 border-b border-b-[#525B31] px-2 mt-2">
         <p className="font-semibold">Airlines</p>
         <div className="flex flex-col">
+          <button
+            onClick={() => resetAirlines()}
+            className="text-sm text-red-500 underline self-start mb-2"
+          >
+            Clear All
+          </button>
+
+          {/* Airlines List */}
           {airlinesList.map((airline) => (
             <div
               key={airline}
