@@ -136,7 +136,7 @@ const FlightOffersList = () => {
         );
         if (res) {
 
-          console.log("2:", res.data.data.data);
+          console.log("2:", res);
           setResponse(res.data.data.data);
           setFlights(res?.data?.data?.data);
           setMinPrice(
@@ -278,9 +278,11 @@ const FlightOffersList = () => {
           setError("An unexpected error occurred."); // General error message
         }
       }
+
+      setLoading(false)
     };
 
-    flightsApiRequest(); // Call the API request when dependencies change
+    flightsApiRequest(); 
     setCurrentPage(1);
     setSelectedSortValue("best")
   }, [isSearched]);

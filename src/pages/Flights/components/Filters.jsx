@@ -121,7 +121,7 @@ const Filter = ({
         onClick={() => {
           setApplyFilter(!applyFilter);
         }}
-        className="px-10 py-4 rounded-lg mt-2 bg-custom-gradient text-white "
+        className="px-10 shadow-lg py-4 rounded-lg mt-2 bg-custom-gradient text-white "
       >
         Apply Filters
       </button>

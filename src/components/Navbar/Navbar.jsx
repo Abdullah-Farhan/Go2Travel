@@ -268,7 +268,7 @@ const Navbar = () => {
             </button>
           </div>
 
-          <div className="hidden md:flex justify-center items-center mb-6">
+          <div className="hidden md:flex justify-center items-center mb-4 mt-2">
             <p className="font-black font-montserrat text-5xl text-white">
               S<span>TAY SOMEWHERE GREAT!</span>
             </p>
@@ -404,7 +404,7 @@ const Navbar = () => {
                       )}
                     </div>
                     <button
-                      className="flex flex-row w-[140px] h-14 items-center px-4 py-2 bg-[#D2B57A] text-white transition rounded-[40px] ml-auto"
+                      className="flex  flex-row w-[140px] h-14 items-center px-4 py-2 bg-[#D2B57A] text-white transition rounded-[40px] ml-auto"
                       onClick={() => handleSearchResults()}
                     >
                       <img src={search} />
