@@ -9,12 +9,6 @@ const Filter = ({
   minPrice,
   maxPrice,
 }) => {
-  const getMinMaxPrice = () => {
-    if (!flights || flights.length === 0) return [0, 1000];
-    const prices = flights.map((flight) => parseFloat(flight.total_amount));
-    return [Math.min(...prices), Math.max(...prices)];
-  };
-
   const [stops, setStops] = useState([false, false, false]);
   const [selectedAirlines, setSelectedAirlines] = useState([]);
   const [selectedCabins, setSelectedCabins] = useState({
@@ -27,25 +21,34 @@ const Filter = ({
   const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
 
   useEffect(() => {
-    //const [newMin, newMax] = getMinMaxPrice();
     setPriceRange([minPrice, maxPrice]);
   }, [flights]);
 
-  const airlinesList = [
-    "Air Arabia",
-    "Emirates",
-    "Etihad Airways",
-    "flydubai",
-    "Fly Jinnah",
-    "Gulf Air",
-    "Jazeera Airways",
-    "PIA",
-    "Qatar Airways",
-    "Salam Air",
-    "SAUDIA",
-    "Turkish Airlines",
-    "Multiple airlines",
-  ];
+  const [airlinesList, setAirlinesList] = useState([]);
+
+  useEffect(() => {
+    setPriceRange([minPrice, maxPrice]);
+
+    // Extract unique airlines from flights data
+    const uniqueAirlines = new Set();
+
+    flights.forEach((flight) => {
+      flight.slices.forEach((slice) => {
+        slice.segments.forEach((segment) => {
+          const airlineName = segment?.operating_carrier?.name;
+          if (airlineName) {
+            uniqueAirlines.add(airlineName); // Add to set to ensure uniqueness
+          }
+        });
+      });
+    });
+
+    // Add "Multiple airlines" to the list
+    uniqueAirlines.add("Multiple airlines");
+
+    // Set the airlines list
+    setAirlinesList(Array.from(uniqueAirlines));
+  }, [flights, minPrice, maxPrice]);
 
   const handleStopChange = (index) => {
     setStops((prevStops) => {
