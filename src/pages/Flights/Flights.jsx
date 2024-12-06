@@ -43,10 +43,10 @@ const FlightOffersList = () => {
   const [applyFilter, setApplyFilter] = useState(false);
   let newPassengers = [];
 
-  useEffect(()=> {
-    setLoading(false)
-  }, [response])
-  
+  useEffect(() => {
+    setLoading(false);
+  }, [response]);
+
   useEffect(() => {
     setPage(1);
     fetchPaginatedData();
@@ -96,14 +96,13 @@ const FlightOffersList = () => {
               id: id,
               ...(limit && { limit: limit }),
               ...(page && { page: page }),
-              sortBy: selectedSortValue
+              sortBy: selectedSortValue,
             },
           }
         );
         if (res) {
           console.log("1:", res);
           setResponse(res.data.data.data);
-          setTimeout(() => setLoading(false), 2500);
           setFlights(res?.data?.data?.data);
           setMinPrice(res?.data?.data?.meta.minPrice);
           setMaxPrice(res?.data?.data?.meta.maxPrice);
@@ -130,12 +129,11 @@ const FlightOffersList = () => {
               id: id,
               ...(limit && { limit: limit }),
               ...(page && { page: page }),
-              sortBy: selectedSortValue
+              sortBy: selectedSortValue,
             },
           }
         );
         if (res) {
-
           console.log("2:", res);
           setResponse(res.data.data.data);
           setFlights(res?.data?.data?.data);
@@ -145,7 +143,7 @@ const FlightOffersList = () => {
           setMaxPrice(
             Number(Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0)) + 100
           );
-          
+
           setPriceRange(
             Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100,
             Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0) + 100
@@ -156,10 +154,8 @@ const FlightOffersList = () => {
       }
     } catch (error) {
       console.error("Error fetching flight offers:", error);
-    } 
+    }
   };
-
-
 
   const formatDate = (date) => {
     if (!(date instanceof Date)) {
@@ -227,13 +223,18 @@ const FlightOffersList = () => {
           );
           if (res) {
             console.log(res);
-            setResponse("3:", res.data.data.data);
+            setResponse(res.data.data.data);
             setFlights(res?.data?.data?.data);
-            setMinPrice(res?.data?.data?.meta.minPrice);
-            setMaxPrice(res?.data?.data?.meta.maxPrice);
+            setMinPrice(
+              Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100
+            );
+            setMaxPrice(
+              Number(Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0)) +
+                100
+            );
             setPriceRange(
-              res?.data?.data?.meta.minPrice,
-              res?.data?.data?.meta.maxPrice
+              Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100,
+              Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0) + 100
             );
           }
         } else if (tripType === "roundTrip") {
@@ -258,10 +259,11 @@ const FlightOffersList = () => {
               Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100
             );
             setMaxPrice(
-              Number(Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0)) + 100
+              Number(Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0)) +
+                100
             );
             console.log(res?.data?.data?.meta.maxPrice);
-            
+
             setPriceRange(
               Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100,
               Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0) + 100
@@ -274,19 +276,19 @@ const FlightOffersList = () => {
         console.error("Error fetching flight offers:", error);
         if (error.response && error.response.status === 502) {
           setError("Error from server");
-          setLoading(false) // Set specific error message for 502
+          setLoading(false); // Set specific error message for 502
         } else {
           setError("An unexpected error occurred."); // General error message
-          setLoading(false)
+          setLoading(false);
         }
       }
 
-      setLoading(false)
+      setLoading(false);
     };
 
-    flightsApiRequest(); 
+    flightsApiRequest();
     setCurrentPage(1);
-    setSelectedSortValue("best")
+    setSelectedSortValue("best");
   }, [isSearched]);
 
   const handlePageChange = (pages) => {
@@ -394,7 +396,9 @@ const FlightOffersList = () => {
     h-20 sm:h-24 lg:h-28
     w-full sm:w-1/2 md:w-1/3 lg:w-3/12
     text-sm sm:text-base lg:text-lg
-    ${selectedSortValue === "quickest" ? "border-[3px] border-custom-gold" : ""}`}
+    ${
+      selectedSortValue === "quickest" ? "border-[3px] border-custom-gold" : ""
+    }`}
             onClick={() => handleOrderByFlights("quickest")}
           >
             Quickest
@@ -417,9 +421,9 @@ const FlightOffersList = () => {
               tripType === "roundTrip" &&
               selectedDates.length === 2 &&
               isSearchClicked ? (
-                <RoundTripFlightOfferCard key={offer.id} offer={offer} />
+                <RoundTripFlightOfferCard key={offer.id} offer={offer} data={data} />
               ) : (
-                <FlightOfferCard key={offer.id} offer={offer} data={data}/>
+                <FlightOfferCard key={offer.id} offer={offer} data={data} />
               )
             )
           ) : (
