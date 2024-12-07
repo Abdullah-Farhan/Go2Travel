@@ -17,8 +17,8 @@ const FlightOfferCard = ({ offer, data }) => {
   const secondSlice = slices[1];
 
   // Calculate stops for outbound and return flights separately
-  const outboundStops = firstSlice ? firstSlice.segments.length - 1 : 0;
-  const returnStops = secondSlice ? secondSlice.segments.length - 1 : 0;
+  const outboundStops = firstSlice ? firstSlice?.segments.length - 1 : 0;
+  const returnStops = secondSlice ? secondSlice?.segments.length - 1 : 0;
 
   // Get the final destination for the main card
   const finalDestination =
@@ -86,8 +86,8 @@ const FlightOfferCard = ({ offer, data }) => {
             </p>
             <p className="text-sm">
               Terminal{" "}
-              {firstSlice.segments[0].origin_terminal
-                ? firstSlice.segments[0].origin_terminal
+              {firstSlice?.segments[0]?.origin_terminal
+                ? firstSlice?.segments[0]?.origin_terminal
                 : "N/A"}
             </p>
           </div>

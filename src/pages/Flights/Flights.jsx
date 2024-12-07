@@ -27,12 +27,13 @@ const FlightOffersList = () => {
     error,
     setError,
     isSearchClicked,
+    data,
+    setFilteredData
   } = useContext(FlightsContext);
   const [departureDate, setDepartureDate] = useState(selectedDates[0]);
   const [returnDate, setReturnDate] = useState(
     selectedDates.length > 1 ? selectedDates[1] : null
   );
-  const [data, setFilteredData] = useState();
   const [totalPages, setTotalPages] = useState();
   const [selectedSortValue, setSelectedSortValue] = useState("");
 
@@ -84,10 +85,12 @@ const FlightOffersList = () => {
   const fetchPaginatedData = async () => {
     setLoading(true);
     setError(null);
+    console.log(tripType)
     try {
       const obj = { data };
 
       if (selectedDates.length > 1 && tripType === "roundTrip") {
+        console.log(obj, id, limit, page, selectedSortValue)
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}flights/list`,
           obj,
@@ -104,11 +107,16 @@ const FlightOffersList = () => {
           console.log("1:", res);
           setResponse(res.data.data.data);
           setFlights(res?.data?.data?.data);
-          setMinPrice(res?.data?.data?.meta.minPrice);
-          setMaxPrice(res?.data?.data?.meta.maxPrice);
+          setMinPrice(
+            Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100
+          );
+          setMaxPrice(
+            Number(Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0)) +
+              100
+          );
           setPriceRange(
-            res?.data?.data?.meta.minPrice,
-            res?.data?.data?.meta.maxPrice
+            Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100,
+            Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0) + 100
           );
         }
       } else if (tripType === "roundTrip") {
@@ -154,6 +162,10 @@ const FlightOffersList = () => {
       }
     } catch (error) {
       console.error("Error fetching flight offers:", error);
+      if (error?.response?.status !== 500){
+        
+        setLoading(false)
+      }
     }
   };
 
@@ -224,7 +236,9 @@ const FlightOffersList = () => {
           if (res) {
             console.log(res);
             setResponse(res.data.data.data);
+            setTotalPages(res.data?.data?.meta?.totalPages);
             setFlights(res?.data?.data?.data);
+            setId(res.data.data.meta.id);
             setMinPrice(
               Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100
             );

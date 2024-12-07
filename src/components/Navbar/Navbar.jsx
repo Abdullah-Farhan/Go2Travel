@@ -37,11 +37,8 @@ const Navbar = () => {
     setTripType,
     setIsSearched,
     isSearched,
-    toQuery,
     selectedDates,
-    searchQuery,
-    loading,
-    isSearchClicked,
+    setFilteredData,
     setIsSearchClicked,
   } = useContext(FlightsContext);
 
@@ -80,6 +77,7 @@ const Navbar = () => {
         setIsSearchClicked(true);
       }
       setIsSearched(!isSearched);
+      setFilteredData()
       setSearchQuery(destination);
       setToQuery(toLocation);
       navigate("/flights-offers");

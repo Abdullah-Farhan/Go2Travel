@@ -7,6 +7,7 @@ export const FlightsProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [isSearched, setIsSearched] = useState(false);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
+  const [data, setFilteredData] = useState();
 
   // State for selected dates
   const [selectedDates, setSelectedDates] = useState(() => {
@@ -143,7 +144,9 @@ export const FlightsProvider = ({ children }) => {
         error, 
         setError,
         isSearchClicked,
-        setIsSearchClicked
+        setIsSearchClicked,
+        data,
+        setFilteredData
       }}
     >
       {children}
