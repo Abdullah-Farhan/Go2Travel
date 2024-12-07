@@ -290,14 +290,12 @@ const FlightOffersList = () => {
         console.error("Error fetching flight offers:", error);
         if (error.response && error.response.status === 502) {
           setError("Error from server");
-          setLoading(false); // Set specific error message for 502
+          setLoading(false);
         } else {
           setError("An unexpected error occurred."); // General error message
           setLoading(false);
         }
       }
-
-      setLoading(false);
     };
 
     flightsApiRequest();
