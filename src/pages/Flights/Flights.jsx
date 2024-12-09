@@ -28,7 +28,7 @@ const FlightOffersList = () => {
     setError,
     isSearchClicked,
     data,
-    setFilteredData
+    setFilteredData,
   } = useContext(FlightsContext);
   const [departureDate, setDepartureDate] = useState(selectedDates[0]);
   const [returnDate, setReturnDate] = useState(
@@ -38,14 +38,13 @@ const FlightOffersList = () => {
   const [selectedSortValue, setSelectedSortValue] = useState("");
 
   const [passengers, setPassengers] = useState([{ type: "adult" }]);
-  const [flights, setFlights] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterVisible, setFilterVisible] = useState(false);
   const [applyFilter, setApplyFilter] = useState(false);
   let newPassengers = [];
 
   useEffect(() => {
-    if (response){
+    if (response) {
       setLoading(false);
     }
   }, [response]);
@@ -87,12 +86,12 @@ const FlightOffersList = () => {
   const fetchPaginatedData = async () => {
     setLoading(true);
     setError(null);
-    console.log(tripType)
+    console.log(tripType);
     try {
       const obj = { data };
 
       if (selectedDates.length > 1 && tripType === "roundTrip") {
-        console.log(obj, id, limit, page, selectedSortValue)
+        console.log(obj, id, limit, page, selectedSortValue);
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}flights/list`,
           obj,
@@ -108,13 +107,11 @@ const FlightOffersList = () => {
         if (res) {
           console.log("1:", res);
           setResponse(res.data.data.data);
-          setFlights(res?.data?.data?.data);
           setMinPrice(
             Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100
           );
           setMaxPrice(
-            Number(Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0)) +
-              100
+            Number(Math.floor(res?.data?.data?.meta.maxPrice).toFixed(0)) + 100
           );
           setPriceRange(
             Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100,
@@ -146,7 +143,6 @@ const FlightOffersList = () => {
         if (res) {
           console.log("2:", res);
           setResponse(res.data.data.data);
-          setFlights(res?.data?.data?.data);
           setMinPrice(
             Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100
           );
@@ -164,9 +160,8 @@ const FlightOffersList = () => {
       }
     } catch (error) {
       console.error("Error fetching flight offers:", error);
-      if (error?.response?.status !== 500){
-        
-        setLoading(false)
+      if (error?.response?.status !== 500) {
+        setLoading(false);
       }
     }
   };
@@ -239,7 +234,6 @@ const FlightOffersList = () => {
             console.log(res);
             setResponse(res.data.data.data);
             setTotalPages(res.data?.data?.meta?.totalPages);
-            setFlights(res?.data?.data?.data);
             setId(res.data.data.meta.id);
             setMinPrice(
               Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100
@@ -270,7 +264,6 @@ const FlightOffersList = () => {
             setTotalPages(res.data?.data?.meta?.totalPages);
             setId(res.data.data.meta.id);
             setResponse(res?.data?.data?.data);
-            setFlights(res?.data?.data?.data);
             setMinPrice(
               Math.floor(res?.data?.data?.meta.minPrice).toFixed(0) - 100
             );
@@ -340,32 +333,24 @@ const FlightOffersList = () => {
         {filterVisible && (
           <div className="bg-white shadow-md rounded-lg p-4 lg:hidden">
             <Filter
-              setFlights={setFlights}
               flights={response}
-              filteredData={data}
               setFilteredData={setFilters}
               applyFilter={applyFilter}
               setApplyFilter={setApplyFilter}
               minPrice={minPrice}
               maxPrice={maxPrice}
-              priceRange={priceRange}
-              setPriceRange={setPriceRange}
             />
           </div>
         )}
         {/* Always show the Filter component on larger screens */}
         <div className="hidden lg:block">
           <Filter
-            setFlights={setFlights}
             flights={response}
-            filteredData={data}
             setFilteredData={setFilters}
             applyFilter={applyFilter}
             setApplyFilter={setApplyFilter}
             minPrice={minPrice}
             maxPrice={maxPrice}
-            priceRange={priceRange}
-            setPriceRange={setPriceRange}
           />
         </div>
       </div>
@@ -435,7 +420,11 @@ const FlightOffersList = () => {
               tripType === "roundTrip" &&
               selectedDates.length === 2 &&
               isSearchClicked ? (
-                <RoundTripFlightOfferCard key={offer.id} offer={offer} data={data} />
+                <RoundTripFlightOfferCard
+                  key={offer.id}
+                  offer={offer}
+                  data={data}
+                />
               ) : (
                 <FlightOfferCard key={offer.id} offer={offer} data={data} />
               )

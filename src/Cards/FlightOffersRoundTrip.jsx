@@ -20,14 +20,6 @@ const FlightOfferCard = ({ offer, data }) => {
   const outboundStops = firstSlice ? firstSlice?.segments.length - 1 : 0;
   const returnStops = secondSlice ? secondSlice?.segments.length - 1 : 0;
 
-  // Get the final destination for the main card
-  const finalDestination =
-    returnStops > 0
-      ? secondSlice?.segments[secondSlice?.segments.length - 1].destination
-          .iata_code
-      : firstSlice?.segments[firstSlice?.segments.length - 1].destination
-          .iata_code;
-
   const [showDeals, setShowDeals] = useState(false);
 
   const handleToggleDeals = () => {
@@ -244,10 +236,13 @@ const FlightOfferCard = ({ offer, data }) => {
       {/* Stops Popup */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-6 w-11/12 md:w-1/2">
-            <h2 className="text-3xl font-bold text-custom-green">
-              Flight Details
-            </h2>
+          <div className="bg-white rounded-lg p-6 w-11/12 md:w-1/2 max-h-[95vh] overflow-auto no-scrollbar">
+            <div className="w-full flex justify-between">
+              <h2 className="text-3xl font-bold text-custom-green">
+                Flight Details
+              </h2>
+              <button className="text-xl font-semibold text-custom-green" onClick={() => setShowModal(false)}>x</button>
+            </div>
             {/* Outbound Stops */}
             <div className="mb-4">
               <h3 className="text-xl font-bold text-custom-gold">
@@ -271,15 +266,23 @@ const FlightOfferCard = ({ offer, data }) => {
 
                   <div className="flex items-center justify-between text-gray-600">
                     <div className="text-center">
-                      <p className="text-sm font-semibold">{"Time"}</p>
+                      <p className="text-sm font-semibold">
+                        {convertTimeBetweenTimezones(segment.departing_at)}
+                      </p>
                       <p className="text-sm font-medium">
                         {segment.origin?.iata_code}
+                      </p>
+                      <p className="text-sm">
+                        Terminal{" "}
+                        {segment.origin_terminal
+                          ? segment.origin_terminal
+                          : "N/A"}
                       </p>
                     </div>
 
                     <div className="flex flex-col items-center">
                       <span className="text-gray-400 text-sm">
-                        {"Duration"}
+                        {formatDuration(segment.duration)}
                       </span>
                       <span className="text-sm font-semibold text-gray-600">
                         {segment.passengers[0]?.cabin_class}
@@ -287,9 +290,17 @@ const FlightOfferCard = ({ offer, data }) => {
                     </div>
 
                     <div className="text-center">
-                      <p className="text-sm font-semibold">{"Time"}</p>
+                      <p className="text-sm font-semibold">
+                        {convertTimeBetweenTimezones(segment.arriving_at)}
+                      </p>
                       <p className="text-sm font-medium">
-                        {segment.destination?.iata_code}
+                        {segment.destination.iata_code}
+                      </p>
+                      <p className="text-sm">
+                        Terminal{" "}
+                        {segment?.destination_terminal
+                          ? segment?.destination_terminal
+                          : "N/A"}
                       </p>
                     </div>
                   </div>
@@ -321,15 +332,23 @@ const FlightOfferCard = ({ offer, data }) => {
 
                     <div className="flex items-center justify-between text-gray-600">
                       <div className="text-center">
-                        <p className="text-sm font-semibold">{"Time"}</p>
+                        <p className="text-sm font-semibold">
+                          {convertTimeBetweenTimezones(segment.departing_at)}
+                        </p>
                         <p className="text-sm font-medium">
                           {segment.origin?.iata_code}
+                        </p>
+                        <p className="text-sm">
+                          Terminal{" "}
+                          {segment.origin_terminal
+                            ? segment.origin_terminal
+                            : "N/A"}
                         </p>
                       </div>
 
                       <div className="flex flex-col items-center">
                         <span className="text-gray-400 text-sm">
-                          {"Duration"}
+                          {formatDuration(segment.duration)}
                         </span>
                         <span className="text-sm font-semibold text-gray-600">
                           {segment.passengers[0]?.cabin_class}
@@ -337,9 +356,17 @@ const FlightOfferCard = ({ offer, data }) => {
                       </div>
 
                       <div className="text-center">
-                        <p className="text-sm font-semibold">{"Time"}</p>
+                        <p className="text-sm font-semibold">
+                          {convertTimeBetweenTimezones(segment.arriving_at)}
+                        </p>
                         <p className="text-sm font-medium">
-                          {segment.destination?.iata_code}
+                          {segment.destination.iata_code}
+                        </p>
+                        <p className="text-sm">
+                          Terminal{" "}
+                          {segment?.destination_terminal
+                            ? segment?.destination_terminal
+                            : "N/A"}
                         </p>
                       </div>
                     </div>
@@ -350,7 +377,7 @@ const FlightOfferCard = ({ offer, data }) => {
 
             <button
               onClick={() => setShowModal(false)}
-              className="text-blue-500 text-xs mt-1"
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
             >
               Close
             </button>

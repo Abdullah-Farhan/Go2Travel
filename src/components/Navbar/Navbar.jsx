@@ -7,7 +7,6 @@ import pakistan from "../../assets/svg/pakistan.svg";
 import plane from "../../assets/svg/plane.svg";
 import search from "../../assets/svg/search.svg";
 import user from "../../assets/svg/user.svg";
-import bed from "../../assets/svg/Bed.svg";
 import schedule from "../../assets/svg/Schedule.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { FlightsContext } from "../../Context/FlightsContext";
