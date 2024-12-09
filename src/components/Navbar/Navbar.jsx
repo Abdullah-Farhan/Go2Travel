@@ -39,6 +39,7 @@ const Navbar = () => {
     selectedDates,
     setFilteredData,
     setIsSearchClicked,
+    setLoading
   } = useContext(FlightsContext);
 
   const handleLinkClick = (link) => {
@@ -75,6 +76,7 @@ const Navbar = () => {
       } else if (tripType === "roundTrip") {
         setIsSearchClicked(true);
       }
+      setLoading(true)
       setIsSearched(!isSearched);
       setFilteredData()
       setSearchQuery(destination);

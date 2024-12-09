@@ -37,6 +37,20 @@ const FlightOfferCard = ({ offer, data }) => {
     return `${days ? days : ""} ${hours} ${minutes}`.trim();
   };
 
+  const formatCustomDate = (dateString) => {
+    const options = {
+      weekday: "short",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    };
+
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", options).replace(",", "");
+  };
+
   const convertTimeBetweenTimezones = (date) => {
     return DateTime.fromISO(date).toFormat("EEE, dd MMM HH:mm");
   };
@@ -69,7 +83,7 @@ const FlightOfferCard = ({ offer, data }) => {
         <div className="flex items-center justify-between text-gray-600 shadow-lg h-28 rounded-lg px-2 mt-2">
           <div className="text-center">
             <p className="text-sm font-semibold">
-              {convertTimeBetweenTimezones(
+              {formatCustomDate(
                 firstSlice?.segments[0]?.departing_at
               )}
             </p>
@@ -103,9 +117,9 @@ const FlightOfferCard = ({ offer, data }) => {
 
           <div className="text-center">
             <p className="text-sm font-semibold">
-              {convertTimeBetweenTimezones(
+              {formatCustomDate(
                 firstSlice.segments[firstSlice.segments.length - 1]
-                  ?.departing_at
+                  ?.arriving_at
               )}
             </p>
             <p className="text-sm font-medium">
@@ -129,7 +143,7 @@ const FlightOfferCard = ({ offer, data }) => {
         <div className="flex items-center justify-between text-gray-600 shadow-lg h-28 rounded-lg px-2 mt-2">
           <div className="text-center">
             <p className="text-sm font-semibold">
-              {convertTimeBetweenTimezones(
+              {formatCustomDate(
                 secondSlice?.segments[0]?.departing_at
               )}
             </p>
@@ -163,7 +177,7 @@ const FlightOfferCard = ({ offer, data }) => {
 
           <div className="text-center">
             <p className="text-sm font-semibold">
-              {convertTimeBetweenTimezones(
+              {formatCustomDate(
                 secondSlice.segments[secondSlice.segments.length - 1]
                   ?.departing_at
               )}
@@ -267,7 +281,7 @@ const FlightOfferCard = ({ offer, data }) => {
                   <div className="flex items-center justify-between text-gray-600">
                     <div className="text-center">
                       <p className="text-sm font-semibold">
-                        {convertTimeBetweenTimezones(segment.departing_at)}
+                        {formatCustomDate(segment.departing_at)}
                       </p>
                       <p className="text-sm font-medium">
                         {segment.origin?.iata_code}
@@ -291,7 +305,7 @@ const FlightOfferCard = ({ offer, data }) => {
 
                     <div className="text-center">
                       <p className="text-sm font-semibold">
-                        {convertTimeBetweenTimezones(segment.arriving_at)}
+                        {formatCustomDate(segment.arriving_at)}
                       </p>
                       <p className="text-sm font-medium">
                         {segment.destination.iata_code}
@@ -333,7 +347,7 @@ const FlightOfferCard = ({ offer, data }) => {
                     <div className="flex items-center justify-between text-gray-600">
                       <div className="text-center">
                         <p className="text-sm font-semibold">
-                          {convertTimeBetweenTimezones(segment.departing_at)}
+                          {formatCustomDate(segment.departing_at)}
                         </p>
                         <p className="text-sm font-medium">
                           {segment.origin?.iata_code}
@@ -357,7 +371,7 @@ const FlightOfferCard = ({ offer, data }) => {
 
                       <div className="text-center">
                         <p className="text-sm font-semibold">
-                          {convertTimeBetweenTimezones(segment.arriving_at)}
+                          {formatCustomDate(segment.arriving_at)}
                         </p>
                         <p className="text-sm font-medium">
                           {segment.destination.iata_code}

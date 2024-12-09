@@ -50,16 +50,6 @@ const FlightOfferCard = ({ offer, data }) => {
     return date.toLocaleDateString("en-US", options).replace(",", "");
   };
 
-  const convertTimeBetweenTimezones = (
-    isoTime,
-    originTimeZone,
-    targetTimeZone
-  ) => {
-    return DateTime.fromISO(isoTime, { zone: originTimeZone })
-      .setZone(targetTimeZone)
-      .toFormat("EEE, MMM dd, HH:mm");
-  };
-
   const calculateDuration = (
     departure,
     arrival,
@@ -244,9 +234,7 @@ const FlightOfferCard = ({ offer, data }) => {
                       <div className="flex items-center justify-between text-gray-600">
                         <div className="text-center">
                           <p className="text-sm font-semibold">
-                            {convertTimeBetweenTimezones(
-                              segment.departing_at,
-                              segment.origin.time_zone
+                            {formatCustomDate(segment.departing_at
                             )}
                           </p>
                           <p className="text-sm font-medium text-custom-green">
@@ -262,11 +250,8 @@ const FlightOfferCard = ({ offer, data }) => {
 
                         <div className="flex flex-col items-center">
                           <span className="text-gray-400 text-sm">
-                            {calculateDuration(
-                              segment.departing_at,
-                              segment.arriving_at,
-                              segment.origin.time_zone,
-                              segment.destination.time_zone
+                            {formatDuration(
+                              segment.duration
                             )}
                           </span>
                           <span className="text-sm font-semibold text-gray-600">
@@ -276,9 +261,8 @@ const FlightOfferCard = ({ offer, data }) => {
 
                         <div className="text-center">
                           <p className="text-sm font-semibold">
-                            {convertTimeBetweenTimezones(
-                              segment.arriving_at,
-                              segment.destination.time_zone
+                            {formatCustomDate(
+                              segment.arriving_at
                             )}
                           </p>
                           <p className="text-sm font-medium text-custom-green">
