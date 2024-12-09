@@ -45,7 +45,9 @@ const FlightOffersList = () => {
   let newPassengers = [];
 
   useEffect(() => {
-    setLoading(false);
+    if (response){
+      setLoading(false);
+    }
   }, [response]);
 
   useEffect(() => {
