@@ -6,6 +6,7 @@ import Filter from "./components/Filters";
 import RoundTripFlightOfferCard from "../../Cards/FlightOffersRoundTrip";
 import Pagination from "../../components/Pagination/Pagination"; // Ensure you have this component
 import { toast } from "react-hot-toast";
+import airports from "../../utils/airports.json"
 
 const FlightOffersList = () => {
   const [response, setResponse] = useState(null);
@@ -82,6 +83,11 @@ const FlightOffersList = () => {
     setTimeout(() => {}, 1000);
     console.log(newPassengers);
   }, [guest]);
+
+  const getIataCodeFromCity = (cityName) => {
+    const result = airports.find(airport => airport.city.toLowerCase() === cityName.toLowerCase());
+    return result ? result.iataCode : cityName; // Return IATA code or city name if not found
+  }
 
   const fetchPaginatedData = async () => {
     setLoading(true);
@@ -199,8 +205,8 @@ const FlightOffersList = () => {
                 data: {
                   slices: [
                     {
-                      origin: searchQuery,
-                      destination: toQuery,
+                      origin: searchQuery.length === 3 ? searchQuery : getIataCodeFromCity(searchQuery),
+                      destination: toQuery.length === 3 ? toQuery : getIataCodeFromCity(toQuery),
                       departure_date: departureDate,
                     },
                   ],
@@ -211,13 +217,13 @@ const FlightOffersList = () => {
                 data: {
                   slices: [
                     {
-                      origin: searchQuery,
-                      destination: toQuery,
+                      origin: searchQuery.length === 3 ? searchQuery : getIataCodeFromCity(searchQuery),
+                      destination: toQuery.length === 3 ? toQuery : getIataCodeFromCity(toQuery),
                       departure_date: departureDate,
                     },
                     {
-                      origin: toQuery,
-                      destination: searchQuery,
+                      origin: toQuery.length === 3 ? toQuery : getIataCodeFromCity(toQuery),
+                      destination: searchQuery.length === 3 ? searchQuery : getIataCodeFromCity(searchQuery),
                       departure_date: returnDate,
                     },
                   ],
