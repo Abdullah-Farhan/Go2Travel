@@ -25,6 +25,7 @@
     "iata": "^0.0.0",
     "luxon": "^3.5.0",
     "moment-timezone": "^0.5.46",
+    "node-fetch": "^3.3.2",
     "rc-slider": "^11.1.7",
     "react": "^18.3.1",
     "react-apexcharts": "^1.4.1",

@@ -36,7 +36,7 @@ export const FlightsProvider = ({ children }) => {
   });
 
   // State for search query
-  const [searchQuery, setSearchQuery] = useState(() => {
+  const [searchQuery, setSearchQuery] = useState(() => {   
     const storedQuery = localStorage.getItem("searchQuery");
     return storedQuery ? JSON.parse(storedQuery) : "";
   });
@@ -94,6 +94,8 @@ export const FlightsProvider = ({ children }) => {
 
   // Persist searchQuery to localStorage
   useEffect(() => {
+    console.log("ran");
+    
     if (searchQuery) {
       localStorage.setItem("searchQuery", JSON.stringify(searchQuery));
     } else {

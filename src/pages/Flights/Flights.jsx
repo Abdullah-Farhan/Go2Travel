@@ -6,7 +6,7 @@ import Filter from "./components/Filters";
 import RoundTripFlightOfferCard from "../../Cards/FlightOffersRoundTrip";
 import Pagination from "../../components/Pagination/Pagination"; // Ensure you have this component
 import { toast } from "react-hot-toast";
-import airports from "../../utils/airports.json"
+import airports from "../../utils/airports.json";
 
 const FlightOffersList = () => {
   const [response, setResponse] = useState(null);
@@ -30,6 +30,8 @@ const FlightOffersList = () => {
     isSearchClicked,
     data,
     setFilteredData,
+    setSearchQuery,
+    setToQuery
   } = useContext(FlightsContext);
   const [departureDate, setDepartureDate] = useState(selectedDates[0]);
   const [returnDate, setReturnDate] = useState(
@@ -84,10 +86,54 @@ const FlightOffersList = () => {
     console.log(newPassengers);
   }, [guest]);
 
-  const getIataCodeFromCity = (cityName) => {
-    const result = airports.find(airport => airport.city.toLowerCase() === cityName.toLowerCase());
-    return result ? result.iataCode : cityName; // Return IATA code or city name if not found
-  }
+  const getAirportData = async (city, type) => {
+    const previousFromCity = JSON.parse(localStorage.getItem("previousFrom")) || ""
+    const previousToCity = JSON.parse(localStorage.getItem("previousTo")) || ""
+
+    if (type === 'origin' && city === previousFromCity.city){
+      return previousFromCity.iata
+    }
+    if (type === 'destination' && city === previousToCity.city){
+      return previousToCity.iata
+    }
+    try {
+      const response = await axios.get(
+        "https://api.api-ninjas.com/v1/airports",
+        {
+          headers: { "X-Api-Key": import.meta.env.VITE_AIRPORT_API },
+          params: { city },
+        }
+      );
+  
+      if (response.data.length > 0) {
+        // Iterate over the data to find the first non-empty IATA code
+        const validIATA = response.data.find((airport) => airport.iata !== "");
+        if (validIATA) {
+          console.log(`First valid airport in ${city}: ${validIATA.iata}`);
+          type === "origin" ? await setSearchQuery(validIATA.iata) : await setToQuery(validIATA.iata);
+          if (type === "origin"){
+            localStorage.setItem("previousFrom", JSON.stringify({city: city, iata: validIATA.iata}))
+          }
+          if (type === "destination"){
+            localStorage.setItem("previousTo", JSON.stringify({city: city, iata: validIATA.iata}))
+          }
+          console.log(response.data);
+          
+          return validIATA.iata;
+        } else {
+          console.log(`No valid IATA codes found in ${city}.`);
+          return null;
+        }
+      } else {
+        console.log(`No airports found in ${city}.`);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching airport data:", error.message);
+      return null;
+    }
+  };
+  
 
   const fetchPaginatedData = async () => {
     setLoading(true);
@@ -199,14 +245,20 @@ const FlightOffersList = () => {
       setLoading(true);
       setError(null);
       try {
+        const originIATA =
+          searchQuery.length === 3
+            ? searchQuery
+            : await getAirportData(searchQuery, 'origin'); 
+        const destinationIATA =
+          toQuery.length === 3 ? toQuery : await getAirportData(toQuery, 'destination');
         const requestData =
           tripType === "oneWay"
             ? {
                 data: {
                   slices: [
                     {
-                      origin: searchQuery.length === 3 ? searchQuery : getIataCodeFromCity(searchQuery),
-                      destination: toQuery.length === 3 ? toQuery : getIataCodeFromCity(toQuery),
+                      origin: originIATA,
+                      destination: destinationIATA,
                       departure_date: departureDate,
                     },
                   ],
@@ -217,13 +269,13 @@ const FlightOffersList = () => {
                 data: {
                   slices: [
                     {
-                      origin: searchQuery.length === 3 ? searchQuery : getIataCodeFromCity(searchQuery),
-                      destination: toQuery.length === 3 ? toQuery : getIataCodeFromCity(toQuery),
+                      origin: originIATA,
+                      destination: destinationIATA,
                       departure_date: departureDate,
                     },
                     {
-                      origin: toQuery.length === 3 ? toQuery : getIataCodeFromCity(toQuery),
-                      destination: searchQuery.length === 3 ? searchQuery : getIataCodeFromCity(searchQuery),
+                      origin: destinationIATA,
+                      destination: originIATA,
                       departure_date: returnDate,
                     },
                   ],
