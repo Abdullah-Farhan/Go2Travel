@@ -98,7 +98,7 @@ export const FlightsProvider = ({ children }) => {
     
     if (searchQuery) {
       localStorage.setItem("searchQuery", JSON.stringify(searchQuery));
-    } else {
+    } else {     
       localStorage.removeItem("searchQuery");
     }
   }, [searchQuery]);

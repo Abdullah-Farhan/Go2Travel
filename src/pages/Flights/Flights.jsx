@@ -6,7 +6,6 @@ import Filter from "./components/Filters";
 import RoundTripFlightOfferCard from "../../Cards/FlightOffersRoundTrip";
 import Pagination from "../../components/Pagination/Pagination"; // Ensure you have this component
 import { toast } from "react-hot-toast";
-import airports from "../../utils/airports.json";
 
 const FlightOffersList = () => {
   const [response, setResponse] = useState(null);
