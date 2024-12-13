@@ -34,6 +34,7 @@ const Navbar = () => {
     setGuest,
     setSearchQuery,
     tripType,
+    setSelectedDates,
     setTripType,
     setIsSearched,
     isSearched,
@@ -79,7 +80,12 @@ const Navbar = () => {
   const handleSearchResults = () => {
     console.log(destination, toLocation, selectedDates, guest);
 
-    if (!destination || !toLocation || !selectedDates || !guest) {
+    if (!selectedDates){
+      setSelectedDates([new Date()])
+      setTimeout(()=>{},1000)
+    }
+
+    if (!destination || !toLocation || !guest) {
       showToast();
     } else {
       if (tripType === "oneWay") {
