@@ -7,7 +7,12 @@ export const FlightsProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [isSearched, setIsSearched] = useState(false);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
-  const [data, setFilteredData] = useState();
+  const [data, setFilteredData] = useState({
+    cabin_class: ["economy", "premium_economy", "business", "first"],
+    base_amount: [0, 100000],
+    stops: [],
+    airlines: []
+  });
 
   // State for selected dates
   const [selectedDates, setSelectedDates] = useState(() => {

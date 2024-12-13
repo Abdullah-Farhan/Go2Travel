@@ -121,13 +121,13 @@ const AirportSearch = ({ type, destinationSetter, originSetter }) => {
         type="text"
         value={inputValue}
         onChange={handleInputChange}
-        placeholder="From Where"
+        placeholder={type === "from" ? "From Where": "To Where"}
         className="text-[#525B31] text-base font-montserrat outline-none w-full"
       />
       {isLoading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
       <div className="relative">
-        <ul className="suggestions-list mt-2 bg-custom-gold absolute top-full left-0 w-full z-50 shadow-lg rounded-lg">
+        <ul className="suggestions-list mt-2 bg-white absolute top-full left-0 w-full z-50 shadow-lg rounded-lg">
           {suggestions.map((suggestion, index) => (
             <li
               key={index}

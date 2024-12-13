@@ -137,9 +137,9 @@ const FlightOffersList = () => {
   const fetchPaginatedData = async () => {
     setLoading(true);
     setError(null);
-    console.log(tripType);
     try {
       const obj = { data };
+      
 
       if (selectedDates.length > 1 && tripType === "roundTrip") {
         console.log(obj, id, limit, page, selectedSortValue);
