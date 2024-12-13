@@ -783,7 +783,7 @@ const Navbar = () => {
               <div className="h-full mr-2 px-3 py-1">
                 <img src={airplane} className="w-8 h-8" />
               </div>
-              <div className="ml-4 h-full">
+              <div className="ml-4 h-full w-full">
                 <p className="text-[#525B31] font-bold text-base font-montserrat">
                   From?
                 </p>
@@ -802,7 +802,7 @@ const Navbar = () => {
               <div className="h-full mr-2 px-3 py-1">
                 <img src={landing} className="w-8 h-8" />
               </div>
-              <div className="ml-4 h-full">
+              <div className="ml-4 h-full w-full">
                 <p className="text-[#525B31] font-bold text-base font-montserrat">
                   To?
                 </p>
