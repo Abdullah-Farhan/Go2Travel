@@ -787,13 +787,14 @@ const Navbar = () => {
                 <p className="text-[#525B31] font-bold text-base font-montserrat">
                   From?
                 </p>
-                <input
+                {/* <input
                   type="search"
                   placeholder="From Where"
                   className="text-[#525B31] text-base font-montserrat outline-none w-full"
                   value={destination}
                   onChange={(text) => setDestination(text.target.value)}
-                />
+                /> */}
+                <CitySearch type="from" destinationSetter={destinationSetter} originSetter={originSetter}/>
               </div>
             </div>
 
@@ -805,13 +806,14 @@ const Navbar = () => {
                 <p className="text-[#525B31] font-bold text-base font-montserrat">
                   To?
                 </p>
-                <input
+                {/* <input
                   type="search"
                   placeholder="To Where"
                   className="text-[#525B31] text-base font-montserrat outline-none w-full"
                   value={toLocation}
                   onChange={(text) => setToLocation(text.target.value)}
-                />
+                /> */}
+                <CitySearch type="to" destinationSetter={destinationSetter} originSetter={originSetter}/>
               </div>
             </div>
           </div>
