@@ -97,6 +97,13 @@ const Navbar = () => {
   };
 
   const handleNavigation = () => {
+    setSearchQuery("")
+    setToQuery("")
+    setFilteredData([])
+    setDestination("")
+    setToLocation("")
+    destinationSetter("")
+    originSetter("")
     navigate("/");
   };
 
@@ -525,11 +532,11 @@ const Navbar = () => {
                     )}
                   </div>
 
-                  <div className="w-[32.5%] h-20 rounded-[40px] shadow-search flex flex-row items-center mt-3 px-2 py-3">
+                  <div className="w-[49%] h-20 rounded-[40px] shadow-search flex flex-row items-center mt-3 px-2 py-3">
                     <div className="h-full px-3 py-1">
                       <img src={airplane} className="w-10 h-10" />
                     </div>
-                    <div className="ml-4 h-full">
+                    <div className="ml-4 h-full w-full mr-2">
                       <p className="text-[#525B31] font-bold text-base font-montserrat">
                         From?
                       </p>
@@ -544,11 +551,11 @@ const Navbar = () => {
                     </div>
                   </div>
 
-                  <div className="w-[32.5%]  h-20 rounded-[40px] shadow-search flex flex-row items-center mt-3 px-2 py-3">
+                  <div className="w-[49%] h-20 rounded-[40px] shadow-search flex flex-row items-center mt-3 px-2 py-3">
                     <div className="h-full mr-2 px-3 py-1">
                       <img src={landing} className="w-10 h-10" />
                     </div>
-                    <div className="ml-4 h-full">
+                    <div className="ml-4 h-full w-full mr-2">
                       <p className="text-[#525B31] font-bold text-base font-montserrat">
                         To?
                       </p>

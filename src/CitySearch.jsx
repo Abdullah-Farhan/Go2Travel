@@ -1,14 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { FlightsContext } from "./Context/FlightsContext";
+import airport from "./assets/png/airport.png"
+import flag from "./assets/png/report.png"
 
-const AirportSearch = ( { type, destinationSetter, originSetter } ) => {
+const AirportSearch = ({ type, destinationSetter, originSetter }) => {
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [accessToken, setAccessToken] = useState("");
-  const { setSearchQuery, setToQuery } = useContext(FlightsContext)
+  const { setSearchQuery, setToQuery } = useContext(FlightsContext);
 
   const fetchAccessToken = async () => {
     try {
@@ -32,24 +34,27 @@ const AirportSearch = ( { type, destinationSetter, originSetter } ) => {
     }
   };
 
+  useEffect(()=> {
+    if (window.location.pathname === "/"){
+      setInputValue("")
+    }
+  }, [window.location.pathname])
+
   const handleInputChange = async (event) => {
     console.log(type);
-    
     const query = event.target.value;
-    setInputValue(query);    
+    setInputValue(query);
     if (type == "from") {
-      console.log("saving");
-      destinationSetter(query)
+      destinationSetter(query);
+    } else if (type == "to") {
+      originSetter(query);
     }
-    else if ( type == "to") {
-      originSetter(query)
-    } 
-    if (query.length > 2 && accessToken) {
+    if (query.length > 0 && accessToken) {
       setIsLoading(true);
       setError(null);
 
       try {
-        setTimeout(()=>{},1000)
+        setTimeout(() => {}, 1000);
         const response = await axios.get(
           `https://test.api.amadeus.com/v1/reference-data/locations`,
           {
@@ -63,13 +68,27 @@ const AirportSearch = ( { type, destinationSetter, originSetter } ) => {
             },
           }
         );
+        console.log(response.data.data);
+
         setSuggestions(
-          response.data.data.map((location) => ({
-            name: location.name,
-            iataCode: location.iataCode,
-            type: location.subType,
-          }))
+          response.data.data
+            .map((location) => ({
+              name: location.name,
+              iataCode: location.iataCode,
+              city: location.address?.cityName || location.name, // Fallback to name if cityName is unavailable
+              type: location.subType, // "CITY" or "AIRPORT"
+            }))
+            .sort((a, b) => {
+              // Sort by type: Cities come before Airports
+              if (a.type === "CITY" && b.type === "AIRPORT") return -1;
+              if (a.type === "AIRPORT" && b.type === "CITY") return 1;
+        
+              // If both are cities or both are airports, sort by name
+              return a.name.localeCompare(b.name);
+            })
         );
+        
+        
       } catch (error) {
         console.error("Error fetching suggestions:", error);
         setError("Error fetching suggestions");
@@ -86,11 +105,10 @@ const AirportSearch = ( { type, destinationSetter, originSetter } ) => {
     setSuggestions([]);
     if (type == "from") {
       console.log("saving");
-      destinationSetter(suggestion.iataCode)
+      destinationSetter(suggestion.iataCode);
+    } else if (type == "to") {
+      originSetter(suggestion.iataCode);
     }
-    else if ( type == "to") {
-      originSetter(suggestion.iataCode)
-    }    
   };
 
   React.useEffect(() => {
@@ -108,18 +126,28 @@ const AirportSearch = ( { type, destinationSetter, originSetter } ) => {
       />
       {isLoading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
-      <ul className="suggestions-list mt-2 bg-custom-gradient">
-        {suggestions.map((suggestion, index) => (
-          <li
-            key={index}
-            className="p-2 border-b cursor-pointer hover:bg-custom-gold"
-            onClick={() => handleSuggestionClick(suggestion)}
-          >
-            <strong className="text-custom-green">{suggestion.name}</strong> ({suggestion.iataCode}) -{" "}
-            {suggestion.type}
-          </li>
-        ))}
-      </ul>
+      <div className="relative">
+        <ul className="suggestions-list mt-2 bg-custom-gold absolute top-full left-0 w-full z-50 shadow-lg rounded-lg">
+          {suggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              className="p-2 border-b cursor-pointer hover:bg-custom-green text-custom-green hover:text-custom-gold flex items-center space-x-2"
+              onClick={() => handleSuggestionClick(suggestion)}
+            >
+              {/* Add airplane icon for airports or flag for cities */}
+              {suggestion.type === "CITY" ? (
+                <img src={flag} alt="City" className="w-4 h-4" />
+              ) : (
+                <img src={airport} alt="Airport" className="w-4 h-4" />
+              )}
+              <span>
+                <strong className="text-inherit">{suggestion.name}</strong> (
+                {suggestion.iataCode}) - {suggestion.city}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
