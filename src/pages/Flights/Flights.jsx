@@ -145,7 +145,12 @@ const FlightOffersList = () => {
         console.log(obj, id, limit, page, selectedSortValue);
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}flights/list`,
-          obj,
+          Object.keys(obj).length > 0? obj: {
+            cabin_class: ["economy", "premium_economy", "business", "first"],
+            base_amount: [0, 100000],
+            stops: [],
+            airlines: []
+          },
           {
             params: {
               id: id,
