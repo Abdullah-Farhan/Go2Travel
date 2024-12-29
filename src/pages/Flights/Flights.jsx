@@ -11,7 +11,7 @@ const FlightOffersList = () => {
   const [response, setResponse] = useState(null);
   const [id, setId] = useState();
   const [limit, setLimit] = useState(20);
-  const [page, setPage] = useState(null);
+  const [page, setPage] = useState(1);
   const [minPrice, setMinPrice] = useState();
   const [maxPrice, setMaxPrice] = useState();
   const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
@@ -37,7 +37,7 @@ const FlightOffersList = () => {
     selectedDates.length > 1 ? selectedDates[1] : null
   );
   const [totalPages, setTotalPages] = useState();
-  const [selectedSortValue, setSelectedSortValue] = useState("");
+  const [selectedSortValue, setSelectedSortValue] = useState("best");
 
   const [passengers, setPassengers] = useState([{ type: "adult" }]);
   const [currentPage, setCurrentPage] = useState(1);
