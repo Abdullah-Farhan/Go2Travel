@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Slider from "@mui/material/Slider";
+import { FlightsContext } from "../../../Context/FlightsContext";
 
 const Filter = ({
   flights,
@@ -11,12 +12,16 @@ const Filter = ({
 }) => {
   const [stops, setStops] = useState([false, false, false]);
   const [selectedAirlines, setSelectedAirlines] = useState([]);
+  const { isSearched } = useContext(FlightsContext)
   const [selectedCabins, setSelectedCabins] = useState({
     economy: true,
     premium_economy: true,
     business: true,
     first: true,
   });
+
+  console.log(isSearched);
+  
 
   const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
 
@@ -25,6 +30,19 @@ const Filter = ({
   }, [flights]);
 
   const [airlinesList, setAirlinesList] = useState([]);
+
+  useEffect(() => {
+    console.log("rannn");
+    
+    setSelectedAirlines([]);
+    setStops([false, false, false])
+    setSelectedCabins({
+      economy: true,
+      premium_economy: true,
+      business: true,
+      first: true,
+    })
+  }, [isSearched]);
 
   useEffect(() => {
     setPriceRange([minPrice, maxPrice]);

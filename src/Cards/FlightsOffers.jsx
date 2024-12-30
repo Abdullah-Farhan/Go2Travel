@@ -252,12 +252,7 @@ const FlightOfferCard = ({ offer, data }) => {
                             {formatDuration(segment.duration)}
                           </span>
                           <span className="text-sm font-semibold text-gray-600">
-                            {segment.passengers[0]?.cabin_class_marketing_name
-                              ?.charAt(0)
-                              .toUpperCase() +
-                              segment.passengers[0]?.cabin_class_marketing_name
-                                ?.slice(1)
-                                .toLowerCase()}
+                            {segment.passengers[0].cabin_class_marketing_name}
                           </span>
                         </div>
 
