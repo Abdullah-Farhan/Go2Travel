@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 
 const FlightOfferCard = ({ offer, data }) => {
@@ -20,6 +20,11 @@ const FlightOfferCard = ({ offer, data }) => {
   const finalSegment = firstSlice.segments[firstSlice.segments.length - 1];
   const { arriving_at } = finalSegment;
   const [showDeals, setShowDeals] = useState(false);
+  const [filter, setFilter] = useState(data);
+
+  useEffect(() => {
+    setFilter(data);
+  }, [offer]);
 
   const handleToggleDeals = () => {
     setShowDeals((prev) => !prev);
@@ -48,20 +53,6 @@ const FlightOfferCard = ({ offer, data }) => {
 
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", options).replace(",", "");
-  };
-
-  const calculateDuration = (
-    departure,
-    arrival,
-    originTimeZone,
-    destinationTimeZone
-  ) => {
-    const departureDate = DateTime.fromISO(departure, { zone: originTimeZone });
-    const arrivalDate = DateTime.fromISO(arrival, {
-      zone: destinationTimeZone,
-    });
-    const duration = arrivalDate.diff(departureDate, ["hours", "minutes"]);
-    return `${duration.hours}h ${duration.minutes}m`;
   };
 
   const totalStops = slices.reduce(
@@ -116,15 +107,24 @@ const FlightOfferCard = ({ offer, data }) => {
                 {formatDuration(slices[0].duration)}
               </span>
               <span className="text-sm font-semibold text-gray-600">
-                {passengers[0]?.cabin_class_marketing_name
-                  ? passengers[0]?.cabin_class_marketing_name
-                      .charAt(0)
-                      .toUpperCase() +
-                    passengers[0]?.cabin_class_marketing_name
-                      .slice(1)
-                      .toLowerCase()
-                  : ""}
+                {firstSlice?.segments
+                  .find((segment) =>
+                    filter?.cabin_class.includes(
+                      segment?.passengers?.[0]?.cabin_class
+                    )
+                  )
+                  ?.passengers?.[0]?.cabin_class?.charAt(0)
+                  .toUpperCase() +
+                  firstSlice?.segments
+                    .find((segment) =>
+                      filter?.cabin_class.includes(
+                        segment?.passengers?.[0]?.cabin_class
+                      )
+                    )
+                    ?.passengers?.[0]?.cabin_class?.slice(1)
+                    .toLowerCase()}
               </span>
+
               {totalStops > 0 && (
                 <button
                   onClick={() => setShowModal(true)}
@@ -234,8 +234,7 @@ const FlightOfferCard = ({ offer, data }) => {
                       <div className="flex items-center justify-between text-gray-600">
                         <div className="text-center">
                           <p className="text-sm font-semibold">
-                            {formatCustomDate(segment.departing_at
-                            )}
+                            {formatCustomDate(segment.departing_at)}
                           </p>
                           <p className="text-sm font-medium text-custom-green">
                             {segment.origin?.iata_code}
@@ -250,20 +249,21 @@ const FlightOfferCard = ({ offer, data }) => {
 
                         <div className="flex flex-col items-center">
                           <span className="text-gray-400 text-sm">
-                            {formatDuration(
-                              segment.duration
-                            )}
+                            {formatDuration(segment.duration)}
                           </span>
                           <span className="text-sm font-semibold text-gray-600">
-                            {segment.passengers[0].cabin_class_marketing_name}
+                            {segment.passengers[0]?.cabin_class_marketing_name
+                              ?.charAt(0)
+                              .toUpperCase() +
+                              segment.passengers[0]?.cabin_class_marketing_name
+                                ?.slice(1)
+                                .toLowerCase()}
                           </span>
                         </div>
 
                         <div className="text-center">
                           <p className="text-sm font-semibold">
-                            {formatCustomDate(
-                              segment.arriving_at
-                            )}
+                            {formatCustomDate(segment.arriving_at)}
                           </p>
                           <p className="text-sm font-medium text-custom-green">
                             {segment.destination?.iata_code}
@@ -317,7 +317,10 @@ const FlightOfferCard = ({ offer, data }) => {
                           <strong className="text-custom-green">
                             Cabin Class:
                           </strong>{" "}
-                          {deal.cabin_class === "premium_economy" ? "Premium Economy" : deal.cabin_class[0].toUpperCase() + deal.cabin_class.slice(1).toLowerCase()}
+                          {deal.cabin_class === "premium_economy"
+                            ? "Premium Economy"
+                            : deal.cabin_class[0].toUpperCase() +
+                              deal.cabin_class.slice(1).toLowerCase()}
                         </p>
                         <p className="text-custom-gold">
                           <strong className="text-custom-green">

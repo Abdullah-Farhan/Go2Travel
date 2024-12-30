@@ -176,6 +176,7 @@ const FlightOffersList = () => {
         }
       } else if (tripType === "roundTrip") {
         toast.error("Please select Complete Date and Both Locations");
+        setLoading(false)
       }
       if (
         selectedDates.length <= 2 &&

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 
 const FlightOfferCard = ({ offer, data }) => {
@@ -12,6 +12,12 @@ const FlightOfferCard = ({ offer, data }) => {
     slices,
     payment_requirements,
   } = offer;
+
+  const [filter, setFilter] = useState(data);
+
+  useEffect(() => {
+    setFilter(data);
+  }, [offer]);
 
   const firstSlice = slices[0];
   const secondSlice = slices[1];
@@ -83,9 +89,7 @@ const FlightOfferCard = ({ offer, data }) => {
         <div className="flex items-center justify-between text-gray-600 shadow-lg h-28 rounded-lg px-2 mt-2">
           <div className="text-center">
             <p className="text-sm font-semibold">
-              {formatCustomDate(
-                firstSlice?.segments[0]?.departing_at
-              )}
+              {formatCustomDate(firstSlice?.segments[0]?.departing_at)}
             </p>
             <p className="text-sm font-medium">
               {firstSlice?.segments[0]?.origin?.iata_code}
@@ -103,7 +107,9 @@ const FlightOfferCard = ({ offer, data }) => {
               {formatDuration(firstSlice.duration)}
             </span>
             <span className="text-sm font-semibold text-gray-600">
-              {firstSlice?.segments[0]?.passengers?.[0]?.cabin_class}
+              {firstSlice?.segments.find((segment) =>
+                filter?.cabin_class.includes(segment?.passengers?.[0]?.cabin_class)
+              )?.passengers?.[0]?.cabin_class}
             </span>
             {outboundStops > 0 && (
               <button
@@ -118,8 +124,7 @@ const FlightOfferCard = ({ offer, data }) => {
           <div className="text-center">
             <p className="text-sm font-semibold">
               {formatCustomDate(
-                firstSlice.segments[firstSlice.segments.length - 1]
-                  ?.arriving_at
+                firstSlice.segments[firstSlice.segments.length - 1]?.arriving_at
               )}
             </p>
             <p className="text-sm font-medium">
@@ -143,9 +148,7 @@ const FlightOfferCard = ({ offer, data }) => {
         <div className="flex items-center justify-between text-gray-600 shadow-lg h-28 rounded-lg px-2 mt-2">
           <div className="text-center">
             <p className="text-sm font-semibold">
-              {formatCustomDate(
-                secondSlice?.segments[0]?.departing_at
-              )}
+              {formatCustomDate(secondSlice?.segments[0]?.departing_at)}
             </p>
             <p className="text-sm font-medium">
               {secondSlice?.segments[0]?.origin?.iata_code}
@@ -163,7 +166,9 @@ const FlightOfferCard = ({ offer, data }) => {
               {formatDuration(secondSlice.duration)}
             </span>
             <span className="text-sm font-semibold text-gray-600">
-              {secondSlice?.segments[0]?.passengers?.[0]?.cabin_class}
+              {secondSlice?.segments.find((segment) =>
+                filter?.cabin_class.includes(segment?.passengers?.[0]?.cabin_class)
+              )?.passengers?.[0]?.cabin_class}
             </span>
             {returnStops > 0 && (
               <button
@@ -255,14 +260,19 @@ const FlightOfferCard = ({ offer, data }) => {
               <h2 className="text-3xl font-bold text-custom-green">
                 Flight Details
               </h2>
-              <button className="text-xl font-semibold text-custom-green" onClick={() => setShowModal(false)}>x</button>
+              <button
+                className="text-xl font-semibold text-custom-green"
+                onClick={() => setShowModal(false)}
+              >
+                x
+              </button>
             </div>
             {/* Outbound Stops */}
             <div className="mb-4">
               <h3 className="text-xl font-bold text-custom-gold">
                 Outbound Flight
               </h3>
-              {firstSlice.segments.map((segment, segmentIndex) => (
+              {firstSlice?.segments.map((segment, segmentIndex) => (
                 <div
                   key={segmentIndex}
                   className="mb-4 border-b-black border-b-[2px] pb-2"
@@ -270,10 +280,10 @@ const FlightOfferCard = ({ offer, data }) => {
                   <div className="flex justify-between items-center mb-2">
                     <div>
                       <h2 className="text-lg font-bold text-custom-green">
-                        {segment.operating_carrier?.name}
+                        {segment?.operating_carrier?.name}
                       </h2>
                       <p className="text-custom-green">
-                        Flight {segment.marketing_carrier_flight_number}
+                        Flight {segment?.marketing_carrier_flight_number}
                       </p>
                     </div>
                   </div>
@@ -281,34 +291,34 @@ const FlightOfferCard = ({ offer, data }) => {
                   <div className="flex items-center justify-between text-gray-600">
                     <div className="text-center">
                       <p className="text-sm font-semibold">
-                        {formatCustomDate(segment.departing_at)}
+                        {formatCustomDate(segment?.departing_at)}
                       </p>
                       <p className="text-sm font-medium">
-                        {segment.origin?.iata_code}
+                        {segment?.origin?.iata_code}
                       </p>
                       <p className="text-sm">
                         Terminal{" "}
-                        {segment.origin_terminal
-                          ? segment.origin_terminal
+                        {segment?.origin_terminal
+                          ? segment?.origin_terminal
                           : "N/A"}
                       </p>
                     </div>
 
                     <div className="flex flex-col items-center">
                       <span className="text-gray-400 text-sm">
-                        {formatDuration(segment.duration)}
+                        {formatDuration(segment?.duration)}
                       </span>
                       <span className="text-sm font-semibold text-gray-600">
-                        {segment.passengers[0]?.cabin_class}
+                        {segment?.passengers[0]?.cabin_class}
                       </span>
                     </div>
 
                     <div className="text-center">
                       <p className="text-sm font-semibold">
-                        {formatCustomDate(segment.arriving_at)}
+                        {formatCustomDate(segment?.arriving_at)}
                       </p>
                       <p className="text-sm font-medium">
-                        {segment.destination.iata_code}
+                        {segment?.destination.iata_code}
                       </p>
                       <p className="text-sm">
                         Terminal{" "}
@@ -415,7 +425,7 @@ const FlightOfferCard = ({ offer, data }) => {
             <ul className="space-y-2 max-h-96 mt-4 overflow-auto">
               {offer.moreClasses.map((deal, index) => (
                 <>
-                  {data.cabin_class.includes(deal.cabin_class) ? (
+                  {data.cabin_class.includes(deal?.cabin_class) ? (
                     <>
                       <li
                         key={index}
@@ -425,10 +435,10 @@ const FlightOfferCard = ({ offer, data }) => {
                           <strong className="text-custom-green">
                             Cabin Class:
                           </strong>{" "}
-                          {deal.cabin_class === "premium_economy"
+                          {deal?.cabin_class === "premium_economy"
                             ? "Premium Economy"
-                            : deal.cabin_class[0].toUpperCase() +
-                              deal.cabin_class.slice(1).toLowerCase()}
+                            : deal?.cabin_class[0].toUpperCase() +
+                              deal?.cabin_class.slice(1).toLowerCase()}
                         </p>
                         <p className="text-custom-gold">
                           <strong className="text-custom-green">
